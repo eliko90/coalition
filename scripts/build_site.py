@@ -366,6 +366,36 @@ def build(export_path, out_html):
     html = patch(html, "const kingmaker = KINGMAKER;",
                  "const kingmaker = kingmakerNow();", "kingmaker-call")
 
+    # ---- a retired party must not leave dangling references ---------------
+    # The presets and outlooks are written against the party list baked into
+    # the design, so retiring one (or a poll dropping it) leaves ids that
+    # byId() no longer resolves. Filtering on load keeps a stale id from ever
+    # entering the coalition.
+    html = patch(
+        html,
+        """  loadPreset(ids, note) {
+    this.pushHistory(this.state.coalition);
+    this.setState({ coalition: [...ids], presetNote: note || '' });
+  }""",
+        """  loadPreset(ids, note) {
+    const known = new Set(allBase().map(p => p.id));
+    this.pushHistory(this.state.coalition);
+    this.setState({ coalition: ids.filter(id => known.has(id)), presetNote: note || '' });
+  }""",
+        "preset-filter")
+
+    # And belt-and-braces: never dereference an unresolved id while rendering.
+    html = patch(
+        html,
+        """          for (const seatedId of coalition) {
+            const seated = this.byId(seatedId);
+            if ((p.refusals || []).some(r => r.id === seatedId)) return `Refuses to sit with ${seated.name}`;""",
+        """          for (const seatedId of coalition) {
+            const seated = this.byId(seatedId);
+            if (!seated) continue;
+            if ((p.refusals || []).some(r => r.id === seatedId)) return `Refuses to sit with ${seated.name}`;""",
+        "conflict-hint-guard")
+
     # ---- fetch on mount ---------------------------------------------------
     html = patch(
         html,
@@ -396,6 +426,7 @@ def build(export_path, out_html):
         "      pollingSource: (live && live.source.label) || "
         "this.props.pollingSource || 'Kantar/Kan 11',\n"
         "      dataNote,\n"
+        "      hasDataNote: !!dataNote,\n"
         "      hasDataWarning: warnings.length > 0,\n"
         "      dataWarnings: warnings,",
         "polling-source")
@@ -408,13 +439,10 @@ def build(export_path, out_html):
         "    const commentary = this.state.commentary;\n"
         "    const warnings = this.dataWarnings(live);\n"
         "    const age = live ? daysSince(live.source.fieldworkDate) : null;\n"
+        "    // The source line above already names the pollster and the date;\n"
+        "    // this second line only speaks up when something is wrong.\n"
         "    const dataNote = live\n"
-        "      ? `Seat counts are that single poll` +\n"
-        "        (age === 0 ? ', taken today' : age === 1 ? ', taken yesterday'\n"
-        "          : age != null ? `, taken ${age} days ago` : '') +\n"
-        "        `. The range on each party card spans all ${live.spreadPollCount} polls `\n"
-        "        + `from every pollster in the last ${live.spreadWindowDays} days. `\n"
-        "        + `Updated automatically.`\n"
+        "      ? ''\n"
         "      : (this.state.liveError\n"
         "          ? 'Showing the built-in snapshot — live polling data could not be loaded.'\n"
         "          : 'Loading the latest polling…');\n"
@@ -485,7 +513,9 @@ def build(export_path, out_html):
         html,
         '<div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">'
         'Updated weekly — sooner when something big breaks.</div>',
-        '<div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div>\n'
+        '<sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}">'
+        '<div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div>'
+        '</sc-if>\n'
         '      <sc-if value="{{ hasDataWarning }}" hint-placeholder-val="{{ false }}">\n'
         '        <div style="margin-top:8px;background:var(--gold-tint);border:1px solid var(--gold);'
         'border-radius:var(--r-sm);padding:8px 10px;text-transform:none;letter-spacing:0;">\n'

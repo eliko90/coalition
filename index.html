@@ -309,7 +309,7 @@
     </div>
     <div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
       Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}
-      <div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div>
+      <sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div></sc-if>
       <sc-if value="{{ hasDataWarning }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:8px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-sm);padding:8px 10px;text-transform:none;letter-spacing:0;">
           <div class="ek-caption" style="margin:0 0 4px;color:var(--gold-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Needs an editor’s eye</div>
@@ -1078,8 +1078,9 @@ class Component extends DCLogic {
   }
 
   loadPreset(ids, note) {
+    const known = new Set(allBase().map(p => p.id));
     this.pushHistory(this.state.coalition);
-    this.setState({ coalition: [...ids], presetNote: note || '' });
+    this.setState({ coalition: ids.filter(id => known.has(id)), presetNote: note || '' });
   }
 
   clearAll() {
@@ -1092,13 +1093,10 @@ class Component extends DCLogic {
     const commentary = this.state.commentary;
     const warnings = this.dataWarnings(live);
     const age = live ? daysSince(live.source.fieldworkDate) : null;
+    // The source line above already names the pollster and the date;
+    // this second line only speaks up when something is wrong.
     const dataNote = live
-      ? `Seat counts are that single poll` +
-        (age === 0 ? ', taken today' : age === 1 ? ', taken yesterday'
-          : age != null ? `, taken ${age} days ago` : '') +
-        `. The range on each party card spans all ${live.spreadPollCount} polls `
-        + `from every pollster in the last ${live.spreadWindowDays} days. `
-        + `Updated automatically.`
+      ? ''
       : (this.state.liveError
           ? 'Showing the built-in snapshot — live polling data could not be loaded.'
           : 'Loading the latest polling…');
@@ -1225,6 +1223,7 @@ class Component extends DCLogic {
         conflictHint: (!inCoalition && coalition.length > 0) ? (() => {
           for (const seatedId of coalition) {
             const seated = this.byId(seatedId);
+            if (!seated) continue;
             if ((p.refusals || []).some(r => r.id === seatedId)) return `Refuses to sit with ${seated.name}`;
             if ((seated.refusals || []).some(r => r.id === p.id)) return `${seated.name} refuses to sit with them`;
           }
@@ -1337,6 +1336,7 @@ class Component extends DCLogic {
       pollingDate: (live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',
       pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
       dataNote,
+      hasDataNote: !!dataNote,
       hasDataWarning: warnings.length > 0,
       dataWarnings: warnings,
       stateOfPlay: (commentary && commentary.stateOfPlay) || this.props.stateOfPlay || "Likud now polls one seat ahead of Eisenkot's Yashar — but neither bloc reaches 61 without crossing a line someone has drawn. The Netanyahu bloc is stuck in the low to mid-50s while the change bloc clears 61 only if it adds Ra'am — which looks more likely should the rumors be true and former Yesh Atid MK Yoav Segelovich join the party, a move he has conditioned on Ra'am accepting Israel as a Jewish state.",
