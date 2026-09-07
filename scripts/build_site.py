@@ -42,6 +42,10 @@ GOOGLE_FONTS = (
 # Photographs render at 88px; 256px covers 2x displays with room to spare.
 PHOTO_PX = 256
 
+# Where readers actually land, and where scrapers fetch the share card from.
+CANONICAL_URL = "https://kowaz.com/coalition"
+OG_IMAGE_URL = "https://eliko90.github.io/coalition/assets/og-image.png"
+
 
 class BuildError(Exception):
     pass
@@ -182,6 +186,22 @@ function applyLive(base, live) {
     }
     return out;
   });
+}
+
+/* Reads `electionDate` from data/commentary.json. Returns '' when the date is
+   absent or past, so the line simply disappears the morning after the vote
+   rather than counting up into negatives. */
+function electionCountdown(iso) {
+  if (!iso) return '';
+  const day = new Date(iso + 'T00:00:00Z');
+  if (isNaN(day)) return '';
+  const now = new Date();
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const days = Math.round((day.getTime() - today) / 86400000);
+  if (days < 0) return '';
+  if (days === 0) return 'Election day';
+  if (days === 1) return '1 day to the election';
+  return days + ' days to the election';
 }
 
 function daysSince(iso) {
@@ -346,12 +366,30 @@ def build(export_path, out_html):
         "react-before-runtime")
 
     # ---- title and description ------------------------------------------
+    # Canonical reader-facing page is the WordPress one; the Pages copy carries
+    # the same cards so a directly shared Pages link previews properly too.
+    desc = ("Build Israel's next coalition from the latest Knesset polling — "
+            "and see which combinations the parties have already ruled out.")
     html = patch(
         html, "<head>\n<meta charset=\"utf-8\">",
         "<head>\n<meta charset=\"utf-8\">\n"
         "<title>Road to 61 — Knesset Coalition Builder</title>\n"
-        '<meta name="description" content="Build a Knesset coalition from the '
-        'latest Israeli polling and see which ones can actually govern.">',
+        f'<meta name="description" content="{desc}">\n'
+        f'<link rel="canonical" href="{CANONICAL_URL}">\n'
+        '<meta property="og:type" content="website">\n'
+        '<meta property="og:site_name" content="The Middle Ground">\n'
+        '<meta property="og:title" content="Road to 61 — build Israel\'s next coalition">\n'
+        f'<meta property="og:description" content="{desc}">\n'
+        f'<meta property="og:url" content="{CANONICAL_URL}">\n'
+        f'<meta property="og:image" content="{OG_IMAGE_URL}">\n'
+        '<meta property="og:image:width" content="1200">\n'
+        '<meta property="og:image:height" content="630">\n'
+        '<meta property="og:image:alt" content="Road to 61 — a Knesset seat bar '
+        'against the 61-seat line needed to govern">\n'
+        '<meta name="twitter:card" content="summary_large_image">\n'
+        '<meta name="twitter:title" content="Road to 61 — build Israel\'s next coalition">\n'
+        f'<meta name="twitter:description" content="{desc}">\n'
+        f'<meta name="twitter:image" content="{OG_IMAGE_URL}">',
         "head-title")
 
     # ---- live data: rename the base list, add the runtime ----------------
@@ -440,6 +478,8 @@ def build(export_path, out_html):
         "this.props.pollingSource || 'Kantar/Kan 11',\n"
         "      dataNote,\n"
         "      hasDataNote: !!dataNote,\n"
+        "      countdown,\n"
+        "      hasCountdown: !!countdown,\n"
         "      raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,\n"
         "      hasDataWarning: warnings.length > 0,\n"
         "      dataWarnings: warnings,",
@@ -451,6 +491,7 @@ def build(export_path, out_html):
         "  renderVals() {\n"
         "    const live = this.state.live;\n"
         "    const commentary = this.state.commentary;\n"
+        "    const countdown = electionCountdown(commentary && commentary.electionDate);\n"
         "    const warnings = this.dataWarnings(live);\n"
         "    const age = live ? daysSince(live.source.fieldworkDate) : null;\n"
         "    // The source line above already names the pollster and the date;\n"
@@ -529,6 +570,23 @@ def build(export_path, out_html):
         """<p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">Rumors that Ra'am may add a Jewish MK — Yoav Segalovitz, formerly of Yesh Atid — and formally accept Israel as a Jewish state would make it a far more legitimate partner for the Zionist opposition.</p>""",
         """<p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">{{ raamNote }}</p>""",
         "raam-note")
+
+    # Outlooks and the countdown are editorial and perishable, so both come
+    # from data/commentary.json with the design's version as the fallback.
+    html = patch(
+        html,
+        "    const outlooks = OUTLOOKS.map(o => {",
+        "    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map(o => {",
+        "outlooks-source")
+
+    html = patch(
+        html,
+        "      Polling as of {{ pollingDate }} <span style=\"color:var(--clay);\">\u00b7</span> {{ pollingSource }}",
+        "      Polling as of {{ pollingDate }} <span style=\"color:var(--clay);\">\u00b7</span> {{ pollingSource }}"
+        "<sc-if value=\"{{ hasCountdown }}\" hint-placeholder-val=\"{{ false }}\">"
+        "<span> <span style=\"color:var(--clay);\">\u00b7</span> "
+        "<strong style=\"color:var(--ink-2);\">{{ countdown }}</strong></span></sc-if>",
+        "countdown-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

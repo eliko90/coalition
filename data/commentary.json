@@ -1,5 +1,50 @@
 {
   "_comment": "Editorial prose that goes stale faster than anything else on the page. Edit it here and push — no Claude Design re-export needed. Delete a key to fall back to the text baked into the design.",
   "stateOfPlay": "Eisenkot's Yashar leads Likud 23 to 20, and both blocs have slipped: the Netanyahu bloc sits at 52, the change bloc at 51. Neither is close on its own. The change bloc plus Ra'am reaches only 57 — the arithmetic now works exactly once, if Yoaz Hendel's Reservists join too, and that lands on 61 with nothing to spare. Ra'am has made itself easier to sit with: Yoav Segelovich, formerly of Yesh Atid, has joined its list. Hendel is the harder problem — he has ruled out Shas and UTJ over the draft, and has been cool on relying on Ra'am. On the right, Ofer Winter's Amcha Yisrael takes four seats and says it will recommend Netanyahu, splitting the vote Netanyahu warned it would.",
-  "raamNote": "Ra'am is no longer the untouchable partner it was. Yoav Segelovich — a former Yesh Atid MK and deputy internal security minister — now runs on its list, the first Jewish figure to do so. That is aimed squarely at the Zionist opposition's objection to relying on it, and it is the reason a change-bloc government is arithmetically thinkable at all."
+  "raamNote": "Ra'am is no longer the untouchable partner it was. Yoav Segelovich — a former Yesh Atid MK and deputy internal security minister — now runs on its list, the first Jewish figure to do so. That is aimed squarely at the Zionist opposition's objection to relying on it, and it is the reason a change-bloc government is arithmetically thinkable at all.",
+  "electionDate": "2026-10-27",
+  "_outlooksComment": "Odds are YOUR editorial call — these are a starting point, not a calculation. The seat totals beside each are computed live from polls.json.",
+  "outlooks": [
+    {
+      "rank": "1",
+      "odds": "45",
+      "label": "Eisenkot, with Ra'am and Hendel",
+      "ids": [
+        "yashar",
+        "together",
+        "democrats",
+        "beiteinu",
+        "raam",
+        "reservists"
+      ],
+      "why": "The only combination that reaches 61 on current numbers, and it does so exactly. Hendel is the realistic partner here — his refusal to sit with Shas and UTJ over the draft leaves him little room on the right — but it asks Beyachad and Hendel to accept a government resting on Ra'am. Segelovich joining Ra'am's list was aimed at precisely that objection."
+    },
+    {
+      "rank": "2",
+      "odds": "37",
+      "label": "Another election",
+      "ids": [
+        "likud",
+        "rzp",
+        "otzma",
+        "shas",
+        "utj",
+        "amcha_yisrael"
+      ],
+      "why": "The Netanyahu bloc tops out at 52 even with Winter's four seats, and there is no ninth seat available to it that isn't Arab-majority. If the change bloc cannot settle on Ra'am, nobody forms a government and Israel votes again."
+    },
+    {
+      "rank": "3",
+      "odds": "18",
+      "label": "A unity government, without Netanyahu",
+      "ids": [
+        "likud",
+        "yashar",
+        "together",
+        "beiteinu",
+        "democrats"
+      ],
+      "why": "Comfortably past 61 and blocked by one man: most of these partners have ruled out serving under Netanyahu, not under Likud. A Likud leadership change would rewrite the arithmetic overnight."
+    }
+  ]
 }

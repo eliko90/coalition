@@ -2,7 +2,21 @@
 <html><head>
 <meta charset="utf-8">
 <title>Road to 61 — Knesset Coalition Builder</title>
-<meta name="description" content="Build a Knesset coalition from the latest Israeli polling and see which ones can actually govern.">
+<meta name="description" content="Build Israel's next coalition from the latest Knesset polling — and see which combinations the parties have already ruled out.">
+<link rel="canonical" href="https://kowaz.com/coalition">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Middle Ground">
+<meta property="og:title" content="Road to 61 — build Israel's next coalition">
+<meta property="og:description" content="Build Israel's next coalition from the latest Knesset polling — and see which combinations the parties have already ruled out.">
+<meta property="og:url" content="https://kowaz.com/coalition">
+<meta property="og:image" content="https://eliko90.github.io/coalition/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Road to 61 — a Knesset seat bar against the 61-seat line needed to govern">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Road to 61 — build Israel's next coalition">
+<meta name="twitter:description" content="Build Israel's next coalition from the latest Knesset polling — and see which combinations the parties have already ruled out.">
+<meta name="twitter:image" content="https://eliko90.github.io/coalition/assets/og-image.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="assets/react.production.min.js"></script>
 <script src="assets/react-dom.production.min.js"></script>
@@ -308,7 +322,7 @@
       <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.95rem;">Subscribe to The Middle Ground →</a>
     </div>
     <div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
-      Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}
+      Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}<sc-if value="{{ hasCountdown }}" hint-placeholder-val="{{ false }}"><span> <span style="color:var(--clay);">·</span> <strong style="color:var(--ink-2);">{{ countdown }}</strong></span></sc-if>
       <sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div></sc-if>
       <sc-if value="{{ hasDataWarning }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:8px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-sm);padding:8px 10px;text-transform:none;letter-spacing:0;">
@@ -782,6 +796,22 @@ function applyLive(base, live) {
   });
 }
 
+/* Reads `electionDate` from data/commentary.json. Returns '' when the date is
+   absent or past, so the line simply disappears the morning after the vote
+   rather than counting up into negatives. */
+function electionCountdown(iso) {
+  if (!iso) return '';
+  const day = new Date(iso + 'T00:00:00Z');
+  if (isNaN(day)) return '';
+  const now = new Date();
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const days = Math.round((day.getTime() - today) / 86400000);
+  if (days < 0) return '';
+  if (days === 0) return 'Election day';
+  if (days === 1) return '1 day to the election';
+  return days + ' days to the election';
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -1104,6 +1134,7 @@ class Component extends DCLogic {
   renderVals() {
     const live = this.state.live;
     const commentary = this.state.commentary;
+    const countdown = electionCountdown(commentary && commentary.electionDate);
     const warnings = this.dataWarnings(live);
     const age = live ? daysSince(live.source.fieldworkDate) : null;
     // The source line above already names the pollster and the date;
@@ -1340,7 +1371,7 @@ class Component extends DCLogic {
 
     const kingmaker = kingmakerNow();
 
-    const outlooks = OUTLOOKS.map(o => {
+    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map(o => {
       const seats = o.ids.reduce((sum, id) => sum + (this.byId(id)?.seats || 0), 0);
       return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats, load: () => { this.loadPreset(o.ids); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); } };
     });
@@ -1350,6 +1381,8 @@ class Component extends DCLogic {
       pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
       dataNote,
       hasDataNote: !!dataNote,
+      countdown,
+      hasCountdown: !!countdown,
       raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,
       hasDataWarning: warnings.length > 0,
       dataWarnings: warnings,
