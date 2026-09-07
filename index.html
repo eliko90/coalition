@@ -290,6 +290,7 @@
       animation: howItWorksPulse 1.6s ease-out 3;
       border-radius: var(--r-pill);
     }
+    .kb-card:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
     .kb-card:hover { box-shadow: var(--shadow-md) !important; transform: translateY(-1px); }
     .kb-card { transition: box-shadow 180ms var(--ease), transform 180ms var(--ease), border-color 180ms var(--ease) !important; }
     .kb-preset { transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease); }
@@ -523,7 +524,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <sc-for list="{{ bloc.parties }}" as="p" hint-placeholder-count="3">
-              <div draggable="true" sc-camel-on-drag-start="{{ p.onDragStart }}" sc-camel-on-click="{{ p.onTap }}" class="kb-card" style="position:relative;cursor:{{ p.cursor }};padding:16px;background:{{ p.cardBg }};border:{{ p.cardBorder }};border-radius:var(--r-md);box-shadow:{{ p.cardShadow }};opacity:{{ p.cardOpacity }};">
+              <div draggable="true" role="button" tabindex="0" aria-pressed="{{ p.inCoalition }}" aria-label="{{ p.ariaLabel }}" sc-camel-on-key-down="{{ p.onKey }}" sc-camel-on-drag-start="{{ p.onDragStart }}" sc-camel-on-click="{{ p.onTap }}" class="kb-card" style="position:relative;cursor:{{ p.cursor }};padding:16px;background:{{ p.cardBg }};border:{{ p.cardBorder }};border-radius:var(--r-md);box-shadow:{{ p.cardShadow }};opacity:{{ p.cardOpacity }};">
                 <button sc-camel-on-click="{{ p.onInfo }}" aria-label="More about {{ p.name }}" style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink-2);font-family:var(--font-serif);font-style:italic;font-weight:600;font-size:0.82rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;">i</button>
                 <div style="display:flex;align-items:center;gap:6px;padding-right:28px;">
                   <span style="width:8px;height:8px;border-radius:50%;background:{{ p.blocColor }};flex:none;"></span>
@@ -738,6 +739,7 @@ const PARTIES_BASE = [
    dead network degrades to "slightly stale" rather than a blank board.
    ------------------------------------------------------------------ */
 
+const CANONICAL_URL = 'https://kowaz.com/coalition';
 const POLLS_URL = 'data/polls.json';
 const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
@@ -867,6 +869,30 @@ function trendSentence(points, days) {
          `(same pollster).`;
 }
 
+/* A coalition travels in the URL as ?c=likud.shas.utj, so a shared link opens
+   the exact board the sender built instead of an empty one. Dots avoid the
+   percent-encoding a comma would pick up. Ids are validated against the live
+   board, so a link naming a party that has since folded degrades to the
+   parties that still exist rather than breaking. */
+/* Captured at load. The board only knows which ids are real once polls.json
+   has arrived, but by then the first render has already called syncUrl and
+   rewritten the address bar — so the parameter has to be read before anything
+   else runs, not looked up again later. */
+var URL_COALITION = (function () {
+  try { return new URLSearchParams(window.location.search).get('c') || ''; }
+  catch (e) { return ''; }
+})();
+
+function coalitionFromUrl(known) {
+  if (!URL_COALITION) return null;
+  var ids = URL_COALITION.split('.').filter(function (id) { return known.has(id); });
+  return ids.length ? ids : null;
+}
+
+function coalitionUrl(base, ids) {
+  return ids && ids.length ? base + '?c=' + ids.join('.') : base;
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -955,7 +981,12 @@ class Component extends DCLogic {
         if (!live || !live.parties || !live.source) throw new Error('bad shape');
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
         PARTIES_RAW = applyLive(allBase(), live);
-        this.setState({ live: live, commentary: commentary, liveError: '' });
+        // Only now is the board known, so only now can a shared link be trusted.
+        const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
+        this.setState(st => ({
+          live: live, commentary: commentary, liveError: '',
+          coalition: (shared && !st.coalition.length) ? shared : st.coalition
+        }));
       })
       .catch(err => {
         // Leave PARTIES_RAW on the baked-in snapshot and say so in the byline.
@@ -1009,6 +1040,29 @@ class Component extends DCLogic {
   }
 
   setView(mode) { this.setState({ viewMode: mode }); }
+
+  /* The canonical page is the WordPress one, so that is what gets shared —
+     never this iframe's github.io address. */
+  shareUrl() {
+    return coalitionUrl(CANONICAL_URL, this.state.coalition);
+  }
+
+  /* Reflect the coalition in the address bar. Inside an iframe the visible URL
+     belongs to the parent, so the parent is asked to update it; standalone,
+     this window updates its own. replaceState, not pushState — building a
+     coalition should not fill the back button with every click. */
+  syncUrl() {
+    const ids = this.state.coalition;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'kcb-coalition', ids: ids }, '*');
+      } else {
+        history.replaceState(null, '', coalitionUrl(window.location.pathname, ids));
+      }
+    } catch (e) { /* a sandboxed frame may refuse; the board still works */ }
+  }
+
+  componentDidUpdate() { this.syncUrl(); }
 
   pushHistory(coalition) {
     this.setState(s => ({ history: [...s.history, coalition].slice(-20) }));
@@ -1332,6 +1386,14 @@ class Component extends DCLogic {
           return '';
         })() : '',
         onTap: () => this.toggleAdd(p.id),
+        ariaLabel: `${p.name}, ${p.seats} seats` +
+          (coalitionSet.has(p.id) ? ', in your coalition' : '') +
+          '. Press to ' + (coalitionSet.has(p.id) ? 'remove' : 'add') + '.',
+        onKey: (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+          e.preventDefault();   // Space would otherwise scroll the page
+          this.toggleAdd(p.id);
+        },
         onInfo: (e) => this.openInfo(p.id, e),
         onDragStart: (e) => { e.dataTransfer.setData('text/plain', p.id); }
       };
@@ -1463,9 +1525,9 @@ class Component extends DCLogic {
       toggleShareMenu: (e) => this.toggleShareMenu(e),
       closeShareMenu: () => this.closeShareMenu(),
       shareAsImage: () => this.shareImage(coalitionPartiesRaw, totalSeats, governs),
-      shareWhatsappUrl: `https://wa.me/?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' https://kowaz.com/coalition')}`,
-      shareXUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs))}&url=${encodeURIComponent('https://kowaz.com/coalition')}`,
-      shareInstagram: () => this.copyForInstagram(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' https://kowaz.com/coalition'),
+      shareWhatsappUrl: `https://wa.me/?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' ' + this.shareUrl())}`,
+      shareXUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs))}&url=${encodeURIComponent(this.shareUrl())}`,
+      shareInstagram: () => this.copyForInstagram(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' ' + this.shareUrl()),
       hasToast: !!this.state.toast,
       toastMsg: this.state.toast,
       hasHoveredParty: !!hoveredParty,

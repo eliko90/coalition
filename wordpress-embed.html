@@ -17,6 +17,7 @@
   <iframe
     id="kcb-frame"
     src="https://eliko90.github.io/coalition/"
+    data-app="https://eliko90.github.io/coalition/"
     title="Road to 61 — build Israel's next coalition"
     scrolling="no"
     allow="clipboard-write; web-share"
@@ -38,11 +39,32 @@
   var frame = document.getElementById('kcb-frame');
   if (!frame) return;
 
+  // A shared link looks like kowaz.com/coalition?c=likud.shas.utj — hand that
+  // straight to the app so the reader opens the sender's board, not a blank one.
+  var q = new URLSearchParams(window.location.search).get('c');
+  if (q && /^[a-z0-9_.]+$/i.test(q)) {
+    frame.src = frame.getAttribute('data-app') + '?c=' + encodeURIComponent(q);
+  }
+
   window.addEventListener('message', function (e) {
     // Only listen to the app. Without this check any page in any other iframe
     // on this post could resize ours.
     if (e.origin !== APP_ORIGIN) return;
     var d = e.data;
+
+    // Mirror the board into this page's address bar as it is built, so the URL
+    // is always copyable. replaceState keeps the back button usable.
+    if (d && d.type === 'kcb-coalition') {
+      var ids = Array.isArray(d.ids) ? d.ids.filter(function (x) {
+        return typeof x === 'string' && /^[a-z0-9_]+$/i.test(x);
+      }) : [];
+      try {
+        history.replaceState(null, '',
+          window.location.pathname + (ids.length ? '?c=' + ids.join('.') : ''));
+      } catch (err) { /* not fatal */ }
+      return;
+    }
+
     if (!d || d.type !== 'kcb-resize') return;
     var h = parseInt(d.height, 10);
     if (!h || h < 400 || h > 20000) return;

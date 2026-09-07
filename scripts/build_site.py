@@ -51,12 +51,17 @@ class BuildError(Exception):
     pass
 
 
-def patch(text, old, new, what):
-    """Replace `old` once, or fail naming the patch."""
+def patch(text, old, new, what, count=1):
+    """Replace `old` exactly `count` times, or fail naming the patch.
+
+    The count is asserted rather than assumed: a snippet that starts matching
+    more places than intended is exactly how a build silently rewrites the
+    wrong thing.
+    """
     n = text.count(old)
-    if n != 1:
+    if n != count:
         raise BuildError(
-            f"patch {what!r} expected exactly one match, found {n}.\n"
+            f"patch {what!r} expected exactly {count} match(es), found {n}.\n"
             f"The Claude Design export changed. Look for this snippet in the "
             f"export and update scripts/build_site.py:\n\n  {old[:200]}\n")
     return text.replace(old, new)
@@ -127,6 +132,7 @@ LIVE_RUNTIME = r"""
    dead network degrades to "slightly stale" rather than a blank board.
    ------------------------------------------------------------------ */
 
+const CANONICAL_URL = '__CANONICAL__';
 const POLLS_URL = 'data/polls.json';
 const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
@@ -254,6 +260,30 @@ function trendSentence(points, days) {
          `(same pollster).`;
 }
 
+/* A coalition travels in the URL as ?c=likud.shas.utj, so a shared link opens
+   the exact board the sender built instead of an empty one. Dots avoid the
+   percent-encoding a comma would pick up. Ids are validated against the live
+   board, so a link naming a party that has since folded degrades to the
+   parties that still exist rather than breaking. */
+/* Captured at load. The board only knows which ids are real once polls.json
+   has arrived, but by then the first render has already called syncUrl and
+   rewritten the address bar — so the parameter has to be read before anything
+   else runs, not looked up again later. */
+var URL_COALITION = (function () {
+  try { return new URLSearchParams(window.location.search).get('c') || ''; }
+  catch (e) { return ''; }
+})();
+
+function coalitionFromUrl(known) {
+  if (!URL_COALITION) return null;
+  var ids = URL_COALITION.split('.').filter(function (id) { return known.has(id); });
+  return ids.length ? ids : null;
+}
+
+function coalitionUrl(base, ids) {
+  return ids && ids.length ? base + '?c=' + ids.join('.') : base;
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -292,7 +322,12 @@ LOAD_POLLS = r"""
         if (!live || !live.parties || !live.source) throw new Error('bad shape');
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
         PARTIES_RAW = applyLive(allBase(), live);
-        this.setState({ live: live, commentary: commentary, liveError: '' });
+        // Only now is the board known, so only now can a shared link be trusted.
+        const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
+        this.setState(st => ({
+          live: live, commentary: commentary, liveError: '',
+          coalition: (shared && !st.coalition.length) ? shared : st.coalition
+        }));
       })
       .catch(err => {
         // Leave PARTIES_RAW on the baked-in snapshot and say so in the byline.
@@ -448,7 +483,7 @@ def build(export_path, out_html):
     html = patch(
         html,
         "const BLOC_META = {",
-        LIVE_RUNTIME + "\nconst BLOC_META = {",
+        LIVE_RUNTIME.replace('__CANONICAL__', CANONICAL_URL) + "\nconst BLOC_META = {",
         "live-runtime")
 
     # ---- kingmaker: computed once at load -> recomputed when seats change
@@ -706,6 +741,87 @@ def build(export_path, out_html):
         """The wild card is <strong>Yoaz Hendel's Zionist Home</strong> — <em>if</em> it clears the threshold, a big if. It sits squarely between the blocs and could join either one, but its refusal to sit with the ultra-Orthodox parties closes off the most natural path on the right.""",
         """{{ wildCardNote }}""",
         "wild-card-note")
+
+    # Keep the address bar in step with the board, in this window and in the
+    # parent page when embedded, so the URL is always copyable.
+    html = patch(
+        html,
+        "  componentDidUpdate(_prevProps) {\n  }",
+        "  componentDidUpdate(_prevProps) {\n  }",
+        "noop") if False else html
+
+    html = patch(
+        html,
+        """  setView(mode) { this.setState({ viewMode: mode }); }""",
+        """  setView(mode) { this.setState({ viewMode: mode }); }
+
+  /* The canonical page is the WordPress one, so that is what gets shared —
+     never this iframe's github.io address. */
+  shareUrl() {
+    return coalitionUrl(CANONICAL_URL, this.state.coalition);
+  }
+
+  /* Reflect the coalition in the address bar. Inside an iframe the visible URL
+     belongs to the parent, so the parent is asked to update it; standalone,
+     this window updates its own. replaceState, not pushState — building a
+     coalition should not fill the back button with every click. */
+  syncUrl() {
+    const ids = this.state.coalition;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'kcb-coalition', ids: ids }, '*');
+      } else {
+        history.replaceState(null, '', coalitionUrl(window.location.pathname, ids));
+      }
+    } catch (e) { /* a sandboxed frame may refuse; the board still works */ }
+  }
+
+  componentDidUpdate() { this.syncUrl(); }""",
+        "share-url-sync")
+
+    # Share links and the share image now carry the coalition.
+    for old, new, name, *cnt in [
+        ("this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' https://kowaz.com/coalition'",
+         "this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' ' + this.shareUrl()",
+         "share-text-url", 2),
+        ("encodeURIComponent('https://kowaz.com/coalition')",
+         "encodeURIComponent(this.shareUrl())",
+         "share-x-url"),
+    ]:
+        html = patch(html, old, new, name, cnt[0] if cnt else 1)
+
+    # Keyboard access: the party cards carry the whole interaction and were
+    # plain divs, so the board could not be used without a pointer at all.
+    OLD_CARD = ('<div draggable="true" sc-camel-on-drag-start="{{ p.onDragStart }}" '
+                'sc-camel-on-click="{{ p.onTap }}" class="kb-card"')
+    NEW_CARD = ('<div draggable="true" role="button" tabindex="0" '
+                'aria-pressed="{{ p.inCoalition }}" aria-label="{{ p.ariaLabel }}" '
+                'sc-camel-on-key-down="{{ p.onKey }}" '
+                'sc-camel-on-drag-start="{{ p.onDragStart }}" '
+                'sc-camel-on-click="{{ p.onTap }}" class="kb-card"')
+    html = patch(html, OLD_CARD, NEW_CARD, "card-keyboard")
+
+    html = patch(
+        html,
+        "        onTap: () => this.toggleAdd(p.id),",
+        "        onTap: () => this.toggleAdd(p.id),\n"
+        "        ariaLabel: `${p.name}, ${p.seats} seats` +\n"
+        "          (coalitionSet.has(p.id) ? ', in your coalition' : '') +\n"
+        "          '. Press to ' + (coalitionSet.has(p.id) ? 'remove' : 'add') + '.',\n"
+        "        onKey: (e) => {\n"
+        "          if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;\n"
+        "          e.preventDefault();   // Space would otherwise scroll the page\n"
+        "          this.toggleAdd(p.id);\n"
+        "        },",
+        "card-keyboard-handlers")
+
+    # A focus ring the design never needed when nothing was focusable.
+    html = patch(
+        html,
+        "    .kb-card:hover {",
+        "    .kb-card:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }\n"
+        "    .kb-card:hover {",
+        "focus-ring")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
