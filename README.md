@@ -27,11 +27,11 @@ untouched, because it is updating the GitHub copy.
 
 **2. Turn on Pages.** Repo → Settings → Pages → Source: *Deploy from a branch* →
 `main`, folder `/ (root)`. After a minute it is live at
-`https://YOURNAME.github.io/REPO/`. Open it and check the board says 120 seats.
+`https://eliko90.github.io/coalition/`. Open it and check the board says 120 seats.
 
 **3. Embed it.** Edit the WordPress page at `kowaz.com/coalition`, add a
 **Custom HTML** block, and paste the contents of `wordpress-embed.html`.
-Change the three `YOURNAME` placeholders to your Pages URL. Publish.
+The URLs in it already point at `https://eliko90.github.io/coalition/`. Publish.
 
 The iframe sizes itself — the app measures its content and posts the height out,
 so there is no inner scrollbar and no guessed fixed height. The `allow` attribute
