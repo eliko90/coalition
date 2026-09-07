@@ -382,6 +382,10 @@ LOAD_POLLS = r"""
 """
 
 
+OLD_HINT = '<sc-if value="{{ hasClosestHint }}" hint-placeholder-val="{{ false }}">'
+NEW_HINT = '<sc-if value="{{ hasBlockedHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;"><div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">What would have to change</div><p class="ek-body" style="font-size:0.92rem;margin:0 0 8px;color:var(--ink);">{{ blockedHeadline }}</p><p class="ek-small" style="margin:0 0 4px;color:var(--ink-2);font-weight:600;">{{ blockedSubhead }}</p><sc-for list="{{ blockedList }}" as="b" hint-placeholder-count="0"><div class="ek-small" style="margin:0 0 3px;color:var(--ink-2);">· <strong>{{ b.a }} and {{ b.b }}</strong> — {{ b.text }}</div></sc-for><button sc-camel-on-click="{{ applyBlockedHint }}" style="margin-top:10px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:var(--gold-deep);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;">Load it anyway</button></div></sc-if><sc-if value="{{ hasImpossible }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;"><div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">What would have to change</div><p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);">Nothing reaches 61 from here — even setting every stated red line aside, the parties still outside this coalition do not have the seats between them.</p></div></sc-if><sc-if value="{{ hasClosestHint }}" hint-placeholder-val="{{ false }}">'
+
+
 def build(export_path, out_html):
     assets, page, ext = unpack(export_path)
     os.makedirs(ASSETS, exist_ok=True)
@@ -822,6 +826,100 @@ def build(export_path, out_html):
         "    .kb-card:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }\n"
         "    .kb-card:hover {",
         "focus-ring")
+
+    # "What would have to change": when no combination reaches 61 without
+    # crossing a stated red line, the interesting question stops being "who
+    # else could join" and becomes "whose promise would have to break". The
+    # existing hint only searches compatible parties and goes silent exactly
+    # when the answer matters most.
+    html = patch(
+        html,
+        "    this._hintCache = { key: hintKey, value: closestHint };",
+        """    if (!governs && coalition.length > 0 && !closestHint) {
+      const available = PARTIES_RAW
+        .filter(p => !coalitionSet.has(p.id) && p.seats > 0)
+        .slice(0, 14);
+      const deficit = 61 - totalSeats;
+
+      // Every refusal the coalition would cross, named once per pair.
+      const brokenBy = (picked) => {
+        const seatedPlus = coalitionPartiesRaw.concat(picked);
+        const out = new Map();
+        seatedPlus.forEach(a => {
+          (a.refusals || []).forEach(r => {
+            const b = seatedPlus.find(x => x.id === r.id);
+            if (!b) return;
+            const key = [a.id, r.id].sort().join('|');
+            if (!out.has(key)) out.set(key, { a: a.name, b: b.name, text: r.text });
+          });
+        });
+        return Array.from(out.values());
+      };
+
+      let best = null;
+      const n = available.length;
+      for (let mask = 1; mask < (1 << n); mask++) {
+        let seats = 0;
+        const picked = [];
+        for (let i = 0; i < n; i++) {
+          if (mask & (1 << i)) { seats += available[i].seats; picked.push(available[i]); }
+        }
+        if (seats < deficit) continue;
+        const broken = brokenBy(picked);
+        // Fewest promises broken wins; then fewest parties, then fewest seats.
+        if (!best ||
+            broken.length < best.broken.length ||
+            (broken.length === best.broken.length &&
+              (picked.length < best.picked.length ||
+                (picked.length === best.picked.length && seats < best.seats)))) {
+          best = { picked, seats, broken };
+        }
+      }
+      blockedHint = best
+        ? { names: best.picked.map(p => p.name).join(' + '),
+            ids: best.picked.map(p => p.id),
+            total: totalSeats + best.seats,
+            broken: best.broken,
+            count: best.broken.length }
+        : { impossible: true };
+    }
+    this._hintCache = { key: hintKey, value: closestHint, blocked: blockedHint };""",
+        "blocked-hint")
+
+    html = patch(
+        html,
+        "      closestHint = this._hintCache.value;",
+        "      closestHint = this._hintCache.value;\n"
+        "      blockedHint = this._hintCache.blocked;",
+        "blocked-hint-cache")
+
+    html = patch(
+        html,
+        "    let closestHint = null;",
+        "    let closestHint = null;\n    let blockedHint = null;",
+        "blocked-hint-decl")
+
+    html = patch(
+        html,
+        "      hasClosestHint: !!closestHint,",
+        """      hasBlockedHint: !!(blockedHint && !blockedHint.impossible),
+      hasImpossible: !!(blockedHint && blockedHint.impossible),
+      blockedHeadline: blockedHint && !blockedHint.impossible
+        ? `Nothing reaches 61 from here without a stated red line breaking. `
+          + `The nearest: add ${blockedHint.names} to reach ${blockedHint.total}.`
+        : '',
+      blockedSubhead: blockedHint && !blockedHint.impossible
+        ? (blockedHint.count === 1
+            ? 'That needs one promise to break:'
+            : `That needs ${blockedHint.count} promises to break:`)
+        : '',
+      blockedList: blockedHint && blockedHint.broken ? blockedHint.broken : [],
+      applyBlockedHint: (blockedHint && blockedHint.ids)
+        ? (() => this.addMany(blockedHint.ids)) : (() => {}),
+      hasClosestHint: !!closestHint,""",
+        "blocked-hint-view")
+
+    html = patch(html, OLD_HINT, NEW_HINT, "blocked-hint-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
