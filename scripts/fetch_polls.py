@@ -256,6 +256,8 @@ def build(cache=None, year=None, verbose=True):
     all_parties = set()
     polls = []
     history_days = int(cfg.get("history_days", 45))
+    trend_days = int(cfg.get("trend_days", 63))
+    trend_polls = []
     newest = None
 
     # Tables run newest-first. Reading all of them would drag in tables whose
@@ -321,14 +323,27 @@ def build(cache=None, year=None, verbose=True):
         table_newest = max(p["date"] for p in table_polls)
         if newest is None:
             newest = table_newest
+
         cutoff = newest - dt.timedelta(days=history_days)
         kept = [p for p in table_polls if p["date"] >= cutoff]
-        if not kept:
+        if kept:
+            # A table the headline and spread are drawn from must be fully
+            # understood — an unknown column there could be a party missing
+            # from the board.
+            unmapped |= table_unmapped
+            all_parties |= set(col_party.values())
+            polls.extend(kept)
+
+        # The sparklines reach further back than the spread window, into tables
+        # whose columns are parties that have since merged or folded. Those are
+        # read leniently: a column this project does not recognise contributes
+        # nothing to a trend line, which is the correct outcome, not an error.
+        trend_cutoff = newest - dt.timedelta(days=trend_days)
+        older = [p for p in table_polls
+                 if trend_cutoff <= p["date"] < cutoff]
+        trend_polls.extend(kept + older)
+        if not kept and not older:
             break                      # this table and everything after it is too old
-        # Only a table we actually read from has to be fully understood.
-        unmapped |= table_unmapped
-        all_parties |= set(col_party.values())
-        polls.extend(kept)
 
     if unmapped:
         raise Warn(
@@ -407,6 +422,27 @@ def build(cache=None, year=None, verbose=True):
     # ---- app parties with no source column -------------------------------
     missing = {pid: why for pid, why in cfg.get("app_parties_without_column", {}).items()}
 
+    # ---- per-party trend, headline house only ----------------------------
+    # One house makes a real series; mixing houses would show the pollsters'
+    # disagreement as if it were movement over time.
+    seen_t = set()
+    series = []
+    for p in sorted(trend_polls, key=lambda q: q["date"]):
+        if p["firm"] != pick["firm"] or p["publisher"] != pick["publisher"]:
+            continue
+        if p["date"] in seen_t:
+            continue
+        seen_t.add(p["date"])
+        series.append(p)
+
+    trend = {}
+    for pid in all_parties:
+        pts = [{"d": p["date"].isoformat(), "s": p["seats"][pid]}
+               for p in series if pid in p["seats"]]
+        # Two points is a line between two dots, not a trend worth drawing.
+        if len(pts) >= 3:
+            trend[pid] = pts
+
     parties = {}
     for pid in sorted(all_parties):
         s = pick["seats"].get(pid)
@@ -423,6 +459,7 @@ def build(cache=None, year=None, verbose=True):
             "spreadMin": sp.get("min"),
             "spreadMax": sp.get("max"),
             "spreadPolls": sp.get("n"),
+            "trend": trend.get(pid),
         }
 
     out = {
@@ -437,6 +474,8 @@ def build(cache=None, year=None, verbose=True):
             "url": f"https://en.wikipedia.org/wiki/{PAGE}",
         },
         "spreadWindowDays": window,
+        "trendDays": trend_days,
+        "trendPolls": len(series),
         "spreadPollCount": len(recent),
         "totalSeats": total,
         "parties": parties,

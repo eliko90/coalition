@@ -534,8 +534,11 @@
                 <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;border-top:1px solid var(--rule);padding-top:8px;">
                   <span style="font-family:var(--font-serif);font-weight:600;font-size:1.5rem;line-height:1;color:var(--ink);">{{ p.seats }}</span>
                   <span class="ek-caption">seats</span>
+                  <sc-if value="{{ p.hasTrend }}" hint-placeholder-val="{{ false }}">
+                    <span style="margin-left:auto;display:flex;align-items:center;">{{ p.trendSvg }}</span>
+                  </sc-if>
                   <sc-if value="{{ p.hasDelta }}" hint-placeholder-val="{{ false }}">
-                    <span class="ek-meta" style="color:{{ p.deltaColor }};margin-left:auto;font-weight:700;">{{ p.deltaLabel }}</span>
+                    <span class="ek-meta" style="color:{{ p.deltaColor }};margin-left:{{ p.deltaMargin }};font-weight:700;">{{ p.deltaLabel }}</span>
                   </sc-if>
                 </div>
                 <sc-if value="{{ p.hasSeatBlocks }}" hint-placeholder-val="{{ false }}">
@@ -590,7 +593,7 @@
         </div>
         <div class="ek-h3" style="margin:0 0 2px;padding-right:24px;">{{ infoView.name }}</div>
         <div class="ek-small" style="margin:0 0 4px;color:var(--ink-2);">Led by {{ infoView.leader }} · {{ infoView.seats }} projected seats</div>
-        <div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div>
+        <div class="ek-caption" style="margin:0 0 6px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div><sc-if value="{{ infoView.hasTrendText }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);display:flex;align-items:center;gap:8px;"><span>Trend: {{ infoView.trendText }}</span>{{ infoView.trendSvgBig }}</div></sc-if>
         <p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>
         <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--rule);padding-top:14px;">
           <div>
@@ -779,7 +782,9 @@ function applyLive(base, live) {
       delta: d.delta == null ? 0 : d.delta,
       pct: d.pct || undefined,
       nearThreshold: d.seats === 0 ||
-        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0)
+        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+      trend: d.trend || null,
+      trendDays: live.trendDays
     });
     if (d.spreadMin != null && d.spreadMax != null) {
       // Keep the editor's commentary (the clause after the em dash) and let
@@ -810,6 +815,51 @@ function electionCountdown(iso) {
   if (days === 0) return 'Election day';
   if (days === 1) return '1 day to the election';
   return days + ' days to the election';
+}
+
+/* A party's seat trajectory over the trend window, in its own colour.
+
+   Scaled to the party's own min and max rather than a shared 0-30 axis: at a
+   common scale Ra'am moving 4 to 6 would be an invisible twitch, and the point
+   of the line is direction, not magnitude. The seat count sits right beside it
+   for magnitude. A flat series gets a flat line through the middle instead of
+   a divide-by-zero. */
+function sparkline(points, color) {
+  if (!points || points.length < 3) return null;
+  const W = 46, H = 14, PAD = 1.5;
+  const vals = points.map(p => p.s);
+  const lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  const span = hi - lo;
+  const x = i => (i / (points.length - 1)) * W;
+  const y = v => span === 0 ? H / 2
+    : PAD + (1 - (v - lo) / span) * (H - PAD * 2);
+  const d = points.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' +
+                                 y(p.s).toFixed(1)).join(' ');
+  const last = points[points.length - 1];
+  return React.createElement('svg', {
+      width: W, height: H, viewBox: `0 0 ${W} ${H}`,
+      style: { display: 'block', overflow: 'visible' },
+      'aria-hidden': 'true', focusable: 'false'
+    },
+    React.createElement('path', {
+      d: d, fill: 'none', stroke: color, strokeWidth: 1.4,
+      strokeLinecap: 'round', strokeLinejoin: 'round', opacity: 0.75
+    }),
+    React.createElement('circle', {
+      cx: x(points.length - 1), cy: y(last.s), r: 1.9, fill: color
+    })
+  );
+}
+
+/* "23 → 20 over the last 9 weeks", for the party detail panel. */
+function trendSentence(points, days) {
+  if (!points || points.length < 3) return '';
+  const first = points[0].s, last = points[points.length - 1].s;
+  const weeks = Math.round(days / 7);
+  const move = last === first ? 'level at ' + last
+    : `${first} → ${last}`;
+  return `${move} across ${points.length} polls over ${weeks} weeks ` +
+         `(same pollster).`;
 }
 
 function daysSince(iso) {
@@ -1248,11 +1298,14 @@ class Component extends DCLogic {
         hasDelta: !!p.delta,
         deltaLabel: p.delta > 0 ? `▲ ${p.delta}` : `▼ ${Math.abs(p.delta || 0)}`,
         deltaColor: p.delta > 0 ? 'var(--success)' : 'var(--danger)',
+        deltaMargin: (p.trend && p.trend.length >= 3) ? '8px' : 'auto',
         blocLabel: meta.label,
         tag: p.tag,
         leader: p.leader,
         blocColor: p.color,
         seatBlocks: Array.from({ length: p.seats }, (_, i) => ({ key: i, color: p.color })),
+        trendSvg: sparkline(p.trend, p.color),
+        hasTrend: !!(p.trend && p.trend.length >= 3),
         hasSeatBlocks: p.seats > 0,
         inCoalition: inCoalition,
         cursor: 'pointer',
@@ -1322,7 +1375,10 @@ class Component extends DCLogic {
       annex: infoParty.positions.annex,
       twoState: infoParty.positions.twoState,
       draft: infoParty.positions.draft,
-      spread: infoParty.spread
+      spread: infoParty.spread,
+      trendText: trendSentence(infoParty.trend, infoParty.trendDays),
+      hasTrendText: !!trendSentence(infoParty.trend, infoParty.trendDays),
+      trendSvgBig: sparkline(infoParty.trend, infoParty.color)
     } : null;
 
     let cumSeats = 0;

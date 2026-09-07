@@ -204,6 +204,51 @@ function electionCountdown(iso) {
   return days + ' days to the election';
 }
 
+/* A party's seat trajectory over the trend window, in its own colour.
+
+   Scaled to the party's own min and max rather than a shared 0-30 axis: at a
+   common scale Ra'am moving 4 to 6 would be an invisible twitch, and the point
+   of the line is direction, not magnitude. The seat count sits right beside it
+   for magnitude. A flat series gets a flat line through the middle instead of
+   a divide-by-zero. */
+function sparkline(points, color) {
+  if (!points || points.length < 3) return null;
+  const W = 46, H = 14, PAD = 1.5;
+  const vals = points.map(p => p.s);
+  const lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  const span = hi - lo;
+  const x = i => (i / (points.length - 1)) * W;
+  const y = v => span === 0 ? H / 2
+    : PAD + (1 - (v - lo) / span) * (H - PAD * 2);
+  const d = points.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' +
+                                 y(p.s).toFixed(1)).join(' ');
+  const last = points[points.length - 1];
+  return React.createElement('svg', {
+      width: W, height: H, viewBox: `0 0 ${W} ${H}`,
+      style: { display: 'block', overflow: 'visible' },
+      'aria-hidden': 'true', focusable: 'false'
+    },
+    React.createElement('path', {
+      d: d, fill: 'none', stroke: color, strokeWidth: 1.4,
+      strokeLinecap: 'round', strokeLinejoin: 'round', opacity: 0.75
+    }),
+    React.createElement('circle', {
+      cx: x(points.length - 1), cy: y(last.s), r: 1.9, fill: color
+    })
+  );
+}
+
+/* "23 → 20 over the last 9 weeks", for the party detail panel. */
+function trendSentence(points, days) {
+  if (!points || points.length < 3) return '';
+  const first = points[0].s, last = points[points.length - 1].s;
+  const weeks = Math.round(days / 7);
+  const move = last === first ? 'level at ' + last
+    : `${first} → ${last}`;
+  return `${move} across ${points.length} polls over ${weeks} weeks ` +
+         `(same pollster).`;
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -587,6 +632,66 @@ def build(export_path, out_html):
         "<span> <span style=\"color:var(--clay);\">\u00b7</span> "
         "<strong style=\"color:var(--ink-2);\">{{ countdown }}</strong></span></sc-if>",
         "countdown-markup")
+
+    # Sparkline: carry the trend series onto each party, render it in the card
+    # beside the change arrow, and spell it out in the detail panel.
+    html = patch(
+        html,
+        """      nearThreshold: d.seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0)
+    });""",
+        """      nearThreshold: d.seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+      trend: d.trend || null,
+      trendDays: live.trendDays
+    });""",
+        "carry-trend")
+
+    html = patch(
+        html,
+        "        seatBlocks: Array.from({ length: p.seats }, (_, i) => ({ key: i, color: p.color })),",
+        "        seatBlocks: Array.from({ length: p.seats }, (_, i) => ({ key: i, color: p.color })),\n"
+        "        trendSvg: sparkline(p.trend, p.color),\n"
+        "        hasTrend: !!(p.trend && p.trend.length >= 3),",
+        "party-trend-fields")
+
+    html = patch(
+        html,
+        """                  <sc-if value="{{ p.hasDelta }}" hint-placeholder-val="{{ false }}">
+                    <span class="ek-meta" style="color:{{ p.deltaColor }};margin-left:auto;font-weight:700;">{{ p.deltaLabel }}</span>
+                  </sc-if>""",
+        """                  <sc-if value="{{ p.hasTrend }}" hint-placeholder-val="{{ false }}">
+                    <span style="margin-left:auto;display:flex;align-items:center;">{{ p.trendSvg }}</span>
+                  </sc-if>
+                  <sc-if value="{{ p.hasDelta }}" hint-placeholder-val="{{ false }}">
+                    <span class="ek-meta" style="color:{{ p.deltaColor }};margin-left:{{ p.deltaMargin }};font-weight:700;">{{ p.deltaLabel }}</span>
+                  </sc-if>""",
+        "card-sparkline")
+
+    html = patch(
+        html,
+        "        deltaColor: p.delta > 0 ? 'var(--success)' : 'var(--danger)',",
+        "        deltaColor: p.delta > 0 ? 'var(--success)' : 'var(--danger)',\n"
+        "        deltaMargin: (p.trend && p.trend.length >= 3) ? '8px' : 'auto',",
+        "delta-margin")
+
+    html = patch(
+        html,
+        "      spread: infoParty.spread",
+        "      spread: infoParty.spread,\n"
+        "      trendText: trendSentence(infoParty.trend, infoParty.trendDays),\n"
+        "      hasTrendText: !!trendSentence(infoParty.trend, infoParty.trendDays),\n"
+        "      trendSvgBig: sparkline(infoParty.trend, infoParty.color)",
+        "info-trend")
+
+    html = patch(
+        html,
+        '''<div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div>''',
+        '''<div class="ek-caption" style="margin:0 0 6px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div>'''
+        '''<sc-if value="{{ infoView.hasTrendText }}" hint-placeholder-val="{{ false }}">'''
+        '''<div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);display:flex;align-items:center;gap:8px;">'''
+        '''<span>Trend: {{ infoView.trendText }}</span>{{ infoView.trendSvgBig }}</div></sc-if>''',
+        "info-trend-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
