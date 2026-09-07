@@ -1,5 +1,12 @@
 [
   {
+    "id": "raam",
+    "_why": "Patch over the party baked into the design: Yoav Segelovich has now joined, which the design still describes as a rumour.",
+    "leader": "Mansour Abbas",
+    "note": "Yoav Segelovich, formerly of Yesh Atid, now runs on its list",
+    "desc": "Conservative Islamist Arab party. Broke precedent in 2021 by joining a governing coalition, focused on funding for Arab towns. Yoav Segelovich, a former Yesh Atid MK and deputy minister, has joined its list as a technical bloc — the first Jewish figure to run with it, and a deliberate signal to the Zionist opposition."
+  },
+  {
     "id": "amcha_yisrael",
     "name": "Amcha Yisrael",
     "seats": 4,
@@ -9,9 +16,9 @@
     "color": "#7A5C3E",
     "tag": "Right-wing, nationalist",
     "leader": "Ofer Winter",
-    "note": "New party — bloc placement and red lines not yet confirmed",
+    "note": "New party — has said it will recommend Netanyahu for PM",
     "nearThreshold": true,
-    "desc": "Launched 25 August 2026 by a retired IDF brigadier general who commanded the Givati Brigade. Pitches itself as a broader, less sectarian right than Otzma Yehudit or Religious Zionism. Netanyahu has warned publicly that it splits the right-wing vote.",
+    "desc": "Launched 25 August 2026 by a retired IDF brigadier general who commanded the Givati Brigade. Pitches itself as a broader, less sectarian right than Otzma Yehudit or Religious Zionism. Winter has said he will recommend Netanyahu for prime minister, though he has stopped short of ruling out sitting with Eisenkot. Netanyahu has warned publicly that the party splits the right-wing vote.",
     "positions": {
       "annex": "Right-wing on territory; the party has not published a detailed platform.",
       "twoState": "Opposed.",
@@ -20,12 +27,15 @@
     "refusals": [],
     "cautions": [
       {
+        "id": "yashar",
+        "text": "Winter has said he will recommend Netanyahu for prime minister. He has not ruled out sitting with Eisenkot — but it would be a considerable surprise."
+      },
+      {
         "id": "raam",
         "text": "Winter has said Amcha Yisrael seeks a broad right-wing government with 'Zionist partners', which reads as ruling out reliance on Ra'am — but he has not said so outright."
       }
     ]
   },
-
   {
     "id": "reservists",
     "name": "The Reservists",
@@ -45,20 +55,27 @@
       "draft": "Supports a broader, more equal draft — the party's founding issue is the burden carried by reservists."
     },
     "refusals": [
-      { "id": "shas", "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." },
-      { "id": "utj", "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." }
+      {
+        "id": "shas",
+        "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight."
+      },
+      {
+        "id": "utj",
+        "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight."
+      }
     ],
     "cautions": [
-      { "id": "raam", "text": "Hendel's party has been cool toward relying on Ra'am's votes — unlikely, but not ruled out." }
+      {
+        "id": "raam",
+        "text": "Hendel's party has been cool toward relying on Ra'am's votes — unlikely, but not ruled out."
+      }
     ]
   },
-
   {
     "id": "zionist_home",
     "retired": true,
     "_why": "Dissolved 6 Sep 2026. Chili Tropper left to run with Yashar; Yoaz Hendel kept the party, which merged with the New Economic Party and now polls as The Reservists (see above). No longer a column in Wikipedia's table."
   },
-
   {
     "id": "erdan_edelstein",
     "retired": true,

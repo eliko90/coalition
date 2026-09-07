@@ -128,6 +128,12 @@ const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
 const STALE_AFTER_DAYS = 14;
 
+/* Shown when Ra'am is in a coalition with a non-Arab party. Overridden by
+   `raamNote` in data/commentary.json; this is only the fallback. */
+const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
+  "opposition, and theirs to rely on it, is the hinge the whole change bloc " +
+  "turns on.";
+
 /* The field moves faster than a redesign. data/parties-extra.json patches the
    board between Claude Design exports: an entry with a full party record adds
    one, and an entry of {"id": "...", "retired": true} takes one off after it
@@ -138,10 +144,17 @@ let PARTIES_RAW = PARTIES_BASE;
 
 function allBase() {
   const retired = new Set(PARTIES_EXTRA.filter(p => p.retired).map(p => p.id));
-  const added = PARTIES_EXTRA.filter(p => !p.retired);
-  const seen = new Set(PARTIES_BASE.map(p => p.id));
-  return PARTIES_BASE.filter(p => !retired.has(p.id))
-                     .concat(added.filter(p => !seen.has(p.id)));
+  const patches = new Map(PARTIES_EXTRA.filter(p => !p.retired).map(p => [p.id, p]));
+  // An entry whose id already exists is merged over that party, so a leader,
+  // a veto or a description can be corrected between design exports. One with
+  // a new id is appended. Merging keeps the board's original ordering.
+  const kept = PARTIES_BASE.filter(p => !retired.has(p.id)).map(p => {
+    const patch = patches.get(p.id);
+    if (!patch) return p;
+    patches.delete(p.id);
+    return Object.assign({}, p, patch);
+  });
+  return kept.concat(Array.from(patches.values()));
 }
 
 function applyLive(base, live) {
@@ -427,6 +440,7 @@ def build(export_path, out_html):
         "this.props.pollingSource || 'Kantar/Kan 11',\n"
         "      dataNote,\n"
         "      hasDataNote: !!dataNote,\n"
+        "      raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,\n"
         "      hasDataWarning: warnings.length > 0,\n"
         "      dataWarnings: warnings,",
         "polling-source")
@@ -507,6 +521,14 @@ def build(export_path, out_html):
       setInterval(postHeight, 1500);
     })();""",
         "post-height")
+
+    # The Ra'am note is the most perishable sentence on the page — it turns on
+    # one MK's decision — so it comes from data/commentary.json too.
+    html = patch(
+        html,
+        """<p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">Rumors that Ra'am may add a Jewish MK — Yoav Segalovitz, formerly of Yesh Atid — and formally accept Israel as a Jewish state would make it a far more legitimate partner for the Zionist opposition.</p>""",
+        """<p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">{{ raamNote }}</p>""",
+        "raam-note")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

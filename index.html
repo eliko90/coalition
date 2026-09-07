@@ -408,7 +408,7 @@
       <sc-if value="{{ hasRaamNote }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;">
           <div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">The analyst's note</div>
-          <p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">Rumors that Ra'am may add a Jewish MK — Yoav Segalovitz, formerly of Yesh Atid — and formally accept Israel as a Jewish state would make it a far more legitimate partner for the Zionist opposition.</p>
+          <p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">{{ raamNote }}</p>
         </div>
       </sc-if>
       <sc-if value="{{ hasCautions }}" hint-placeholder-val="{{ false }}">
@@ -726,6 +726,12 @@ const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
 const STALE_AFTER_DAYS = 14;
 
+/* Shown when Ra'am is in a coalition with a non-Arab party. Overridden by
+   `raamNote` in data/commentary.json; this is only the fallback. */
+const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
+  "opposition, and theirs to rely on it, is the hinge the whole change bloc " +
+  "turns on.";
+
 /* The field moves faster than a redesign. data/parties-extra.json patches the
    board between Claude Design exports: an entry with a full party record adds
    one, and an entry of {"id": "...", "retired": true} takes one off after it
@@ -736,10 +742,17 @@ let PARTIES_RAW = PARTIES_BASE;
 
 function allBase() {
   const retired = new Set(PARTIES_EXTRA.filter(p => p.retired).map(p => p.id));
-  const added = PARTIES_EXTRA.filter(p => !p.retired);
-  const seen = new Set(PARTIES_BASE.map(p => p.id));
-  return PARTIES_BASE.filter(p => !retired.has(p.id))
-                     .concat(added.filter(p => !seen.has(p.id)));
+  const patches = new Map(PARTIES_EXTRA.filter(p => !p.retired).map(p => [p.id, p]));
+  // An entry whose id already exists is merged over that party, so a leader,
+  // a veto or a description can be corrected between design exports. One with
+  // a new id is appended. Merging keeps the board's original ordering.
+  const kept = PARTIES_BASE.filter(p => !retired.has(p.id)).map(p => {
+    const patch = patches.get(p.id);
+    if (!patch) return p;
+    patches.delete(p.id);
+    return Object.assign({}, p, patch);
+  });
+  return kept.concat(Array.from(patches.values()));
 }
 
 function applyLive(base, live) {
@@ -1337,6 +1350,7 @@ class Component extends DCLogic {
       pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
       dataNote,
       hasDataNote: !!dataNote,
+      raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,
       hasDataWarning: warnings.length > 0,
       dataWarnings: warnings,
       stateOfPlay: (commentary && commentary.stateOfPlay) || this.props.stateOfPlay || "Likud now polls one seat ahead of Eisenkot's Yashar — but neither bloc reaches 61 without crossing a line someone has drawn. The Netanyahu bloc is stuck in the low to mid-50s while the change bloc clears 61 only if it adds Ra'am — which looks more likely should the rumors be true and former Yesh Atid MK Yoav Segelovich join the party, a move he has conditioned on Ra'am accepting Israel as a Jewish state.",
