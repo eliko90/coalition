@@ -24,5 +24,44 @@
         "text": "Winter has said Amcha Yisrael seeks a broad right-wing government with 'Zionist partners', which reads as ruling out reliance on Ra'am — but he has not said so outright."
       }
     ]
+  },
+
+  {
+    "id": "reservists",
+    "name": "The Reservists",
+    "seats": 4,
+    "delta": 0,
+    "spread": "4 — has only just started clearing the threshold in polls",
+    "bloc": "unaligned",
+    "color": "#3D6B6B",
+    "tag": "Centre-right, reservist-focused",
+    "leader": "Yoaz Hendel & Yaron Zelekha",
+    "note": "Newly merged list — red lines carried over from Zionist Home, worth re-checking",
+    "nearThreshold": true,
+    "desc": "Yoaz Hendel's party, founded in 2025 out of a post-October 7 movement for reserve soldiers and their families. Ran as Zionist Home with Chili Tropper until the two split in September 2026 — Tropper joined Yashar, Hendel kept the party and merged with Yaron Zelekha's New Economic Party, adding an economic platform to a security one.",
+    "positions": {
+      "annex": "Supportive of settlement but has not pushed for formal annexation.",
+      "twoState": "Opposed.",
+      "draft": "Supports a broader, more equal draft — the party's founding issue is the burden carried by reservists."
+    },
+    "refusals": [
+      { "id": "shas", "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." },
+      { "id": "utj", "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." }
+    ],
+    "cautions": [
+      { "id": "raam", "text": "Hendel's party has been cool toward relying on Ra'am's votes — unlikely, but not ruled out." }
+    ]
+  },
+
+  {
+    "id": "zionist_home",
+    "retired": true,
+    "_why": "Dissolved 6 Sep 2026. Chili Tropper left to run with Yashar; Yoaz Hendel kept the party, which merged with the New Economic Party and now polls as The Reservists (see above). No longer a column in Wikipedia's table."
+  },
+
+  {
+    "id": "erdan_edelstein",
+    "retired": true,
+    "_why": "Gilad Erdan and Yuli Edelstein withdrew from the election. Never registered a separate polling column."
   }
 ]

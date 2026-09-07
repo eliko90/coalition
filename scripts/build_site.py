@@ -128,16 +128,20 @@ const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
 const STALE_AFTER_DAYS = 14;
 
-/* Parties formed since the last Claude Design export live in
-   data/parties-extra.json, so a new party can be put on the board in a minute
-   without waiting on a redesign — the seat totals stay whole in the meantime.
-   Fold them into the design when convenient and delete them from the file. */
+/* The field moves faster than a redesign. data/parties-extra.json patches the
+   board between Claude Design exports: an entry with a full party record adds
+   one, and an entry of {"id": "...", "retired": true} takes one off after it
+   merges away or quits the race. Seat totals stay whole either way. Fold the
+   changes into the design when convenient and empty the file. */
 let PARTIES_EXTRA = [];
 let PARTIES_RAW = PARTIES_BASE;
 
 function allBase() {
+  const retired = new Set(PARTIES_EXTRA.filter(p => p.retired).map(p => p.id));
+  const added = PARTIES_EXTRA.filter(p => !p.retired);
   const seen = new Set(PARTIES_BASE.map(p => p.id));
-  return PARTIES_BASE.concat(PARTIES_EXTRA.filter(p => !seen.has(p.id)));
+  return PARTIES_BASE.filter(p => !retired.has(p.id))
+                     .concat(added.filter(p => !seen.has(p.id)));
 }
 
 function applyLive(base, live) {
@@ -159,8 +163,8 @@ function applyLive(base, live) {
       const range = d.spreadMin === d.spreadMax
         ? `${d.spreadMin}`
         : `${d.spreadMin}–${d.spreadMax}`;
-      const base_ = `${range} across ${d.spreadPolls} polls in the last ` +
-                    `${live.spreadWindowDays} days`;
+      const base_ = `${range} across ${d.spreadPolls} polls from every ` +
+                    `pollster in the last ${live.spreadWindowDays} days`;
       out.spread = note ? `${base_} — ${note}` : base_;
     }
     return out;
@@ -405,9 +409,12 @@ def build(export_path, out_html):
         "    const warnings = this.dataWarnings(live);\n"
         "    const age = live ? daysSince(live.source.fieldworkDate) : null;\n"
         "    const dataNote = live\n"
-        "      ? `Updated automatically from Wikipedia's poll tracker` +\n"
-        "        (age === 0 ? ' — polled today.' : age === 1 ? ' — polled yesterday.'\n"
-        "          : age != null ? ` — polled ${age} days ago.` : '.')\n"
+        "      ? `Seat counts are that single poll` +\n"
+        "        (age === 0 ? ', taken today' : age === 1 ? ', taken yesterday'\n"
+        "          : age != null ? `, taken ${age} days ago` : '') +\n"
+        "        `. The range on each party card spans all ${live.spreadPollCount} polls `\n"
+        "        + `from every pollster in the last ${live.spreadWindowDays} days. `\n"
+        "        + `Updated automatically.`\n"
         "      : (this.state.liveError\n"
         "          ? 'Showing the built-in snapshot — live polling data could not be loaded.'\n"
         "          : 'Loading the latest polling…');\n"

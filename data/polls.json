@@ -1,16 +1,16 @@
 {
-  "generated": "2026-09-06T12:11:07+00:00",
+  "generated": "2026-09-07T11:59:26+00:00",
   "source": {
     "pollster": "Kantar",
-    "publisher": "Israel Hayom",
-    "label": "Kantar/Israel Hayom",
-    "fieldworkDate": "2026-09-03",
-    "displayDate": "Sep 3, 2026",
-    "exactHouseMatch": false,
+    "publisher": "Kan 11",
+    "label": "Kantar/Kan 11",
+    "fieldworkDate": "2026-09-06",
+    "displayDate": "Sep 6, 2026",
+    "exactHouseMatch": true,
     "url": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election"
   },
   "spreadWindowDays": 21,
-  "spreadPollCount": 33,
+  "spreadPollCount": 32,
   "totalSeats": 120,
   "parties": {
     "amcha_yisrael": {
@@ -19,31 +19,23 @@
       "delta": 0,
       "spreadMin": 0,
       "spreadMax": 8,
-      "spreadPolls": 21
+      "spreadPolls": 23
     },
     "beiteinu": {
-      "seats": 9,
+      "seats": 7,
       "pct": null,
-      "delta": 1,
+      "delta": -1,
       "spreadMin": 6,
       "spreadMax": 11,
-      "spreadPolls": 33
-    },
-    "blue_white": {
-      "seats": 0,
-      "pct": "1.7%",
-      "delta": 0,
-      "spreadMin": 0,
-      "spreadMax": 0,
       "spreadPolls": 32
     },
     "democrats": {
-      "seats": 9,
+      "seats": 8,
       "pct": null,
-      "delta": 0,
+      "delta": -1,
       "spreadMin": 8,
       "spreadMax": 11,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "hadash_taal": {
       "seats": 7,
@@ -51,15 +43,15 @@
       "delta": -1,
       "spreadMin": 5,
       "spreadMax": 10,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "likud": {
-      "seats": 21,
+      "seats": 20,
       "pct": null,
-      "delta": 0,
+      "delta": -1,
       "spreadMin": 19,
       "spreadMax": 32,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "otzma": {
       "seats": 7,
@@ -67,15 +59,23 @@
       "delta": 0,
       "spreadMin": 6,
       "spreadMax": 10,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "raam": {
-      "seats": 5,
+      "seats": 6,
       "pct": null,
-      "delta": 0,
+      "delta": 1,
       "spreadMin": 4,
       "spreadMax": 6,
-      "spreadPolls": 33
+      "spreadPolls": 32
+    },
+    "reservists": {
+      "seats": 4,
+      "pct": null,
+      "delta": null,
+      "spreadMin": 4,
+      "spreadMax": 4,
+      "spreadPolls": 1
     },
     "rzp": {
       "seats": 6,
@@ -83,7 +83,7 @@
       "delta": 1,
       "spreadMin": 0,
       "spreadMax": 7,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "shas": {
       "seats": 7,
@@ -91,7 +91,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 10,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "together": {
       "seats": 13,
@@ -99,30 +99,22 @@
       "delta": -1,
       "spreadMin": 6,
       "spreadMax": 18,
-      "spreadPolls": 33
+      "spreadPolls": 32
     },
     "utj": {
       "seats": 8,
       "pct": null,
       "delta": 0,
       "spreadMin": 7,
-      "spreadMax": 9,
-      "spreadPolls": 33
+      "spreadMax": 8,
+      "spreadPolls": 32
     },
     "yashar": {
-      "seats": 24,
+      "seats": 23,
       "pct": null,
-      "delta": 0,
+      "delta": -1,
       "spreadMin": 20,
       "spreadMax": 26,
-      "spreadPolls": 33
-    },
-    "zionist_home": {
-      "seats": 0,
-      "pct": "2.7%",
-      "delta": 0,
-      "spreadMin": 0,
-      "spreadMax": 4,
       "spreadPolls": 32
     }
   },

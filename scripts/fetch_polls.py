@@ -177,24 +177,48 @@ def parse_seats(raw):
     return None, None, False
 
 
-def parse_date(raw, year):
-    """'3–4 Sep' / '31 Aug' -> date (end of range)."""
+def parse_date(raw, year, today=None):
+    """'3–4 Sep', '31 Aug', '31 Dec – 1 Jan' -> the date fieldwork ended.
+
+    The table gives no year, so one is assumed and then corrected: a date that
+    lands well in the future must belong to the previous year. Without that, a
+    poll fielded across New Year ('31 Dec – 1 Jan') reads as December of the
+    coming year and sorts ahead of every real poll.
+    """
     s = (raw or "").replace("–", "-").replace("—", "-").strip()
-    m = re.search(r"(\d{1,2})\s*(?:-\s*\d{1,2}\s*)?([A-Z][a-z]{2})", s)
-    if not m:
-        m = re.search(r"(\d{1,2})\s*[A-Z][a-z]{2}\s*-\s*(\d{1,2})\s*([A-Z][a-z]{2})", s)
-        if not m:
+    parts = [p.strip() for p in s.split("-") if p.strip()]
+    if not parts:
+        return None
+
+    end = parts[-1]                      # fieldwork ends at the right-hand date
+    m = re.search(r"(\d{1,2})\s*([A-Z][a-z]{2})", end)
+    if m:
+        day, mon = int(m.group(1)), m.group(2)
+    else:
+        dm = re.search(r"(\d{1,2})", end)
+        mon = None
+        for p in reversed(parts[:-1]):   # '3-4 Sep': month is on the left
+            x = re.search(r"([A-Z][a-z]{2})", p)
+            if x:
+                mon = x.group(1)
+                break
+        if not dm or not mon:
             return None
-    day, mon = m.group(1), m.group(2)
-    rng = re.search(r"(\d{1,2})\s*-\s*(\d{1,2})\s*([A-Z][a-z]{2})", s)
-    if rng:
-        day, mon = rng.group(2), rng.group(3)
+        day = int(dm.group(1))
+
     if mon not in MONTHS:
         return None
     try:
-        return dt.date(year, MONTHS[mon], int(day))
+        d = dt.date(year, MONTHS[mon], day)
     except ValueError:
         return None
+
+    if (d - (today or dt.date.today())).days > 30:
+        try:
+            d = dt.date(year - 1, MONTHS[mon], day)
+        except ValueError:
+            return None
+    return d
 
 
 # --------------------------------------------------------------------------
@@ -335,10 +359,23 @@ def build(cache=None, year=None, verbose=True):
         raise Warn(
             f"No recent poll from {h['firm']} found. Either the house stopped "
             "polling or its name changed — update 'headline' in scripts/mapping.json.")
-    # The house is what keeps the series consistent, not the outlet. A pollster
-    # that publishes through two outlets would otherwise leave the page sitting
-    # on a stale number while a fresher poll from the same house exists, so the
-    # newest poll wins and the preferred publisher only breaks ties on a date.
+
+    # strict_publisher keeps the headline on one pollster AND one commissioning
+    # outlet, so the series and its change arrows compare like with like. The
+    # same house polling for a second outlet is a different sample on a
+    # different date, not the next point in the same series.
+    if h.get("strict_publisher"):
+        pinned = [p for p in house if p["publisher"] == h["publisher"]]
+        if not pinned:
+            raise Warn(
+                f"No recent {h['firm']} poll for {h['publisher']} in the last "
+                f"{cfg.get('history_days', 45)} days, and 'strict_publisher' is on. "
+                f"{h['firm']} has polled for: "
+                + ", ".join(sorted({p['publisher'] for p in house}))
+                + ".\nEither widen history_days, switch the publisher, or set "
+                  "strict_publisher to false to accept any outlet.")
+        house = pinned
+
     newest_date = max(p["date"] for p in house)
     same_day = [p for p in house if p["date"] == newest_date]
     pick = next((p for p in same_day if p["publisher"] == h["publisher"]), same_day[0])

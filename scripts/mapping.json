@@ -3,7 +3,8 @@
   "headline": {
     "firm": "Kantar",
     "publisher": "Kan 11",
-    "_comment": "The single house used for the headline seat numbers. The newest poll from this FIRM wins; 'publisher' only breaks ties when the house published two polls on the same date. exactHouseMatch in polls.json records whether the preferred publisher was the one used."
+    "strict_publisher": true,
+    "_comment": "The headline seat numbers come from one pollster commissioned by one outlet. strict_publisher=true means ONLY Kantar polls for Kan 11 count, so the seat series and its change arrows compare like with like. Kan 11 commissions Kantar weekly. Set strict_publisher=false to take the newest Kantar poll whatever the outlet (fresher, but mixes two sample series)."
   },
   "spread_window_days": 21,
   "_spread_comment": "Per-party min-max range is computed across ALL pollsters within this many days of the headline poll, so the 'spread' text stays honest even though the headline is one house.",
@@ -41,6 +42,15 @@
     "Winter": {
       "merged_into": "amcha_yisrael",
       "note": "Ofer Winter's party, before it was named Amcha Yisrael"
+    },
+    "Reserv.-NEP": {
+      "merged_into": "reservists",
+      "since": "2026-09-06",
+      "note": "The Reservists merged with the New Economic Party on 6 Sep 2026, after Zionist Home's Hili Tropper left the alliance to run with Yashar"
+    },
+    "NEP": {
+      "merged_into": "reservists",
+      "note": "New Economic Party, merged into The Reservists 6 Sep 2026"
     }
   },
   "ignore_columns": [
@@ -55,8 +65,7 @@
     "Gov."
   ],
   "app_parties_without_column": {
-    "balad": "Wikipedia reports a single 'Joint List' column; Balad is not polled separately. Decide editorially whether Balad still runs alone.",
-    "erdan_edelstein": "No Wikipedia column — the party is not being polled separately. Verify it is still running."
+    "balad": "Wikipedia reports a single 'Joint List' column; Balad is not polled separately. Decide editorially whether Balad still runs alone."
   },
   "current_cycle_header_must_contain": [
     "Samplesize",
