@@ -647,7 +647,7 @@
       <sc-if value="{{ hasNoKingmaker }}" hint-placeholder-val="{{ false }}">
         <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">There isn't one. Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal — and no small party is welcome in coalitions anchored by <em>both</em> sides. Every path runs through the big parties themselves.</p>
       </sc-if>
-      <p class="ek-body" style="font-size:0.95rem;margin:0;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">The wild card is <strong>Yoaz Hendel's Zionist Home</strong> — <em>if</em> it clears the threshold, a big if. It sits squarely between the blocs and could join either one, but its refusal to sit with the ultra-Orthodox parties closes off the most natural path on the right.</p>
+      <p class="ek-body" style="font-size:0.95rem;margin:0;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">{{ wildCardNote }}</p>
     </div>
   </div>
   </div>
@@ -745,6 +745,11 @@ const STALE_AFTER_DAYS = 14;
 
 /* Shown when Ra'am is in a coalition with a non-Arab party. Overridden by
    `raamNote` in data/commentary.json; this is only the fallback. */
+/* Fallback for the "wild card" line; overridden by wildCardNote in
+   data/commentary.json. */
+const WILD_CARD_DEFAULT = "The small parties between the blocs decide this. " +
+  "Whichever of them clears the threshold picks the government.";
+
 const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
   "opposition, and theirs to rely on it, is the hinge the whole change bloc " +
   "turns on.";
@@ -1437,6 +1442,7 @@ class Component extends DCLogic {
       pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
       dataNote,
       hasDataNote: !!dataNote,
+      wildCardNote: (commentary && commentary.wildCardNote) || WILD_CARD_DEFAULT,
       countdown,
       hasCountdown: !!countdown,
       raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,

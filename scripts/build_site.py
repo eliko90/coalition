@@ -134,6 +134,11 @@ const STALE_AFTER_DAYS = 14;
 
 /* Shown when Ra'am is in a coalition with a non-Arab party. Overridden by
    `raamNote` in data/commentary.json; this is only the fallback. */
+/* Fallback for the "wild card" line; overridden by wildCardNote in
+   data/commentary.json. */
+const WILD_CARD_DEFAULT = "The small parties between the blocs decide this. " +
+  "Whichever of them clears the threshold picks the government.";
+
 const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
   "opposition, and theirs to rely on it, is the hinge the whole change bloc " +
   "turns on.";
@@ -523,6 +528,7 @@ def build(export_path, out_html):
         "this.props.pollingSource || 'Kantar/Kan 11',\n"
         "      dataNote,\n"
         "      hasDataNote: !!dataNote,\n"
+        "      wildCardNote: (commentary && commentary.wildCardNote) || WILD_CARD_DEFAULT,\n"
         "      countdown,\n"
         "      hasCountdown: !!countdown,\n"
         "      raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,\n"
@@ -692,6 +698,14 @@ def build(export_path, out_html):
         '''<div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);display:flex;align-items:center;gap:8px;">'''
         '''<span>Trend: {{ infoView.trendText }}</span>{{ infoView.trendSvgBig }}</div></sc-if>''',
         "info-trend-markup")
+
+    # The one sentence of static prose that names a party. It outlived Zionist
+    # Home, so it reads from commentary.json now.
+    html = patch(
+        html,
+        """The wild card is <strong>Yoaz Hendel's Zionist Home</strong> — <em>if</em> it clears the threshold, a big if. It sits squarely between the blocs and could join either one, but its refusal to sit with the ultra-Orthodox parties closes off the most natural path on the right.""",
+        """{{ wildCardNote }}""",
+        "wild-card-note")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
