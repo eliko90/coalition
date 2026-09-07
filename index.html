@@ -646,7 +646,7 @@
         <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal. <strong>{{ kingmakerName }}</strong> is the small party viable in coalitions anchored by <em>either</em> side — appearing in {{ kingmakerCount }} of them.</p>
       </sc-if>
       <sc-if value="{{ hasNoKingmaker }}" hint-placeholder-val="{{ false }}">
-        <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">There isn't one. Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal — and no small party is welcome in coalitions anchored by <em>both</em> sides. Every path runs through the big parties themselves.</p>
+        <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">{{ kingmakerNoneText }}</p>
       </sc-if>
       <p class="ek-body" style="font-size:0.95rem;margin:0;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">{{ wildCardNote }}</p>
     </div>
@@ -1670,6 +1670,15 @@ class Component extends DCLogic {
       kingmakerName: kingmaker.party ? kingmaker.party.name : '',
       kingmakerCount: kingmaker.party ? kingmaker.party.count : 0,
       viablePaths: kingmaker.viablePaths,
+      kingmakerNoneText: kingmaker.viablePaths === 0
+        ? `Nobody. Of the ${kingmaker.combos.toLocaleString('en-US')} possible party `
+          + `combinations, not one reaches 61 without crossing a line some party has `
+          + `already drawn. Every route to a government now runs through a broken promise.`
+        : `There isn't one. Of the ${kingmaker.combos.toLocaleString('en-US')} possible `
+          + `party combinations, only ${kingmaker.viablePaths} `
+          + `${kingmaker.viablePaths === 1 ? 'is a minimal coalition' : 'are minimal coalitions'} `
+          + `that clears 61 without crossing a stated refusal — and no small party is `
+          + `welcome in coalitions anchored by both sides.`,
       totalCombos: kingmaker.combos.toLocaleString('en-US'),
       pmTiedVisible: !!pmView && pmView.tied,
       pmTiedNames: (pmView && pmView.tied) ? pmView.names : '',

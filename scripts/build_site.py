@@ -421,6 +421,10 @@ OLD_HINT = '<sc-if value="{{ hasClosestHint }}" hint-placeholder-val="{{ false }
 NEW_HINT = '<sc-if value="{{ hasBlockedHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;"><div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">What would have to change</div><p class="ek-body" style="font-size:0.92rem;margin:0 0 8px;color:var(--ink);">{{ blockedHeadline }}</p><p class="ek-small" style="margin:0 0 4px;color:var(--ink-2);font-weight:600;">{{ blockedSubhead }}</p><sc-for list="{{ blockedList }}" as="b" hint-placeholder-count="0"><div class="ek-small" style="margin:0 0 3px;color:var(--ink-2);">· <strong>{{ b.a }} and {{ b.b }}</strong> — {{ b.text }}</div></sc-for><button sc-camel-on-click="{{ applyBlockedHint }}" style="margin-top:10px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:var(--gold-deep);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;">Load it anyway</button></div></sc-if><sc-if value="{{ hasImpossible }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;"><div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">What would have to change</div><p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);">Nothing reaches 61 from here — even setting every stated red line aside, the parties still outside this coalition do not have the seats between them.</p></div></sc-if><sc-if value="{{ hasClosestHint }}" hint-placeholder-val="{{ false }}">'
 
 
+KM_OLD = "There isn't one. Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal — and no small party is welcome in coalitions anchored by <em>both</em> sides. Every path runs through the big parties themselves."
+KM_NEW = '{{ kingmakerNoneText }}'
+
+
 def build(export_path, out_html):
     assets, page, ext = unpack(export_path)
     os.makedirs(ASSETS, exist_ok=True)
@@ -985,6 +989,26 @@ def build(export_path, out_html):
         '</div></sc-if>'
         '<sc-if value="{{ hasPresetNote }}" hint-placeholder-val="{{ false }}">',
         "robustness-markup")
+
+    # With every red line counted the viable-path total can reach zero, and the
+    # sentence was built assuming it never would — "only 0 are minimal
+    # coalitions ... every path runs through the big parties themselves".
+    html = patch(html, KM_OLD, KM_NEW, "kingmaker-none-text")
+
+    html = patch(
+        html,
+        "      viablePaths: kingmaker.viablePaths,",
+        "      viablePaths: kingmaker.viablePaths,\n"
+        "      kingmakerNoneText: kingmaker.viablePaths === 0\n"
+        "        ? `Nobody. Of the ${kingmaker.combos.toLocaleString('en-US')} possible party `\n"
+        "          + `combinations, not one reaches 61 without crossing a line some party has `\n"
+        "          + `already drawn. Every route to a government now runs through a broken promise.`\n"
+        "        : `There isn't one. Of the ${kingmaker.combos.toLocaleString('en-US')} possible `\n"
+        "          + `party combinations, only ${kingmaker.viablePaths} `\n"
+        "          + `${kingmaker.viablePaths === 1 ? 'is a minimal coalition' : 'are minimal coalitions'} `\n"
+        "          + `that clears 61 without crossing a stated refusal — and no small party is `\n"
+        "          + `welcome in coalitions anchored by both sides.`,",
+        "kingmaker-none-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

@@ -75,5 +75,113 @@
     "id": "erdan_edelstein",
     "retired": true,
     "_why": "Gilad Erdan and Yuli Edelstein withdrew from the election. Never registered a separate polling column."
+  },
+  {
+    "_why": "Ra'am moved from caution to a soft refusal (declared, but the reversible kind). RZP veto kept per editor, re-attributed to Smotrich, who called Beyachad 'a left-wing alliance'.",
+    "refusals": [
+      {
+        "id": "otzma",
+        "text": "Bennett has said he would not form a government with Ben Gvir, calling him a 'failed minister'."
+      },
+      {
+        "id": "rzp",
+        "text": "Smotrich dismissed the Bennett-Lapid alliance as 'a left-wing alliance' and has ruled out partnering with it."
+      },
+      {
+        "id": "likud",
+        "text": "Bennett and Lapid have both ruled out serving under Netanyahu again.",
+        "soft": true
+      },
+      {
+        "id": "raam",
+        "text": "Every leader in the change bloc except Yair Golan has declared they will not rely on Ra'am to form a government. Bennett signed the same pledge in 2021 and broke it within months; Segelovich joining Ra'am's list is aimed squarely at giving them a way back.",
+        "soft": true
+      }
+    ],
+    "cautions": [],
+    "id": "together"
+  },
+  {
+    "_why": "Adds the missing Likud refusal — Eisenkot is running to end Netanyahu's rule and would take the caretaker premiership himself rather than serve under him. Without it the solver offered a Netanyahu-led government containing Yashar as the only viable path to 61.",
+    "refusals": [
+      {
+        "id": "otzma",
+        "text": "Eisenkot's Yashar has ruled out joining any government with the far right."
+      },
+      {
+        "id": "rzp",
+        "text": "Eisenkot on Smotrich: 'As long as he doesn't let it go, I see no partnership with him.'"
+      },
+      {
+        "id": "likud",
+        "text": "Eisenkot is running to end Netanyahu's rule, and has prepared to lead a minority government rather than serve under him.",
+        "soft": true
+      },
+      {
+        "id": "raam",
+        "text": "Eisenkot opposes bringing Ra'am into the coalition, and rejected Abbas's offer to join the change bloc. He has floated a minority government backed from outside instead.",
+        "soft": true
+      }
+    ],
+    "id": "yashar"
+  },
+  {
+    "_why": "Lieberman's refusal of Netanyahu is stated flatly, so no longer soft. Adds the Ra'am refusal.",
+    "refusals": [
+      {
+        "id": "likud",
+        "text": "Lieberman has vowed not to sit in any government with Netanyahu."
+      },
+      {
+        "id": "raam",
+        "text": "Every leader in the change bloc except Yair Golan has declared they will not rely on Ra'am to form a government. Bennett signed the same pledge in 2021 and broke it within months; Segelovich joining Ra'am's list is aimed squarely at giving them a way back.",
+        "soft": true
+      }
+    ],
+    "id": "beiteinu"
+  },
+  {
+    "_why": "Corrects the attribution — the draft-law veto against Lieberman is his, stated from his side.",
+    "refusals": [
+      {
+        "id": "beiteinu",
+        "text": "Lieberman's red line, not theirs: 'Whoever agrees to sit with Shas and United Torah Judaism is declaring in advance that he is giving up on Yisrael Beiteinu.'"
+      },
+      {
+        "id": "together",
+        "text": "Shas has refused to sit with Beyachad over the Haredi draft bill Lapid championed."
+      },
+      {
+        "id": "raam",
+        "text": "Shas signed the Netanyahu bloc's pledge against any government that relies on Ra'am."
+      },
+      {
+        "id": "democrats",
+        "text": "Shas won't sit with Yair Golan's Democrats, who demand a universal draft law."
+      }
+    ],
+    "id": "shas"
+  },
+  {
+    "_why": "Corrects the attribution — the draft-law veto against Lieberman is his, stated from his side.",
+    "refusals": [
+      {
+        "id": "beiteinu",
+        "text": "Lieberman's red line, not theirs: 'Whoever agrees to sit with Shas and United Torah Judaism is declaring in advance that he is giving up on Yisrael Beiteinu.'"
+      },
+      {
+        "id": "together",
+        "text": "UTJ has refused to sit with Beyachad over the Haredi draft bill Lapid championed."
+      },
+      {
+        "id": "raam",
+        "text": "UTJ signed the Netanyahu bloc's pledge against any government that relies on Ra'am."
+      },
+      {
+        "id": "democrats",
+        "text": "UTJ won't sit with Yair Golan's Democrats, who demand a universal draft law."
+      }
+    ],
+    "id": "utj"
   }
 ]
