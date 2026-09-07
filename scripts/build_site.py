@@ -284,6 +284,41 @@ function coalitionUrl(base, ids) {
   return ids && ids.length ? base + '?c=' + ids.join('.') : base;
 }
 
+/* Would this coalition have governed in each of the headline house's recent
+   weekly polls, or only in the latest one? A one-seat margin sits well inside
+   sampling error, so "exactly 61" and "short by four" otherwise read as facts
+   of the same kind when one of them is a coin toss.
+
+   Only polls in which EVERY member of the coalition was measured are counted.
+   A party polled for the first time last week would otherwise be scored as
+   zero across the earlier polls and drag its coalition down for no reason. If
+   that leaves too few polls to say anything, this says nothing. */
+function robustness(history, ids, governsNow) {
+  if (!history || !ids.length) return '';
+  const usable = history.filter(h => ids.every(id => h.seats[id] != null));
+  if (usable.length < 4) return '';
+  const clears = usable.filter(h => ids.reduce((s, id) => s + h.seats[id], 0) >= 61);
+  const when = iso => {
+    const d = new Date(iso + 'T00:00:00Z');
+    return d.getUTCDate() + ' ' + ['January','February','March','April','May','June','July',
+      'August','September','October','November','December'][d.getUTCMonth()];
+  };
+  if (governsNow && clears.length === usable.length) {
+    return 'Steady — this coalition has cleared 61 in every one of ' +
+           `Kantar's weekly polls since ${when(usable[0].d)}.`;
+  }
+  if (governsNow) {
+    const missed = usable.length - clears.length;
+    return `Not settled — it clears 61 today, but fell short in ${missed} of ` +
+           `Kantar's last ${usable.length} weekly polls.`;
+  }
+  if (clears.length) {
+    return 'Close — it falls short today, but cleared 61 as recently as ' +
+           when(clears[clears.length - 1].d) + '.';
+  }
+  return '';   // never close; "short by N" already says enough
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -920,6 +955,28 @@ def build(export_path, out_html):
         "blocked-hint-view")
 
     html = patch(html, OLD_HINT, NEW_HINT, "blocked-hint-markup")
+
+    # How well the coalition holds up across the headline house's recent polls.
+    html = patch(
+        html,
+        "      hasPresetNote: !!this.state.presetNote,",
+        "      robustnessText: robustness(\n"
+        "        live && live.history, coalition, governs),\n"
+        "      hasRobustness: !!robustness(\n"
+        "        live && live.history, coalition, governs),\n"
+        "      hasPresetNote: !!this.state.presetNote,",
+        "robustness-view")
+
+    html = patch(
+        html,
+        '<sc-if value="{{ hasPresetNote }}" hint-placeholder-val="{{ false }}">',
+        '<sc-if value="{{ hasRobustness }}" hint-placeholder-val="{{ false }}">'
+        '<div style="margin-top:14px;background:var(--paper-sunken);'
+        'border-left:3px solid var(--ink-3);border-radius:var(--r-sm);padding:10px 12px;">'
+        '<p class="ek-small" style="margin:0;color:var(--ink-2);">{{ robustnessText }}</p>'
+        '</div></sc-if>'
+        '<sc-if value="{{ hasPresetNote }}" hint-placeholder-val="{{ false }}">',
+        "robustness-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

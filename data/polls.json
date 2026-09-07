@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-07T15:54:09+00:00",
+  "generated": "2026-09-07T20:17:56+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -11,7 +11,191 @@
   },
   "spreadWindowDays": 21,
   "trendDays": 63,
-  "trendPolls": 11,
+  "trendPolls": 10,
+  "history": [
+    {
+      "d": "2026-07-12",
+      "seats": {
+        "likud": 23,
+        "together": 15,
+        "rzp": 5,
+        "otzma": 8,
+        "blue_white": 0,
+        "shas": 8,
+        "utj": 8,
+        "beiteinu": 10,
+        "raam": 5,
+        "hadash_taal": 5,
+        "democrats": 9,
+        "yashar": 24,
+        "zionist_home": 0
+      }
+    },
+    {
+      "d": "2026-07-19",
+      "seats": {
+        "likud": 21,
+        "together": 15,
+        "rzp": 4,
+        "otzma": 10,
+        "blue_white": 0,
+        "shas": 8,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 5,
+        "democrats": 9,
+        "yashar": 22,
+        "zionist_home": 4
+      }
+    },
+    {
+      "d": "2026-07-26",
+      "seats": {
+        "likud": 22,
+        "together": 14,
+        "rzp": 5,
+        "otzma": 9,
+        "blue_white": 0,
+        "shas": 8,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 5,
+        "democrats": 10,
+        "yashar": 21,
+        "zionist_home": 4
+      }
+    },
+    {
+      "d": "2026-08-02",
+      "seats": {
+        "likud": 23,
+        "together": 13,
+        "rzp": 4,
+        "otzma": 9,
+        "blue_white": 0,
+        "shas": 8,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 6,
+        "democrats": 8,
+        "yashar": 23,
+        "zionist_home": 4
+      }
+    },
+    {
+      "d": "2026-08-09",
+      "seats": {
+        "likud": 24,
+        "together": 13,
+        "rzp": 5,
+        "otzma": 8,
+        "blue_white": 0,
+        "shas": 8,
+        "utj": 8,
+        "beiteinu": 10,
+        "raam": 6,
+        "hadash_taal": 5,
+        "democrats": 10,
+        "yashar": 23,
+        "zionist_home": 0
+      }
+    },
+    {
+      "d": "2026-08-16",
+      "seats": {
+        "likud": 23,
+        "together": 14,
+        "rzp": 4,
+        "otzma": 10,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 10,
+        "raam": 5,
+        "hadash_taal": 6,
+        "democrats": 10,
+        "yashar": 23,
+        "zionist_home": 0
+      }
+    },
+    {
+      "d": "2026-08-19",
+      "seats": {
+        "likud": 23,
+        "together": 14,
+        "rzp": 5,
+        "otzma": 9,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 6,
+        "democrats": 10,
+        "yashar": 24,
+        "zionist_home": 0
+      }
+    },
+    {
+      "d": "2026-08-23",
+      "seats": {
+        "likud": 22,
+        "together": 14,
+        "rzp": 5,
+        "otzma": 9,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 7,
+        "democrats": 10,
+        "yashar": 24,
+        "zionist_home": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
+      "d": "2026-08-30",
+      "seats": {
+        "likud": 21,
+        "together": 14,
+        "rzp": 5,
+        "otzma": 7,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 9,
+        "yashar": 24,
+        "zionist_home": 0,
+        "amcha_yisrael": 4
+      }
+    },
+    {
+      "d": "2026-09-06",
+      "seats": {
+        "likud": 20,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 7,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 7,
+        "raam": 6,
+        "hadash_taal": 7,
+        "democrats": 8,
+        "yashar": 23,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    }
+  ],
   "spreadPollCount": 32,
   "totalSeats": 120,
   "parties": {
@@ -45,10 +229,6 @@
       "spreadMax": 11,
       "spreadPolls": 32,
       "trend": [
-        {
-          "d": "2026-07-05",
-          "s": 9
-        },
         {
           "d": "2026-07-12",
           "s": 10
@@ -100,10 +280,6 @@
       "spreadPolls": 32,
       "trend": [
         {
-          "d": "2026-07-05",
-          "s": 9
-        },
-        {
           "d": "2026-07-12",
           "s": 9
         },
@@ -153,10 +329,6 @@
       "spreadMax": 10,
       "spreadPolls": 32,
       "trend": [
-        {
-          "d": "2026-07-05",
-          "s": 10
-        },
         {
           "d": "2026-07-12",
           "s": 5
@@ -208,10 +380,6 @@
       "spreadPolls": 32,
       "trend": [
         {
-          "d": "2026-07-05",
-          "s": 23
-        },
-        {
           "d": "2026-07-12",
           "s": 23
         },
@@ -261,10 +429,6 @@
       "spreadMax": 10,
       "spreadPolls": 32,
       "trend": [
-        {
-          "d": "2026-07-05",
-          "s": 9
-        },
         {
           "d": "2026-07-12",
           "s": 8
@@ -375,10 +539,6 @@
       "spreadPolls": 32,
       "trend": [
         {
-          "d": "2026-07-05",
-          "s": 5
-        },
-        {
           "d": "2026-07-12",
           "s": 5
         },
@@ -428,10 +588,6 @@
       "spreadMax": 10,
       "spreadPolls": 32,
       "trend": [
-        {
-          "d": "2026-07-05",
-          "s": 8
-        },
         {
           "d": "2026-07-12",
           "s": 8
@@ -483,10 +639,6 @@
       "spreadPolls": 32,
       "trend": [
         {
-          "d": "2026-07-05",
-          "s": 16
-        },
-        {
           "d": "2026-07-12",
           "s": 15
         },
@@ -537,10 +689,6 @@
       "spreadPolls": 32,
       "trend": [
         {
-          "d": "2026-07-05",
-          "s": 8
-        },
-        {
           "d": "2026-07-12",
           "s": 8
         },
@@ -590,10 +738,6 @@
       "spreadMax": 26,
       "spreadPolls": 32,
       "trend": [
-        {
-          "d": "2026-07-05",
-          "s": 23
-        },
         {
           "d": "2026-07-12",
           "s": 24

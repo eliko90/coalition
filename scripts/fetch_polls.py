@@ -476,6 +476,10 @@ def build(cache=None, year=None, verbose=True):
         "spreadWindowDays": window,
         "trendDays": trend_days,
         "trendPolls": len(series),
+        # Every headline-house poll in the window, so the page can ask whether a
+        # coalition would have governed in each of them rather than only in the
+        # latest one. One house, so it is a weekly series, not a mix of methods.
+        "history": [{"d": p["date"].isoformat(), "seats": p["seats"]} for p in series],
         "spreadPollCount": len(recent),
         "totalSeats": total,
         "parties": parties,
