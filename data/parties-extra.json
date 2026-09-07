@@ -1,0 +1,28 @@
+[
+  {
+    "id": "amcha_yisrael",
+    "name": "Amcha Yisrael",
+    "seats": 4,
+    "delta": 0,
+    "spread": "0–8 — too new for pollsters to agree; i24 has shown it as high as 8",
+    "bloc": "netanyahu",
+    "color": "#7A5C3E",
+    "tag": "Right-wing, nationalist",
+    "leader": "Ofer Winter",
+    "note": "New party — bloc placement and red lines not yet confirmed",
+    "nearThreshold": true,
+    "desc": "Launched 25 August 2026 by a retired IDF brigadier general who commanded the Givati Brigade. Pitches itself as a broader, less sectarian right than Otzma Yehudit or Religious Zionism. Netanyahu has warned publicly that it splits the right-wing vote.",
+    "positions": {
+      "annex": "Right-wing on territory; the party has not published a detailed platform.",
+      "twoState": "Opposed.",
+      "draft": "No published position yet."
+    },
+    "refusals": [],
+    "cautions": [
+      {
+        "id": "raam",
+        "text": "Winter has said Amcha Yisrael seeks a broad right-wing government with 'Zionist partners', which reads as ruling out reliance on Ra'am — but he has not said so outright."
+      }
+    ]
+  }
+]

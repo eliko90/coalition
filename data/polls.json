@@ -1,0 +1,133 @@
+{
+  "generated": "2026-09-06T12:11:07+00:00",
+  "source": {
+    "pollster": "Kantar",
+    "publisher": "Israel Hayom",
+    "label": "Kantar/Israel Hayom",
+    "fieldworkDate": "2026-09-03",
+    "displayDate": "Sep 3, 2026",
+    "exactHouseMatch": false,
+    "url": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election"
+  },
+  "spreadWindowDays": 21,
+  "spreadPollCount": 33,
+  "totalSeats": 120,
+  "parties": {
+    "amcha_yisrael": {
+      "seats": 4,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 0,
+      "spreadMax": 8,
+      "spreadPolls": 21
+    },
+    "beiteinu": {
+      "seats": 9,
+      "pct": null,
+      "delta": 1,
+      "spreadMin": 6,
+      "spreadMax": 11,
+      "spreadPolls": 33
+    },
+    "blue_white": {
+      "seats": 0,
+      "pct": "1.7%",
+      "delta": 0,
+      "spreadMin": 0,
+      "spreadMax": 0,
+      "spreadPolls": 32
+    },
+    "democrats": {
+      "seats": 9,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 8,
+      "spreadMax": 11,
+      "spreadPolls": 33
+    },
+    "hadash_taal": {
+      "seats": 7,
+      "pct": null,
+      "delta": -1,
+      "spreadMin": 5,
+      "spreadMax": 10,
+      "spreadPolls": 33
+    },
+    "likud": {
+      "seats": 21,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 19,
+      "spreadMax": 32,
+      "spreadPolls": 33
+    },
+    "otzma": {
+      "seats": 7,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 6,
+      "spreadMax": 10,
+      "spreadPolls": 33
+    },
+    "raam": {
+      "seats": 5,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 4,
+      "spreadMax": 6,
+      "spreadPolls": 33
+    },
+    "rzp": {
+      "seats": 6,
+      "pct": null,
+      "delta": 1,
+      "spreadMin": 0,
+      "spreadMax": 7,
+      "spreadPolls": 33
+    },
+    "shas": {
+      "seats": 7,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 7,
+      "spreadMax": 10,
+      "spreadPolls": 33
+    },
+    "together": {
+      "seats": 13,
+      "pct": null,
+      "delta": -1,
+      "spreadMin": 6,
+      "spreadMax": 18,
+      "spreadPolls": 33
+    },
+    "utj": {
+      "seats": 8,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 7,
+      "spreadMax": 9,
+      "spreadPolls": 33
+    },
+    "yashar": {
+      "seats": 24,
+      "pct": null,
+      "delta": 0,
+      "spreadMin": 20,
+      "spreadMax": 26,
+      "spreadPolls": 33
+    },
+    "zionist_home": {
+      "seats": 0,
+      "pct": "2.7%",
+      "delta": 0,
+      "spreadMin": 0,
+      "spreadMax": 4,
+      "spreadPolls": 32
+    }
+  },
+  "unmappedAppParties": {
+    "balad": "Wikipedia reports a single 'Joint List' column; Balad is not polled separately. Decide editorially whether Balad still runs alone.",
+    "erdan_edelstein": "No Wikipedia column — the party is not being polled separately. Verify it is still running."
+  }
+}

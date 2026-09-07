@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Road to 61 — Knesset Coalition Builder</title>
+<meta name="description" content="Build a Knesset coalition from the latest Israeli polling and see which ones can actually govern.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/react.production.min.js"></script>
+<script src="assets/react-dom.production.min.js"></script>
+<script src="assets/dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <style>/* ============================================================
+   ELI KOWAZ / THE MIDDLE GROUND — Foundations
+   colors_and_type.css
+   Editorial · ink-on-paper · diplomatic navy · Jerusalem clay
+   ------------------------------------------------------------
+   Fonts are loaded from Google Fonts (CDN). If you want them
+   self-hosted, drop woff2 files in /fonts and swap the @import
+   for @font-face. Newsreader + Libre Franklin are the CHOSEN
+   families, not substitutes.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+
+:root {
+  /* ---------- TYPE FAMILIES ---------- */
+  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Libre Franklin', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --font-mono:  'Spline Sans Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ============================================================
+     COLOR — warm paper & ink, diplomatic navy, Jerusalem clay
+     ============================================================ */
+
+  /* Neutrals — warm paper-and-ink */
+  --paper:        #F6F2E9;  /* page background — warm bone        */
+  --paper-raised: #FCFAF4;  /* cards, raised surfaces             */
+  --paper-sunken: #EFEADD;  /* wells, code blocks, insets         */
+  --ink:          #1C1A16;  /* primary text — warm near-black     */
+  --ink-2:        #4A453C;  /* secondary text                     */
+  --ink-3:        #79705F;  /* tertiary / muted captions          */
+  --ink-4:        #A89E8B;  /* faint / placeholder                */
+  --rule:         #DCD5C5;  /* hairline borders, dividers         */
+  --rule-strong:  #C5BBA6;  /* stronger borders                   */
+
+  /* Primary — diplomatic slate-navy (structure, dark sections) */
+  --navy:        #1E2C36;
+  --navy-soft:   #324a59;
+  --navy-ink:    #14202A;   /* deepest — footer / cover           */
+  --navy-tint:   #E3E7E7;   /* pale wash background                */
+
+  /* Accent — Jerusalem clay / terracotta (links, rules, marks)  */
+  --clay:        #B0492C;
+  --clay-deep:   #8C3920;   /* hover / press                       */
+  --clay-bright: #C75A38;   /* on dark backgrounds                 */
+  --clay-tint:   #F0E1D6;   /* highlight wash                      */
+
+  /* Secondary accent — muted ochre/gold (issue numbers, premium) */
+  --gold:        #B0851F;
+  --gold-deep:   #8C6915;
+  --gold-tint:   #F0E7CF;
+
+  /* Social / Instagram — high-contrast black canvas + electric cyan.
+     This is the FEED identity: pure black or pure cyan grounds,
+     heavy Libre Franklin headlines, Newsreader for secondary lines. */
+  --ig-black:    #0A0A0A;   /* slide ground — true near-black      */
+  --cyan:        #27C3D4;   /* electric cyan — accent + cyan grounds*/
+  --cyan-deep:   #16A6B6;   /* pressed / on-light hover            */
+  --cyan-ink:    #0A2A2E;   /* deepest cyan-black, text on cyan    */
+  --on-cyan:     #08191B;   /* headline text on a cyan ground      */
+  --on-ig:       #F4F4F2;   /* white-ish text on black ground      */
+  --on-ig-dim:   #9DA3A3;   /* muted text on black ground          */
+
+  /* Semantic */
+  --success:     #4C6A3D;
+  --success-tint:#E5EADD;
+  --warning:     #B0851F;
+  --danger:      #8C3920;
+  --info:        #324a59;
+
+  /* On-color text */
+  --on-navy:     #F1ECE0;
+  --on-navy-dim: #A9B2B7;
+  --on-clay:     #FBF3EC;
+
+  /* ============================================================
+     SPACING — 4px base
+     ============================================================ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Editorial measure (line length) */
+  --measure: 38rem;          /* ~66ch ideal reading column         */
+  --measure-narrow: 30rem;
+  --measure-wide: 52rem;
+
+  /* ============================================================
+     RADII — restrained, editorial
+     ============================================================ */
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 7px;
+  --r-lg: 12px;
+  --r-xl: 18px;
+  --r-pill: 999px;
+
+  /* ============================================================
+     SHADOWS — soft & warm; editorial leans on hairlines
+     ============================================================ */
+  --shadow-sm: 0 1px 2px rgba(28,26,22,.07);
+  --shadow-md: 0 4px 18px rgba(28,26,22,.09);
+  --shadow-lg: 0 16px 44px rgba(28,26,22,.13);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,.5);
+
+  /* Motion */
+  --ease: cubic-bezier(.22,.61,.36,1); /* @kind other */
+  --ease-out: cubic-bezier(.16,1,.3,1); /* @kind other */
+  --dur: 180ms; /* @kind other */
+  --dur-slow: 320ms; /* @kind other */
+
+  /* ============================================================
+     SEMANTIC TYPE TOKENS
+     opsz set so Newsreader uses its display cut at large sizes
+     ============================================================ */
+  --kicker-size: 0.78rem;     /* eyebrow / label                  */
+  --kicker-track: 0.16em;
+
+  --display-size: 4.25rem;    /* 68px hero                        */
+  --h1-size: 3rem;            /* 48px                              */
+  --h2-size: 2.125rem;        /* 34px                             */
+  --h3-size: 1.5rem;          /* 24px                             */
+  --h4-size: 1.1875rem;       /* 19px                             */
+  --lede-size: 1.375rem;      /* 22px dek / standfirst            */
+  --body-size: 1.1875rem;     /* 19px reading body                */
+  --small-size: 1rem;         /* 16px                             */
+  --caption-size: 0.875rem;   /* 14px                             */
+  --meta-size: 0.8125rem;     /* 13px mono metadata               */
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES — opt-in via .ek-prose or utility
+   ============================================================ */
+
+.ek-kicker {
+  font-family: var(--font-sans);
+  font-size: var(--kicker-size);
+  font-weight: 600;
+  letter-spacing: var(--kicker-track);
+  text-transform: uppercase;
+  color: var(--clay);
+  line-height: 1;
+}
+
+.ek-display {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-size: var(--display-size);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.ek-h1 { font-family: var(--font-serif); font-weight: 500; font-size: var(--h1-size); line-height: 1.06; letter-spacing: -0.018em; color: var(--ink); text-wrap: balance; }
+.ek-h2 { font-family: var(--font-serif); font-weight: 500; font-size: var(--h2-size); line-height: 1.12; letter-spacing: -0.014em; color: var(--ink); text-wrap: balance; }
+.ek-h3 { font-family: var(--font-serif); font-weight: 600; font-size: var(--h3-size); line-height: 1.2;  letter-spacing: -0.01em;  color: var(--ink); }
+.ek-h4 { font-family: var(--font-sans); font-weight: 700; font-size: var(--h4-size); line-height: 1.3; color: var(--ink); }
+
+.ek-lede {
+  font-family: var(--font-serif);
+  font-size: var(--lede-size);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.ek-body {
+  font-family: var(--font-serif);
+  font-size: var(--body-size);
+  font-weight: 400;
+  line-height: 1.62;
+  color: var(--ink);
+}
+
+.ek-small   { font-family: var(--font-sans); font-size: var(--small-size); line-height: 1.5; color: var(--ink-2); }
+.ek-caption { font-family: var(--font-sans); font-size: var(--caption-size); line-height: 1.45; color: var(--ink-3); }
+
+.ek-meta {
+  font-family: var(--font-mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.ek-link {
+  color: var(--clay);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--clay) 35%, transparent);
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.ek-link:hover { color: var(--clay-deep); border-color: var(--clay-deep); }
+
+/* A drop-cap helper for article openers */
+.ek-dropcap::first-letter {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.82;
+  padding: 0.06em 0.08em 0 0;
+  color: var(--clay);
+}
+</style>
+  <script src="assets/dc-app.js"></script>
+  <script>
+    (function () {
+      var framed = window.parent && window.parent !== window;
+      if (!framed) return;
+
+      // Collapse the full-height root so scrollHeight reflects the content
+      // rather than the height the parent last gave us.
+      var s = document.createElement('style');
+      s.textContent = ':root{--kcb-minh:0px}' +
+                      'html,body{height:auto;min-height:0}';
+      document.head.appendChild(s);
+
+      var last = 0;
+      function postHeight() {
+        // Measure the body box, not documentElement.scrollHeight: an iframe
+        // with scrolling="no" clamps scrollHeight to the height the parent
+        // already set, so the frame could never shrink and would never grow
+        // past its initial guess. A layout box has no such ceiling.
+        var h = Math.ceil(document.body.getBoundingClientRect().height);
+        if (!h || Math.abs(h - last) < 2) return;   // don't spam on 1px jitter
+        last = h;
+        window.parent.postMessage({ type: 'kcb-resize', height: h }, '*');
+      }
+      window.addEventListener('load', postHeight);
+      window.addEventListener('resize', postHeight);
+      if (window.ResizeObserver) {
+        // Fires the moment a party is added or a modal opens, so the frame
+        // resizes with the interaction instead of up to 1.5s later.
+        new ResizeObserver(postHeight).observe(document.documentElement);
+      }
+      setInterval(postHeight, 1500);
+    })();
+  </script>
+
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; max-width: 100%; overflow-x: hidden; background: var(--paper); }
+    * { box-sizing: border-box; }
+    a { color: var(--clay); }
+    a:hover { color: var(--clay-deep); }
+    ::selection { background: var(--clay-tint); }
+    @keyframes howItWorksPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(176,73,44,0.35); }
+      50% { box-shadow: 0 0 0 8px rgba(176,73,44,0); }
+    }
+    .how-it-works-btn {
+      animation: howItWorksPulse 1.6s ease-out 3;
+      border-radius: var(--r-pill);
+    }
+    .kb-card:hover { box-shadow: var(--shadow-md) !important; transform: translateY(-1px); }
+    .kb-card { transition: box-shadow 180ms var(--ease), transform 180ms var(--ease), border-color 180ms var(--ease) !important; }
+    .kb-preset { transition: background 180ms var(--ease), color 180ms var(--ease), border-color 180ms var(--ease); }
+    .kb-preset:hover { background: var(--ink) !important; color: var(--paper) !important; border-color: var(--ink) !important; }
+    @media (max-width: 680px) {
+      .kb-blocs { grid-template-columns: 1fr !important; }
+    }
+
+  </style>
+</helmet>
+
+<div style="min-height:var(--kcb-minh, 100vh);width:100%;max-width:100%;background:var(--paper);font-family:var(--font-sans);padding-bottom:12px;overflow-x:hidden;">
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--font-sans);font-size:0.9rem;font-weight:600;padding:10px 16px;border-radius:var(--r-pill);box-shadow:var(--shadow-lg);z-index:80;max-width:90vw;text-align:center;">{{ toastMsg }}</div>
+  </sc-if>
+
+  <div style="max-width:960px;margin:0 auto;padding:36px 20px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <div>
+        <div style="width:40px;height:3px;background:var(--clay);margin-bottom:10px;"></div>
+        <div class="ek-kicker" style="white-space:nowrap;">THE MIDDLE GROUND <span style="color:var(--clay);">·</span> INTERACTIVE</div>
+      </div>
+      <button sc-camel-on-click="{{ openIntro }}" class="ek-link how-it-works-btn" style="background:none;border:none;padding:4px 10px;font-family:var(--font-sans);font-size:0.8125rem;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;cursor:pointer;">How this works</button>
+    </div>
+    <h1 style="font-family:var(--font-serif);font-weight:600;font-style:italic;font-size:clamp(2.8rem, 7vw, 4.6rem);line-height:1;letter-spacing:-0.02em;color:var(--ink);margin:20px 0 12px;">Road to <span style="font-style:normal;font-weight:700;color:var(--clay);">61</span></h1>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:1.15rem;line-height:1.5;color:var(--ink-2);margin:0 0 18px;max-width:38rem;text-wrap:pretty;">Build Israel's next coalition. Tap a party to add it — the arithmetic updates instantly. But some combinations that add up to 61 seats on paper have already been ruled out by the parties themselves.</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+      <p class="ek-small" style="margin:0;white-space:nowrap;">By <strong>Eli Kowaz</strong>, for <em>The Middle Ground</em></p>
+      <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.95rem;">Subscribe to The Middle Ground →</a>
+    </div>
+    <div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
+      Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}
+      <div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div>
+      <sc-if value="{{ hasDataWarning }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-sm);padding:8px 10px;text-transform:none;letter-spacing:0;">
+          <div class="ek-caption" style="margin:0 0 4px;color:var(--gold-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Needs an editor’s eye</div>
+          <sc-for list="{{ dataWarnings }}" as="w" hint-placeholder-count="0">
+            <div class="ek-small" style="margin:0 0 2px;color:var(--ink-2);">· {{ w.text }}</div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+    <div style="max-width:960px;margin:0 auto;padding:14px 20px 16px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
+        <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
+          <span style="font-family:var(--font-serif);font-weight:600;font-size:2.8rem;line-height:1;letter-spacing:-0.02em;color:var(--ink);">{{ totalSeats }}</span>
+          <span class="ek-meta" style="color:var(--ink-3);">/ 120 SEATS</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <div style="display:flex;border:1px solid var(--rule-strong);border-radius:var(--r-sm);overflow:hidden;">
+            <button sc-camel-on-click="{{ setViewBar }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.72rem;letter-spacing:0.04em;text-transform:uppercase;padding:5px 10px;border:none;cursor:pointer;background:{{ barBtnStyle }};color:{{ barBtnColor }};">Bar</button>
+            <button sc-camel-on-click="{{ setViewArc }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.72rem;letter-spacing:0.04em;text-transform:uppercase;padding:5px 10px;border:none;border-left:1px solid var(--rule-strong);cursor:pointer;background:{{ arcBtnStyle }};color:{{ arcBtnColor }};">Seats</button>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:var(--font-sans);font-weight:700;font-size:1.05rem;color:{{ statusColor }};">{{ statusHeadline }}</div>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:10px;">{{ arcSvg }}</div>
+      </sc-if>
+      <sc-if value="{{ viewBar }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;height:14px;background:var(--paper-sunken);border-radius:var(--r-pill);margin-top:14px;overflow:visible;border:1px solid var(--rule);">
+        <sc-if value="{{ hasHoveredParty }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;bottom:26px;left:{{ hoveredCenterPct }}%;transform:translateX(-50%);white-space:nowrap;background:var(--ink);color:var(--paper);font-family:var(--font-sans);font-weight:600;font-size:0.82rem;padding:5px 9px;border-radius:var(--r-sm);box-shadow:var(--shadow-md);z-index:10;">{{ hoveredLabel }}</div>
+        </sc-if>
+        <div style="position:absolute;top:0;left:0;bottom:0;width:{{ barWidthPct }}%;border-radius:var(--r-pill);overflow:hidden;display:flex;transition:width 240ms var(--ease-out);">
+          <sc-for list="{{ coalitionParties }}" as="p" hint-placeholder-count="0">
+            <div sc-camel-on-mouse-enter="{{ p.onEnter }}" sc-camel-on-mouse-leave="{{ p.onLeave }}" style="height:100%;flex:none;width:{{ p.barSharePct }}%;background:{{ p.blocColor }};cursor:default;" style-hover="filter:brightness(1.15);"></div>
+          </sc-for>
+        </div>
+        <div style="position:absolute;top:-6px;bottom:-6px;left:calc(61 / 120 * 100%);width:2px;background:var(--ink);"></div>
+        <div style="position:absolute;top:22px;left:calc(61 / 120 * 100%);transform:translateX(-50%);white-space:nowrap;" class="ek-meta">61 to govern</div>
+      </div>
+      <div style="height:22px;"></div>
+      </sc-if>
+      <sc-if value="{{ pmTiedVisible }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:30px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px;">
+          <p class="ek-small" style="margin:0;">Prime minister contested — <strong>{{ pmTiedNames }}</strong> tie for the largest party.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pmPhotoNetanyahu }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:30px;display:flex;align-items:center;gap:10px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px;">
+          <img src="assets/benjamin-netanyahu.png" alt="Benjamin Netanyahu" style="width:88px;height:88px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--rule);">
+          <div>
+            <div class="ek-caption" style="margin:0;">Likely Prime Minister</div>
+            <div style="font-family:var(--font-serif);font-weight:600;font-size:1.05rem;color:var(--ink);">{{ pmName }} <span class="ek-small" style="color:var(--ink-3);">— {{ pmParty }}</span></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pmPhotoEisenkot }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:30px;display:flex;align-items:center;gap:10px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px;">
+          <img src="assets/gadi-eisenkot.png" alt="Gadi Eisenkot" style="width:88px;height:88px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--rule);">
+          <div>
+            <div class="ek-caption" style="margin:0;">Likely Prime Minister</div>
+            <div style="font-family:var(--font-serif);font-weight:600;font-size:1.05rem;color:var(--ink);">{{ pmName }} <span class="ek-small" style="color:var(--ink-3);">— {{ pmParty }}</span></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pmInitialsVisible }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:30px;display:flex;align-items:center;gap:10px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:{{ pmColor }};color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);font-weight:700;flex:none;">{{ pmInitials }}</div>
+          <div>
+            <div class="ek-caption" style="margin:0;">Likely Prime Minister</div>
+            <div style="font-family:var(--font-serif);font-weight:600;font-size:1.05rem;color:var(--ink);">{{ pmName }} <span class="ek-small" style="color:var(--ink-3);">— {{ pmParty }}</span></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasConflicts }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:30px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-md);padding:12px 14px;max-height:160px;overflow-y:auto;">
+          <div class="ek-h4" style="color:var(--clay-deep);margin:0 0 6px;font-size:1.05rem;">Why this won't work</div>
+          <sc-for list="{{ conflicts }}" as="c" hint-placeholder-count="0">
+            <p class="ek-body" style="font-size:0.92rem;margin:0 0 4px;color:var(--ink);line-height:1.4;"><strong>{{ c.a }}</strong> has ruled out sitting with <strong>{{ c.b }}</strong> — {{ c.text }}</p>
+            <sc-if value="{{ c.soft }}" hint-placeholder-val="{{ false }}">
+              <p class="ek-caption" style="margin:0 0 8px;font-style:italic;color:var(--ink-3);">A political stance, not a fixed principle — this kind of pledge has been reversed before.</p>
+            </sc-if>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasPresetNote }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;">
+          <div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">The analyst's note</div>
+          <p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">{{ presetNote }}</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasRaamNote }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;">
+          <div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">The analyst's note</div>
+          <p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);line-height:1.4;">Rumors that Ra'am may add a Jewish MK — Yoav Segalovitz, formerly of Yesh Atid — and formally accept Israel as a Jewish state would make it a far more legitimate partner for the Zionist opposition.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasCautions }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--r-md);padding:12px 14px;">
+          <div class="ek-h4" style="color:var(--gold-deep);margin:0 0 6px;font-size:1.05rem;">Worth a caution</div>
+          <sc-for list="{{ cautions }}" as="c" hint-placeholder-count="0">
+            <p class="ek-body" style="font-size:0.92rem;margin:0 0 4px;color:var(--ink);line-height:1.4;"><strong>{{ c.a }}</strong> and <strong>{{ c.b }}</strong> — {{ c.text }}</p>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasClosestHint }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <p class="ek-body" style="font-size:0.92rem;margin:0;color:var(--ink);">{{ closestHintText }}</p>
+          <button sc-camel-on-click="{{ applyClosestHint }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:var(--navy);color:var(--on-navy);border:none;border-radius:var(--r-sm);cursor:pointer;white-space:nowrap;">Add it</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="background:var(--paper-sunken);border-bottom:1px solid var(--rule);">
+  <div style="max-width:960px;margin:0 auto;padding:24px 20px 28px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
+      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
+      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <sc-for list="{{ presets }}" as="preset" hint-placeholder-count="5">
+        <button sc-camel-on-click="{{ preset.load }}" class="kb-preset" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;letter-spacing:0.01em;padding:10px 16px;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;">{{ preset.label }} <span style="font-weight:500;opacity:0.55;font-size:0.85rem;">{{ preset.seats }}</span></button>
+      </sc-for>
+      <button sc-camel-on-click="{{ clearAll }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--clay);border:1px solid var(--clay);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--clay-tint);">Clear all</button>
+      <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ undo }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--paper-sunken);">↺ Undo</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="max-width:960px;margin:0 auto;padding:22px 20px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
+      <div style="display:flex;align-items:baseline;gap:12px;">
+        <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
+        <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">COALITION <span style="color:var(--ink-3);font-weight:600;">· {{ coalitionCount }} {{ partyWord }}</span></div>
+      </div>
+      <sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}">
+        <div style="position:relative;">
+          <button sc-camel-on-click="{{ toggleShareMenu }}" style="display:inline-flex;align-items:center;gap:6px;background:var(--clay);color:var(--on-clay);border:none;padding:8px 18px;min-height:38px;border-radius:var(--r-pill);font-family:var(--font-sans);font-size:0.875rem;font-weight:700;letter-spacing:0.02em;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow-sm);" style-hover="background:var(--clay-deep);">Share ↗</button>
+          <sc-if value="{{ shareMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:22px;right:0;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);box-shadow:var(--shadow-md);padding:6px;display:flex;flex-direction:column;gap:2px;z-index:20;min-width:150px;">
+              <button sc-camel-on-click="{{ shareAsImage }}" style="padding:8px 10px;border-radius:var(--r-sm);text-align:left;background:none;border:none;color:var(--ink);font-family:var(--font-sans);font-size:0.9rem;font-weight:600;cursor:pointer;" style-hover="background:var(--paper-sunken);">Share as image</button>
+              <a href="{{ shareWhatsappUrl }}" target="_blank" rel="noopener" sc-camel-on-click="{{ closeShareMenu }}" style="padding:8px 10px;border-radius:var(--r-sm);text-decoration:none;color:var(--ink);font-family:var(--font-sans);font-size:0.9rem;font-weight:600;" style-hover="background:var(--paper-sunken);">WhatsApp</a>
+              <a href="{{ shareXUrl }}" target="_blank" rel="noopener" sc-camel-on-click="{{ closeShareMenu }}" style="padding:8px 10px;border-radius:var(--r-sm);text-decoration:none;color:var(--ink);font-family:var(--font-sans);font-size:0.9rem;font-weight:600;" style-hover="background:var(--paper-sunken);">X</a>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+    <div sc-camel-on-drag-over="{{ onTrayDragOver }}" sc-camel-on-drop="{{ onTrayDrop }}" style="min-height:64px;border:1.5px dashed var(--rule-strong);border-radius:var(--r-md);padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;background:var(--paper-raised);">
+      <sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ coalitionParties }}" as="p" hint-placeholder-count="0">
+          <button sc-camel-on-click="{{ p.remove }}" style="display:flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:600;font-size:0.9rem;padding:8px 10px 8px 12px;min-height:38px;background:var(--paper);border:1px solid {{ p.blocColor }};border-radius:var(--r-pill);color:var(--ink);cursor:pointer;">
+            <span>{{ p.name }}</span>
+            <span class="ek-meta" style="color:var(--ink-3);">{{ p.seats }}</span>
+            <span style="color:var(--ink-3);font-size:1rem;line-height:1;">×</span>
+          </button>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{ hasNoCoalition }}" hint-placeholder-val="{{ true }}">
+        <p class="ek-caption" style="margin:6px 0;">Empty. Tap parties below (or drag them here) to start building.</p>
+      </sc-if>
+    </div>
+    <sc-if value="{{ showSubscribeNudge }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 2px;">
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:1rem;color:var(--ink-2);margin:0;">Enjoying this? Analysis like it lands in your inbox every week.</p>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.9rem;white-space:nowrap;">Subscribe to The Middle Ground →</a>
+          <button sc-camel-on-click="{{ dismissNudge }}" aria-label="Dismiss" style="background:none;border:none;padding:4px;color:var(--ink-3);font-size:1rem;line-height:1;cursor:pointer;">×</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="max-width:960px;margin:0 auto;padding:26px 20px 0;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
+      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">ALL PARTIES <span style="color:var(--ink-3);font-weight:600;">· 120 seats</span></div>
+    </div>
+    <p class="ek-caption" style="margin:0 0 12px 40px;max-width:38rem;text-wrap:pretty;">Tap to add. Blocks under each seat count show a party's size — one block per seat. Dashed cards sit near Israel's 3.25% threshold (about 4 seats) — a swing either way can flip a bloc's total.</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span class="ek-meta" style="color:var(--ink-3);white-space:nowrap;">LEFT</span>
+      <div style="flex:1;height:2px;background:linear-gradient(to right, #B0492C, #4C6A3D, #A6763D, #6E7B8A, #1E2C36);border-radius:var(--r-pill);"></div>
+      <span class="ek-meta" style="color:var(--ink-3);white-space:nowrap;">RIGHT</span>
+    </div>
+    <div class="kb-blocs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:24px;align-items:start;">
+      <sc-for list="{{ blocs }}" as="bloc" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:12px;">
+            <span class="ek-caption" style="text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:var(--ink-2);">{{ bloc.label }}</span>
+            <span class="ek-meta" style="color:var(--ink-3);">{{ bloc.total }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ bloc.parties }}" as="p" hint-placeholder-count="3">
+              <div draggable="true" sc-camel-on-drag-start="{{ p.onDragStart }}" sc-camel-on-click="{{ p.onTap }}" class="kb-card" style="position:relative;cursor:{{ p.cursor }};padding:16px;background:{{ p.cardBg }};border:{{ p.cardBorder }};border-radius:var(--r-md);box-shadow:{{ p.cardShadow }};opacity:{{ p.cardOpacity }};">
+                <button sc-camel-on-click="{{ p.onInfo }}" aria-label="More about {{ p.name }}" style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink-2);font-family:var(--font-serif);font-style:italic;font-weight:600;font-size:0.82rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;">i</button>
+                <div style="display:flex;align-items:center;gap:6px;padding-right:28px;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:{{ p.blocColor }};flex:none;"></span>
+                  <span style="font-family:var(--font-serif);font-weight:600;font-size:1.12rem;color:var(--ink);line-height:1.2;">{{ p.name }}</span>
+                </div>
+                <div class="ek-caption" style="margin-top:5px;color:var(--ink-2);font-style:italic;font-family:var(--font-serif);font-size:0.9rem;">{{ p.leader }}</div>
+                <div class="ek-caption" style="margin-top:2px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-size:0.7rem;">{{ p.tag }}</div>
+                <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;border-top:1px solid var(--rule);padding-top:8px;">
+                  <span style="font-family:var(--font-serif);font-weight:600;font-size:1.5rem;line-height:1;color:var(--ink);">{{ p.seats }}</span>
+                  <span class="ek-caption">seats</span>
+                  <sc-if value="{{ p.hasDelta }}" hint-placeholder-val="{{ false }}">
+                    <span class="ek-meta" style="color:{{ p.deltaColor }};margin-left:auto;font-weight:700;">{{ p.deltaLabel }}</span>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ p.hasSeatBlocks }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:2px;margin-top:7px;max-width:100%;">
+                    <sc-for list="{{ p.seatBlocks }}" as="b" hint-placeholder-count="0">
+                      <span style="flex:1 1 4px;max-width:7px;min-width:0;height:9px;background:{{ b.color }};border-radius:1px;opacity:0.85;"></span>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">
+                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>
+                </sc-if>
+                <sc-if value="{{ p.belowThreshold }}" hint-placeholder-val="{{ false }}">
+                  <div class="ek-caption" style="color:var(--ink-3);margin-top:6px;font-weight:600;font-style:italic;">{{ p.belowLabel }}</div>
+                </sc-if>
+                <sc-if value="{{ p.hasNote }}" hint-placeholder-val="{{ false }}">
+                  <div class="ek-caption" style="color:var(--ink-3);margin-top:6px;font-style:italic;">{{ p.note }}</div>
+                </sc-if>
+                <sc-if value="{{ p.hasConflictHint }}" hint-placeholder-val="{{ false }}">
+                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">⚠ {{ p.conflictHint }}</div>
+                </sc-if>
+                <sc-if value="{{ p.inCoalition }}" hint-placeholder-val="{{ false }}">
+                  <div class="ek-caption" style="color:{{ p.blocColor }};margin-top:6px;font-weight:700;">✓ in coalition — tap to remove</div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}">
+    <div sc-camel-on-click="{{ closeIntro }}" style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:min(8vh,60px);z-index:60;">
+      <div sc-camel-on-click="{{ stopClick }}" style="max-width:480px;width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px;position:relative;max-height:80vh;overflow-y:auto;">
+        <div class="ek-kicker" style="margin-bottom:10px;">HOW THIS WORKS</div>
+        <p class="ek-body" style="font-size:1rem;margin:0 0 12px;">Israel elects all 120 members of its parliament, the Knesset, by national party-list vote. No party has ever won a majority on its own — governing takes a <strong>coalition</strong> of parties whose seats add up to at least <strong>61</strong>.</p>
+        <p class="ek-body" style="font-size:1rem;margin:0 0 12px;">Parties are grouped into rough <strong>blocs</strong> (pro-Netanyahu, the "change" bloc opposing him, and Arab-majority parties usually left out of both) — but bloc lines shift, and a party polling near Israel's 3.25% threshold (about 4 seats) can vanish from the Knesset entirely.</p>
+        <p class="ek-body" style="font-size:1rem;margin:0 0 18px;">The catch this tool is built around: <strong>seats aren't the only constraint.</strong> Parties publicly rule each other out. A coalition can clear 61 on paper and still be politically impossible — build one below and see for yourself.</p>
+        <button sc-camel-on-click="{{ closeIntro }}" style="width:100%;font-family:var(--font-sans);font-weight:700;font-size:1rem;padding:12px;min-height:44px;background:var(--clay);color:var(--on-clay);border:none;border-radius:var(--r-sm);cursor:pointer;">Got it — let's build</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasInfo }}" hint-placeholder-val="{{ false }}">
+    <div sc-camel-on-click="{{ closeInfo }}" style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:min(8vh,60px);z-index:50;">
+      <div sc-camel-on-click="{{ stopClick }}" style="max-width:420px;width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:22px;position:relative;">
+        <button sc-camel-on-click="{{ closeInfo }}" aria-label="Close" style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink-2);font-size:1rem;line-height:1;cursor:pointer;">×</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:{{ infoView.blocColor }};flex:none;"></span>
+          <span class="ek-caption" style="text-transform:uppercase;letter-spacing:0.08em;font-weight:600;color:{{ infoView.blocColor }};">{{ infoView.blocLabel }} · {{ infoView.tag }}</span>
+        </div>
+        <div class="ek-h3" style="margin:0 0 2px;padding-right:24px;">{{ infoView.name }}</div>
+        <div class="ek-small" style="margin:0 0 4px;color:var(--ink-2);">Led by {{ infoView.leader }} · {{ infoView.seats }} projected seats</div>
+        <div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div>
+        <p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>
+        <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--rule);padding-top:14px;">
+          <div>
+            <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-3);margin-bottom:2px;">Annexation</div>
+            <p class="ek-body" style="font-size:0.95rem;margin:0;">{{ infoView.annex }}</p>
+          </div>
+          <div>
+            <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-3);margin-bottom:2px;">Two-state solution</div>
+            <p class="ek-body" style="font-size:0.95rem;margin:0;">{{ infoView.twoState }}</p>
+          </div>
+          <div>
+            <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-3);margin-bottom:2px;">Haredi draft bill</div>
+            <p class="ek-body" style="font-size:0.95rem;margin:0;">{{ infoView.draft }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="background:var(--navy);margin-top:48px;">
+  <div style="max-width:960px;margin:0 auto;padding:44px 20px 52px;">
+    <div style="padding:0 0 30px;">
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;">
+        <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
+        <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
+      </div>
+      <p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+      <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
+      <div class="ek-kicker" style="font-size:0.75rem;color:var(--clay-bright);">THE MIDDLE GROUND'S READ <span style="color:rgba(246,242,233,0.55);font-weight:600;">· MOST LIKELY OUTCOMES</span></div>
+    </div>
+    <p class="ek-caption" style="margin:0 0 22px 40px;color:rgba(246,242,233,0.65);">One analyst's ranking, not a forecast. Tap any scenario to load it above.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:18px;align-items:stretch;">
+      <sc-for list="{{ outlooks }}" as="o" hint-placeholder-count="3">
+        <button sc-camel-on-click="{{ o.load }}" class="kb-card" style="text-align:left;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:22px 20px;cursor:pointer;box-shadow:var(--shadow-sm);font-family:var(--font-sans);display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+            <span style="font-family:var(--font-serif);font-weight:600;font-size:2.2rem;line-height:1;color:var(--clay);">{{ o.odds }}<span style="font-size:1.1rem;">%</span></span>
+            <span class="ek-meta" style="color:var(--ink-3);">{{ o.seats }} SEATS</span>
+          </div>
+          <div style="font-family:var(--font-serif);font-weight:600;font-size:1.15rem;line-height:1.25;color:var(--ink);min-height:2.5em;display:flex;align-items:flex-start;">{{ o.label }}</div>
+          <p class="ek-body" style="font-size:0.92rem;line-height:1.55;margin:0;color:var(--ink-2);text-wrap:pretty;">{{ o.why }}</p>
+        </button>
+      </sc-for>
+    </div>
+    <div style="margin-top:22px;background:rgba(246,242,233,0.06);border:1px solid rgba(246,242,233,0.2);border-radius:var(--r-md);padding:20px 22px;">
+      <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--gold);margin-bottom:4px;">THE KINGMAKER</div>
+      <sc-if value="{{ hasKingmaker }}" hint-placeholder-val="{{ false }}">
+        <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal. <strong>{{ kingmakerName }}</strong> is the small party viable in coalitions anchored by <em>either</em> side — appearing in {{ kingmakerCount }} of them.</p>
+      </sc-if>
+      <sc-if value="{{ hasNoKingmaker }}" hint-placeholder-val="{{ false }}">
+        <p class="ek-body" style="font-size:0.95rem;margin:0 0 8px;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">There isn't one. Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal — and no small party is welcome in coalitions anchored by <em>both</em> sides. Every path runs through the big parties themselves.</p>
+      </sc-if>
+      <p class="ek-body" style="font-size:0.95rem;margin:0;color:rgba(246,242,233,0.92);max-width:44rem;text-wrap:pretty;">The wild card is <strong>Yoaz Hendel's Zionist Home</strong> — <em>if</em> it clears the threshold, a big if. It sits squarely between the blocs and could join either one, but its refusal to sit with the ultra-Orthodox parties closes off the most natural path on the right.</p>
+    </div>
+  </div>
+  </div>
+
+  <div style="max-width:960px;margin:0 auto;padding:0 20px;">
+    <div style="padding:28px 0 40px;">
+      <div style="width:40px;height:3px;background:var(--clay);margin-bottom:14px;"></div>
+      <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-2);margin-bottom:6px;">Why these numbers</div>
+      <p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">This tool uses the Kantar/Kan 11 poll rather than an all-pollster average. Channel 14's polls consistently show the Netanyahu bloc far ahead of every other pollster and are excluded. At the same time, Israeli polls have historically underestimated the right on election day — so rather than average toward the more optimistic-for-the-opposition surveys, I use Kan 11, which tends to sit slightly to the right of the pack. Treat it as one considered snapshot, not a forecast.</p>
+      <p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">Seat projections from the Kantar/Kan 11 poll, fieldwork Aug 9, 2026, as recorded on Wikipedia's polling page for the 2026 Israeli legislative election. Change arrows compare against the previous polling round; pollster ranges span recent published polls. Refusal statements are simplified summaries of parties' publicly stated coalition positions, for illustration.</p>
+      <p class="ek-caption" style="margin:0 0 4px;">A tool by Eli Kowaz — <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link">subscribe to The Middle Ground</a>.</p>
+      <p class="ek-caption" style="margin:0;">Read more Israeli election analysis at <a href="https://kowaz.substack.com" target="_blank" rel="noopener" class="ek-link">The Middle Ground</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+</div></x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;pollingDate&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Aug 9, 2026&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Data&quot;}, &quot;pollingSource&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Kantar/Kan 11&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Data&quot;}, &quot;stateOfPlay&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Likud now polls one seat ahead of Eisenkot's Yashar — but neither bloc reaches 61 without crossing a line someone has drawn. The Netanyahu bloc is stuck in the low to mid-50s while the change bloc clears 61 only if it adds Ra'am — which looks more likely should the rumors be true and former Yesh Atid MK Yoav Segelovich join the party, a move he has conditioned on Ra'am accepting Israel as a Jewish state.&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Data&quot;}}">
+const PARTIES_BASE = [
+  { id: 'likud', name: 'Likud', seats: 24, delta: 1, spread: '23–35 — Channel 14 shows far higher numbers than every other pollster', bloc: 'netanyahu', color: '#1E2C36', tag: 'Traditional right', leader: 'Benjamin Netanyahu', photo: 'uploads/pasted-1785767296083-0.png', desc: "Israel's longest-serving prime minister and his party. Anchors the right-wing bloc that has governed for most of the past 15 years.", positions: { annex: 'Has resisted formal annexation while overseeing continued settlement growth.', twoState: 'Opposes Palestinian statehood in the near term.', draft: 'Has shielded yeshiva students from the draft to keep Shas and UTJ in government.' }, refusals: [{ id: 'raam', text: "Netanyahu's bloc has signed pledges ruling out any government that relies on Ra'am.", soft: true }] },
+  { id: 'rzp', name: 'Religious Zionism', seats: 5, delta: 1, spread: '0–5 — several pollsters show it missing the threshold entirely', bloc: 'netanyahu', color: '#5B7A99', tag: 'Religious nationalist', leader: 'Bezalel Smotrich', desc: 'Far-right, religious-nationalist party pushing West Bank annexation and settlement expansion. Smotrich serves as finance minister.', positions: { annex: 'Openly advocates full Israeli annexation of the West Bank.', twoState: 'Firmly opposed to any Palestinian state.', draft: 'Supports broad draft exemptions for yeshiva students.' }, nearThreshold: true, refusals: [
+    { id: 'raam', text: "Smotrich's party has ruled out a coalition built on Ra'am's support." },
+    { id: 'hadash_taal', text: "Religious Zionism rejects any coalition that depends on Arab-led parties." },
+    { id: 'balad', text: "Religious Zionism rejects any coalition that depends on Arab-led parties." }
+  ] },
+  { id: 'otzma', name: 'Otzma Yehudit', seats: 8, delta: -1, spread: '8–10', bloc: 'netanyahu', color: '#8C3920', tag: 'Far-right', leader: 'Itamar Ben Gvir', desc: 'Far-right ultranationalist party. Ben Gvir serves as national security minister and is the most vocal opponent of any Arab role in government.', positions: { annex: 'Supports Israeli sovereignty over the West Bank.', twoState: 'Firmly opposed to a Palestinian state.', draft: "Backs enforcing the draft law on Haredim, unlike its coalition partners Shas and UTJ." }, refusals: [
+    { id: 'raam', text: "Ben Gvir has repeatedly vowed never to sit in a government propped up by Ra'am." },
+    { id: 'hadash_taal', text: "Otzma Yehudit rejects any coalition dependent on Arab parties' votes." },
+    { id: 'balad', text: "Otzma Yehudit rejects any coalition dependent on Arab parties' votes." }
+  ] },
+  { id: 'blue_white', name: 'Blue & White', seats: 0, pct: '1.3%', delta: 0, spread: 'below threshold in nearly every recent poll', bloc: 'unaligned', color: '#A89E8B', tag: 'Centrist', leader: 'Benny Gantz', desc: "Centrist, security-focused party led by a former defense minister and IDF chief. Currently polling below the electoral threshold.", positions: { annex: 'Opposes unilateral annexation.', twoState: 'Open in principle to negotiations, skeptical of near-term statehood.', draft: 'Supports a mandatory, more equal draft.' }, nearThreshold: true, refusals: [] },
+  { id: 'shas', name: 'Shas', seats: 8, delta: 0, spread: '8–11', bloc: 'netanyahu', color: '#8C6915', tag: 'Ultra-Orthodox (Sephardic)', leader: 'Aryeh Deri', desc: "Ultra-Orthodox (Haredi) party representing Sephardic and Mizrahi religious communities. A near-constant fixture of right-wing coalitions.", positions: { annex: 'No fixed position; defers to right-wing coalition partners.', twoState: 'No fixed position; defers to right-wing coalition partners.', draft: 'Strongly opposes drafting yeshiva students — its defining issue.' }, refusals: [
+    { id: 'beiteinu', text: "Shas won't sit with Lieberman over his push to draft yeshiva students." },
+    { id: 'together', text: "Shas has refused to sit with Together over the Haredi draft bill Lapid championed." },
+    { id: 'raam', text: "Shas signed the Netanyahu bloc's pledge against any government that relies on Ra'am." },
+    { id: 'democrats', text: "Shas won't sit with Yair Golan's Democrats, who demand a universal draft law." }
+  ] },
+  { id: 'utj', name: 'United Torah Judaism', seats: 8, delta: 0, spread: '7–8', bloc: 'netanyahu', color: '#C79A3D', tag: 'Ultra-Orthodox (Ashkenazi)', leader: 'Yitzhak Goldknopf', desc: 'Umbrella party for Ashkenazi ultra-Orthodox (Haredi) factions. Prioritizes yeshiva funding and exemption from military draft.', positions: { annex: 'No fixed position; defers to right-wing coalition partners.', twoState: 'No fixed position; defers to right-wing coalition partners.', draft: 'Strongly opposes drafting yeshiva students — its defining issue.' }, refusals: [
+    { id: 'beiteinu', text: "UTJ won't sit with Lieberman over his push to draft yeshiva students." },
+    { id: 'together', text: "UTJ has refused to sit with Together over the Haredi draft bill Lapid championed." },
+    { id: 'raam', text: "UTJ signed the Netanyahu bloc's pledge against any government that relies on Ra'am." },
+    { id: 'democrats', text: "UTJ won't sit with Yair Golan's Democrats, who demand a universal draft law." }
+  ] },
+  { id: 'beiteinu', name: 'Yisrael Beiteinu', seats: 10, delta: 1, spread: '8–10', bloc: 'change', color: '#6E7B8A', tag: 'Secular right', leader: 'Avigdor Lieberman', desc: 'Secular right-wing party rooted in Israel\u2019s Russian-speaking community. Strongly opposed to Haredi draft exemptions.', positions: { annex: 'Skeptical of full annexation; favors unilateral separation instead.', twoState: 'Skeptical; has floated population-exchange proposals instead.', draft: 'Strongly supports a mandatory draft for Haredim — a defining issue for the party.' }, refusals: [
+    { id: 'likud', text: "Lieberman has said he won't sit in any coalition led by Netanyahu.", soft: true }
+  ] },
+  { id: 'raam', name: "Ra'am", seats: 6, delta: 1, spread: '4–6', bloc: 'arab', color: '#C75A38', tag: 'Arab-Israeli, conservative', leader: 'Mansour Abbas', desc: 'Conservative Islamist Arab party. Broke precedent in 2021 by joining a governing coalition, focused on funding for Arab towns.', positions: { annex: 'Opposes annexation.', twoState: 'Supports a two-state solution, though rarely leads on the issue.', draft: 'Not a focus — the party concentrates on funding and civil issues for Arab towns.' }, refusals: [] },
+  { id: 'hadash_taal', name: "Hadash–Ta'al", seats: 5, delta: -1, spread: '5–8', bloc: 'arab', color: '#B0492C', tag: 'Arab-Israeli, leftist', leader: 'Ayman Odeh', note: 'Has declined to join any Israeli government', desc: 'Joint Jewish-Arab and Arab-nationalist list combining a communist-rooted party with a secular nationalist one.', positions: { annex: 'Strongly opposes settlement expansion and annexation.', twoState: 'Strongly supports a two-state solution along the 1967 lines.', draft: 'Supports equal service obligations; opposes Haredi draft exemptions.' }, refusals: [
+    { id: 'likud', text: "Hadash–Ta'al has declined to join any Israeli government — it has never sat in a coalition, and rules out one led by Likud outright." },
+    { id: 'yashar', text: "Hadash–Ta'al has declined to join any Israeli government, though it could back one from outside the coalition." },
+    { id: 'democrats', text: "Hadash–Ta'al has declined to join any Israeli government, though it could back one from outside the coalition." },
+    { id: 'together', text: "Hadash–Ta'al has declined to join any Israeli government, though it could back one from outside the coalition." }
+  ] },
+  { id: 'balad', name: 'Balad', seats: 0, pct: '2.1%', delta: 0, spread: 'below threshold in nearly every recent poll', bloc: 'arab', color: '#705A73', tag: 'Arab nationalist', leader: 'Sami Abou Shahadeh', note: 'Has declined to join any Israeli government', desc: 'Arab nationalist party. Currently polling below the electoral threshold.', positions: { annex: 'Strongly opposes annexation.', twoState: "Rejects a two-state framework built on a Jewish state, favoring one state of all its citizens.", draft: 'Not a focus for the party.' }, nearThreshold: true, refusals: [] },
+  { id: 'democrats', name: 'The Democrats', seats: 10, delta: 2, spread: '8–10', bloc: 'change', color: '#4C6A3D', tag: 'Center-left', leader: 'Yair Golan', desc: "Merger of the historic Labor and Meretz parties — Israel's traditional social-democratic left.", positions: { annex: 'Opposes settlement expansion and annexation.', twoState: 'Supports a two-state solution.', draft: 'Supports a more equal draft; opposes broad Haredi exemptions.' }, refusals: [
+    { id: 'otzma', text: "The Democrats refuse to sit in any coalition with the far right." },
+    { id: 'rzp', text: "The Democrats refuse to sit in any coalition with the far right." }
+  ] },
+  { id: 'yashar', name: 'Yashar', seats: 23, delta: 0, spread: '13–24 — the widest spread of any party; pollsters disagree sharply', bloc: 'change', color: '#A6763D', tag: 'Centrist', leader: 'Gadi Eisenkot', photo: 'uploads/pasted-1785767283230-0.png', desc: 'New centrist party led by a former IDF chief of staff. Surging in polls as an alternative to both Netanyahu and the existing opposition.', positions: { annex: 'Opposed to annexation.', twoState: 'No committed final-status position.', draft: 'Backs a broader, more equal draft given wartime strain on reservists.' }, refusals: [
+    { id: 'otzma', text: "Eisenkot's Yashar has ruled out joining any government with the far right." },
+    { id: 'rzp', text: "Eisenkot's Yashar has ruled out joining any government with the far right." }
+  ] },
+  { id: 'together', name: 'Beyachad', seats: 13, delta: 0, spread: '10–16', bloc: 'change', color: '#3F6B4A', tag: 'Centrist', leader: 'Naftali Bennett & Yair Lapid', desc: 'Merged ticket of former prime minister Naftali Bennett and Yesh Atid leader Yair Lapid, built to challenge Netanyahu from the center.', positions: { annex: 'Opposes full annexation.', twoState: 'Opposes near-term statehood, favoring managing the conflict over resolving it.', draft: "Lapid's wing pushed the current draft-law reform; supports a broader, more equal draft." }, refusals: [
+    { id: 'otzma', text: "Beyachad has ruled out any government that includes Ben Gvir." },
+    { id: 'rzp', text: "Beyachad has ruled out sitting with Smotrich's Religious Zionism." },
+    { id: 'likud', text: "Bennett and Lapid have both ruled out serving under Netanyahu again.", soft: true }
+  ], cautions: [
+    { id: 'raam', text: "Beyachad has been cool toward relying on Ra'am's votes — unlikely, but not ruled out." }
+  ] },
+  { id: 'erdan_edelstein', name: 'Erdan–Edelstein', seats: 0, pct: '1.9%', bloc: 'unaligned', color: '#4A5568', tag: 'Right-wing, ex-Likud', leader: 'Gilad Erdan & Yuli Edelstein', desc: 'New party of two Likud veterans — a former UN ambassador and a former Knesset speaker — positioning as a right-wing alternative to Netanyahu. Not yet registering seats in most polls.', positions: { annex: 'Right-wing on territory, though the party has not published a formal platform.', twoState: 'Skeptical, in line with its Likud roots.', draft: 'Edelstein championed a stricter draft law as chair of the Foreign Affairs and Defense Committee.' }, delta: 0, spread: 'too new for most pollsters to test; occasional polls show it near the threshold', nearThreshold: true, refusals: [], cautions: [] },
+  { id: 'zionist_home', name: 'Zionist Home', seats: 0, pct: '3.0%', delta: -4, spread: '3.0% in the latest Kantar survey — just under the 3.25% threshold', bloc: 'unaligned', color: '#3D6B6B', tag: 'Right-leaning independent', leader: 'Yoaz Hendel', desc: "Small right-leaning party of ex-Likud and ex-military figures, formed by Yoaz Hendel. Open to joining a Likud-led government but not tied to it.", positions: { annex: 'Supportive of settlement but has not pushed for formal annexation.', twoState: 'Opposed.', draft: 'Supports a broader, more equal draft.' }, nearThreshold: true, refusals: [
+    { id: 'shas', text: "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." },
+    { id: 'utj', text: "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight." }
+  ], cautions: [
+    { id: 'raam', text: "Zionist Home has been cool toward relying on Ra'am's votes — unlikely, but not ruled out." }
+  ] }
+];
+
+
+/* ------------------------------------------------------------------
+   Live polling data (data/polls.json, rebuilt by scripts/fetch_polls.py)
+
+   PARTIES_BASE holds the editorial record — blocs, leaders, vetoes,
+   positions. None of that can be scraped and none of it is touched here.
+   Only the numbers are replaced: seats, the delta arrow, and the spread.
+   If the fetch fails the page renders the baked-in snapshot instead, so a
+   dead network degrades to "slightly stale" rather than a blank board.
+   ------------------------------------------------------------------ */
+
+const POLLS_URL = 'data/polls.json';
+const EXTRA_URL = 'data/parties-extra.json';
+const COMMENTARY_URL = 'data/commentary.json';
+const STALE_AFTER_DAYS = 14;
+
+/* Parties formed since the last Claude Design export live in
+   data/parties-extra.json, so a new party can be put on the board in a minute
+   without waiting on a redesign — the seat totals stay whole in the meantime.
+   Fold them into the design when convenient and delete them from the file. */
+let PARTIES_EXTRA = [];
+let PARTIES_RAW = PARTIES_BASE;
+
+function allBase() {
+  const seen = new Set(PARTIES_BASE.map(p => p.id));
+  return PARTIES_BASE.concat(PARTIES_EXTRA.filter(p => !seen.has(p.id)));
+}
+
+function applyLive(base, live) {
+  if (!live || !live.parties) return base;
+  return base.map(p => {
+    const d = live.parties[p.id];
+    if (!d) return p;
+    const out = Object.assign({}, p, {
+      seats: d.seats,
+      delta: d.delta == null ? 0 : d.delta,
+      pct: d.pct || undefined,
+      nearThreshold: d.seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0)
+    });
+    if (d.spreadMin != null && d.spreadMax != null) {
+      // Keep the editor's commentary (the clause after the em dash) and let
+      // the live range replace the numbers in front of it.
+      const note = (p.spread || '').split(' — ').slice(1).join(' — ');
+      const range = d.spreadMin === d.spreadMax
+        ? `${d.spreadMin}`
+        : `${d.spreadMin}–${d.spreadMax}`;
+      const base_ = `${range} across ${d.spreadPolls} polls in the last ` +
+                    `${live.spreadWindowDays} days`;
+      out.spread = note ? `${base_} — ${note}` : base_;
+    }
+    return out;
+  });
+}
+
+function daysSince(iso) {
+  if (!iso) return null;
+  const then = new Date(iso + 'T00:00:00Z');
+  if (isNaN(then)) return null;
+  return Math.floor((Date.now() - then.getTime()) / 86400000);
+}
+
+/* The kingmaker search is a 2^n sweep over every viable coalition, so it is
+   computed once per distinct set of seat counts rather than on every render. */
+let __kmCache = null;
+function kingmakerNow() {
+  const sig = PARTIES_RAW.map(p => p.id + ':' + p.seats).join(',');
+  if (!__kmCache || __kmCache.sig !== sig) {
+    __kmCache = { sig: sig, val: computeKingmaker(PARTIES_RAW) };
+  }
+  return __kmCache.val;
+}
+
+const BLOC_META = {
+  netanyahu: { label: 'Netanyahu bloc' },
+  change: { label: 'Change bloc' },
+  arab: { label: 'Arab-majority' },
+  unaligned: { label: 'Unaligned' }
+};
+
+const OUTLOOKS = [
+  { rank: '1', odds: '40', label: 'A broad Eisenkot government', ids: ['yashar', 'together', 'democrats', 'beiteinu', 'raam', 'zionist_home'], why: "The only current path to 61 — it requires Beyachad and Zionist Home to accept Ra'am, which they've been cool on, but the appetite to avoid another election is real." },
+  { rank: '2', odds: '38', label: 'Another stalemate', ids: ['likud', 'rzp', 'otzma', 'shas', 'utj', 'zionist_home'], why: "The Netanyahu bloc lands in the mid-50s, the change bloc can't agree on Ra'am, and Israel drifts toward yet another election." },
+  { rank: '3', odds: '22', label: 'Netanyahu squeaks back in', ids: ['likud', 'rzp', 'otzma', 'shas', 'utj', 'zionist_home', 'blue_white'], why: "Needs threshold luck: if RZP holds its seats and a small party like Blue & White revives and defects rightward, the bloc could scrape to 61." }
+];
+
+function computeKingmaker(PARTIES_RAW) {
+  const live = PARTIES_RAW.filter(p => p.seats > 0);
+  const refuses = (a, b) => (a.refusals || []).some(r => r.id === b.id) || (b.refusals || []).some(r => r.id === a.id);
+  const counts = {}, blocsSeen = {};
+  let viablePaths = 0;
+  const n = live.length; // 12 parties -> 4096 subsets, computed once at module load
+  for (let mask = 1; mask < (1 << n); mask++) {
+    let seats = 0; const picked = [];
+    for (let i = 0; i < n; i++) if (mask & (1 << i)) { seats += live[i].seats; picked.push(live[i]); }
+    if (seats < 61) continue;
+    if (picked.some(p => seats - p.seats >= 61)) continue; // not minimal
+    let ok = true;
+    for (let i = 0; i < picked.length && ok; i++)
+      for (let j = i + 1; j < picked.length; j++)
+        if (refuses(picked[i], picked[j])) { ok = false; break; }
+    if (!ok) continue;
+    viablePaths++;
+    const anchor = picked.reduce((a, b) => (b.seats > a.seats ? b : a)).bloc;
+    picked.forEach(p => { counts[p.id] = (counts[p.id] || 0) + 1; (blocsSeen[p.id] = blocsSeen[p.id] || new Set()).add(anchor); });
+  }
+  // A true kingmaker must be viable across MORE THAN ONE bloc's coalitions —
+  // a party welcome only on its own side (e.g. Shas) is a passenger, not a kingmaker.
+  const cross = live.filter(p => p.seats <= 9 && counts[p.id] && blocsSeen[p.id] && blocsSeen[p.id].size > 1).sort((a, b) => counts[b.id] - counts[a.id]);
+  const top = cross[0]; // no fallback: a party welcome on only one side is not a kingmaker
+  return { viablePaths, combos: (1 << n) - 1, party: top ? { name: top.name, leader: top.leader.split(' & ')[0], count: counts[top.id] } : null };
+}
+
+const PRESETS = [
+  { id: 'current', label: 'Current government', ids: ['likud', 'rzp', 'otzma', 'shas', 'utj'] },
+  { id: 'change', label: 'Change bloc', ids: ['together', 'democrats', 'beiteinu', 'yashar'] },
+  { id: 'unity', label: 'Unity government', ids: ['likud', 'yashar', 'together', 'zionist_home', 'beiteinu', 'democrats'], note: 'Highly unlikely as long as Netanyahu leads Likud — most of these partners have ruled out serving under him. A different Likud leader would change the math overnight.' },
+  { id: 'stalemate', label: 'Stalemate', ids: ['likud', 'rzp', 'otzma', 'shas', 'utj', 'zionist_home'] },
+  { id: 'eisenkot_broad', label: "Change bloc, with Ra'am", ids: ['yashar', 'together', 'democrats', 'beiteinu', 'raam', 'zionist_home'] }
+];
+
+class Component extends DCLogic {
+  state = { coalition: [], history: [], hoverId: null, infoId: null, showIntro: false, shareMenuOpen: false, toast: '', viewMode: 'arc' };
+
+
+  componentDidMount() {
+    this.loadPolls();
+  }
+
+  loadPolls() {
+    const json = url => fetch(url, { cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(url + ': HTTP ' + r.status)));
+
+    // Both side files are optional — a missing one is not an error.
+    Promise.all([
+      json(POLLS_URL),
+      json(EXTRA_URL).catch(() => []),
+      json(COMMENTARY_URL).catch(() => null)
+    ])
+      .then(([live, extra, commentary]) => {
+        if (!live || !live.parties || !live.source) throw new Error('bad shape');
+        PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
+        PARTIES_RAW = applyLive(allBase(), live);
+        this.setState({ live: live, commentary: commentary, liveError: '' });
+      })
+      .catch(err => {
+        // Leave PARTIES_RAW on the baked-in snapshot and say so in the byline.
+        this.setState({ liveError: String((err && err.message) || err) });
+      });
+  }
+
+  /* The warnings are notes to the editor, not to the reader — they name
+     internal things like PARTIES_BASE. They show on localhost, or on the live
+     site with ?check appended to the URL. Readers never see them. */
+  showChecks() {
+    if (typeof window === 'undefined') return false;
+    const h = window.location.hostname;
+    return h === 'localhost' || h === '127.0.0.1' || h === '' ||
+           /[?&]check\b/.test(window.location.search);
+  }
+
+  dataWarnings(live) {
+    if (!live || !this.showChecks()) return [];
+    const out = [];
+    const known = new Set(allBase().map(p => p.id));
+
+    Object.keys(live.parties).forEach(id => {
+      if (known.has(id)) return;
+      const s = live.parties[id].seats;
+      out.push({
+        text: `“${id}” is in the latest poll${s ? ` on ${s} seats` : ''} but is not on this board — ` +
+              `add it to PARTIES_BASE with its bloc and vetoes.`
+      });
+    });
+
+    const missing = allBase()
+      .filter(p => !live.parties[p.id])
+      .map(p => p.name);
+    if (missing.length) {
+      out.push({ text: `Not in the latest poll: ${missing.join(', ')}. ` +
+                       `Check whether they are still running.` });
+    }
+
+    const total = PARTIES_RAW.reduce((s, p) => s + p.seats, 0);
+    if (total !== 120) {
+      out.push({ text: `The board adds up to ${total} seats, not 120 — ` +
+                       `a party in the poll is missing from the board.` });
+    }
+
+    const age = daysSince(live.source.fieldworkDate);
+    if (age != null && age > STALE_AFTER_DAYS) {
+      out.push({ text: `The most recent poll is ${age} days old.` });
+    }
+    return out;
+  }
+
+  setView(mode) { this.setState({ viewMode: mode }); }
+
+  pushHistory(coalition) {
+    this.setState(s => ({ history: [...s.history, coalition].slice(-20) }));
+  }
+  undo() {
+    this.setState(s => {
+      if (!s.history.length) return null;
+      const history = s.history.slice(0, -1);
+      const coalition = s.history[s.history.length - 1];
+      return { coalition, history };
+    });
+  }
+
+  toggleShareMenu(e) { if (e) e.stopPropagation(); this.setState(s => ({ shareMenuOpen: !s.shareMenuOpen })); }
+  closeShareMenu() { this.setState({ shareMenuOpen: false }); }
+  showToast(msg) {
+    this.setState({ toast: msg, shareMenuOpen: false });
+    setTimeout(() => this.setState({ toast: '' }), 2400);
+  }
+  copyForInstagram(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => this.showToast('Copied — paste it into your Instagram story or DM')).catch(() => this.showToast('Could not copy — select the text manually'));
+    } else {
+      this.showToast('Copy not supported in this browser');
+    }
+  }
+
+  openIntro() { this.setState({ showIntro: true }); }
+  closeIntro() { this.setState({ showIntro: false }); }
+
+  setHover(id) { this.setState({ hoverId: id }); }
+
+  shareImage(coalitionPartiesRaw, totalSeats, governs) {
+    const W = 1080, H = 1080;
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    const PAPER = '#F6F2E9', INK = '#1C1A16', INK2 = '#5A544A', CLAY = '#B0492C', CLAYD = '#8C3920', GOLDD = '#8C6915', SUNKEN = '#EAE4D6';
+    const trunc = (s, maxW) => { if (x.measureText(s).width <= maxW) return s; while (s.length && x.measureText(s + '…').width > maxW) s = s.slice(0, -1); return s + '…'; };
+    x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
+    x.fillStyle = CLAY; x.fillRect(72, 64, 56, 5);
+    x.fillStyle = CLAY; x.font = '700 24px "Libre Franklin", sans-serif';
+    x.fillText('ROAD TO 61 · THE MIDDLE GROUND', 72, 112);
+    x.fillStyle = INK; x.font = '600 58px Newsreader, Georgia, serif';
+    x.fillText(governs ? `My ${totalSeats}-seat coalition governs` : `My coalition stops at ${totalSeats}`, 72, 178);
+    x.fillStyle = INK2; x.font = '500 27px "Libre Franklin", sans-serif';
+    x.fillText(governs ? `${totalSeats} of 120 seats — 61 needed` : `${61 - totalSeats} short of the 61 needed to govern`, 72, 222);
+    // hemicycle
+    const spectrumRank = { arab: 0, change: 1, unaligned: 2, netanyahu: 3 };
+    const fillParties = [...coalitionPartiesRaw].sort((a, b) => (spectrumRank[a.bloc] - spectrumRank[b.bloc]) || (b.seats - a.seats));
+    const dotColors = [];
+    fillParties.forEach(p => { for (let i = 0; i < p.seats; i++) dotColors.push(p.color); });
+    const rows = [{ r: 45, n: 15 }, { r: 58, n: 20 }, { r: 71, n: 24 }, { r: 84, n: 28 }, { r: 97, n: 33 }];
+    const cx = W / 2, cy = 645, S = 3.75;
+    const dots = [];
+    rows.forEach(row => {
+      for (let i = 0; i < row.n; i++) {
+        const t = Math.PI - (i / (row.n - 1)) * Math.PI;
+        dots.push({ t, px: cx + row.r * S * Math.cos(t), py: cy - row.r * S * Math.sin(t) });
+      }
+    });
+    dots.sort((a, b) => b.t - a.t);
+    dots.forEach((d, i) => {
+      x.beginPath(); x.arc(d.px, d.py, 9.5, 0, 2 * Math.PI);
+      if (i < dotColors.length) { x.fillStyle = dotColors[i]; x.fill(); }
+      else { x.fillStyle = SUNKEN; x.fill(); x.strokeStyle = '#CFC7B4'; x.lineWidth = 1.5; x.stroke(); }
+    });
+    const m = dots[60];
+    x.strokeStyle = INK; x.lineWidth = 3.5;
+    x.beginPath();
+    x.moveTo(cx + 38 * S * Math.cos(m.t), cy - 38 * S * Math.sin(m.t));
+    x.lineTo(cx + 103 * S * Math.cos(m.t), cy - 103 * S * Math.sin(m.t));
+    x.stroke();
+    x.fillStyle = INK2; x.font = '700 23px "Libre Franklin", sans-serif'; x.textAlign = 'center';
+    x.fillText('61', cx + 110 * S * Math.cos(m.t), cy - 110 * S * Math.sin(m.t) + 6);
+    x.textAlign = 'left';
+    // party list — two columns
+    x.font = '600 26px "Libre Franklin", sans-serif';
+    const colX = [92, 560], rowH = 40, listY = 706;
+    fillParties.forEach((p, i) => {
+      const col = i % 2, row = Math.floor(i / 2);
+      const px = colX[col], py = listY + row * rowH;
+      if (py > 866) return;
+      x.beginPath(); x.arc(px - 6, py - 8, 8, 0, 2 * Math.PI); x.fillStyle = p.color; x.fill();
+      x.fillStyle = INK; const nm = trunc(p.name, 330); x.fillText(nm, px + 14, py);
+      x.fillStyle = INK2; x.fillText(String(p.seats), px + 14 + x.measureText(nm).width + 14, py);
+    });
+    // likely PM + warnings
+    let infoY = 916;
+    if (governs && fillParties.length) {
+      const maxSeats = Math.max(...fillParties.map(p => p.seats));
+      const leaders = fillParties.filter(p => p.seats === maxSeats);
+      x.font = '600 30px Newsreader, Georgia, serif'; x.fillStyle = INK;
+      x.fillText(leaders.length === 1 ? `Likely prime minister — ${leaders[0].leader.split(' & ')[0]} (${leaders[0].name})` : `Prime minister contested — ${leaders.map(p => p.leader.split(' & ')[0]).join(' or ')}`, 72, infoY);
+      infoY += 42;
+    }
+    const ids = new Set(fillParties.map(p => p.id));
+    const warns = [];
+    fillParties.forEach(p => {
+      (p.refusals || []).forEach(r => { if (ids.has(r.id)) warns.push({ hard: true, text: `${p.name} has ruled out sitting with ${this.byId(r.id).name}` }); });
+      (p.cautions || []).forEach(cn => { if (ids.has(cn.id)) warns.push({ hard: false, text: `${p.name} is reluctant about ${this.byId(cn.id).name}` }); });
+    });
+    const seen = new Set();
+    const uniq = warns.filter(w => { const k = w.text; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 2);
+    uniq.forEach(w => {
+      x.font = '600 25px "Libre Franklin", sans-serif';
+      x.fillStyle = w.hard ? CLAYD : GOLDD;
+      x.fillText(trunc(`${w.hard ? '✕' : '△'} ${w.text}${warns.length > 2 ? '' : ''}`, W - 144), 72, infoY);
+      infoY += 38;
+    });
+    x.strokeStyle = '#CFC7B4'; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(72, 1006); x.lineTo(W - 72, 1006); x.stroke();
+    x.fillStyle = INK; x.font = '700 26px "Libre Franklin", sans-serif';
+    x.fillText('Build your own — kowaz.com/coalition', 72, 1048);
+    x.fillStyle = CLAY; x.textAlign = 'right'; x.fillText('The Middle Ground', W - 72, 1048); x.textAlign = 'left';
+    c.toBlob(blob => {
+      if (!blob) { this.showToast('Could not create image'); return; }
+      const file = new File([blob], 'my-coalition.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], text: 'Build your own at kowaz.com/coalition' }).catch(() => {});
+      } else if (navigator.clipboard && window.ClipboardItem) {
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+          .then(() => this.showToast('Image copied — paste it into X, WhatsApp, or an email'))
+          .catch(() => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = 'my-coalition.png'; a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            this.showToast('Image downloaded — post it anywhere');
+          });
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'my-coalition.png'; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+        this.showToast('Image downloaded — post it anywhere');
+      }
+      this.closeShareMenu();
+    }, 'image/png');
+  }
+
+  shareText(coalitionPartiesRaw, totalSeats, governs) {
+    const names = coalitionPartiesRaw.map(p => p.name).join(', ');
+    return `Road to 61: I built a ${totalSeats}-seat Knesset coalition (${governs ? 'it governs' : 'it falls short of 61'}): ${names}. Build your own —`;
+  }
+  openInfo(id, e) { if (e) e.stopPropagation(); this.setState({ infoId: id }); }
+  closeInfo() { this.setState({ infoId: null }); }
+
+  byId(id) { return PARTIES_RAW.find(p => p.id === id); }
+
+  toggleAdd(id) {
+    if (this.state.coalition.includes(id)) {
+      this.remove(id);
+      return;
+    }
+    this.pushHistory(this.state.coalition);
+    this.setState(s => ({ coalition: [...s.coalition, id], presetNote: '' }));
+  }
+
+  addMany(ids) {
+    this.pushHistory(this.state.coalition);
+    this.setState(s => ({ coalition: [...new Set([...s.coalition, ...ids])] }));
+  }
+
+  remove(id) {
+    this.pushHistory(this.state.coalition);
+    this.setState(s => ({ coalition: s.coalition.filter(x => x !== id) }));
+  }
+
+  loadPreset(ids, note) {
+    this.pushHistory(this.state.coalition);
+    this.setState({ coalition: [...ids], presetNote: note || '' });
+  }
+
+  clearAll() {
+    this.pushHistory(this.state.coalition);
+    this.setState({ coalition: [], presetNote: '' });
+  }
+
+  renderVals() {
+    const live = this.state.live;
+    const commentary = this.state.commentary;
+    const warnings = this.dataWarnings(live);
+    const age = live ? daysSince(live.source.fieldworkDate) : null;
+    const dataNote = live
+      ? `Updated automatically from Wikipedia's poll tracker` +
+        (age === 0 ? ' — polled today.' : age === 1 ? ' — polled yesterday.'
+          : age != null ? ` — polled ${age} days ago.` : '.')
+      : (this.state.liveError
+          ? 'Showing the built-in snapshot — live polling data could not be loaded.'
+          : 'Loading the latest polling…');
+    const coalition = this.state.coalition;
+    const coalitionSet = new Set(coalition);
+
+    const coalitionPartiesRaw = coalition.map(id => this.byId(id)).filter(Boolean);
+    const totalSeats = coalitionPartiesRaw.reduce((sum, p) => sum + p.seats, 0);
+    const governs = totalSeats >= 61;
+
+    let statusColor = 'var(--danger)';
+    let statusHeadline = 'No coalition selected';
+    let statusLabel = 'STATUS';
+    if (coalition.length > 0) {
+      if (governs) {
+        statusColor = 'var(--success)';
+        statusHeadline = totalSeats === 61 ? 'Governs — exactly 61' : `Governs — +${totalSeats - 61} to spare`;
+      } else {
+        statusColor = 'var(--danger)';
+        statusHeadline = `Short by ${61 - totalSeats} seats`;
+      }
+    }
+
+    const conflictMap = new Map();
+    coalitionPartiesRaw.forEach(p => {
+      (p.refusals || []).forEach(r => {
+        if (coalitionSet.has(r.id)) {
+          const other = this.byId(r.id);
+          const key = [p.id, r.id].sort().join('|');
+          if (!conflictMap.has(key)) {
+            conflictMap.set(key, { a: p.name, b: other.name, text: r.text, soft: !!r.soft });
+          }
+        }
+      });
+    });
+    const conflicts = Array.from(conflictMap.values());
+
+    const cautionMap = new Map();
+    coalitionPartiesRaw.forEach(p => {
+      (p.cautions || []).forEach(c => {
+        if (coalitionSet.has(c.id)) {
+          const other = this.byId(c.id);
+          const key = [p.id, c.id].sort().join('|');
+          if (!cautionMap.has(key)) {
+            cautionMap.set(key, { a: p.name, b: other.name, text: c.text });
+          }
+        }
+      });
+    });
+    const cautions = Array.from(cautionMap.values());
+
+    let closestHint = null;
+    const hintKey = [...coalition].sort().join(',');
+    if (this._hintCache && this._hintCache.key === hintKey) {
+      closestHint = this._hintCache.value;
+    } else if (!governs && coalition.length > 0) {
+      const available = PARTIES_RAW.filter(p => !coalitionSet.has(p.id) && p.seats > 0);
+      const compatible = available.filter(p => {
+        const pConflicts = (p.refusals || []).some(r => coalitionSet.has(r.id));
+        const existingConflicts = coalitionPartiesRaw.some(ep => (ep.refusals || []).some(r => r.id === p.id));
+        return !pConflicts && !existingConflicts;
+      }).slice(0, 14);
+      const deficit = 61 - totalSeats;
+      let best = null;
+      const n = compatible.length;
+      for (let mask = 1; mask < (1 << n); mask++) {
+        let seats = 0;
+        const picked = [];
+        for (let i = 0; i < n; i++) {
+          if (mask & (1 << i)) { seats += compatible[i].seats; picked.push(compatible[i]); }
+        }
+        if (seats < deficit) continue;
+        let ok = true;
+        for (let i = 0; i < picked.length && ok; i++) {
+          for (let j = 0; j < picked.length; j++) {
+            if (i === j) continue;
+            if ((picked[i].refusals || []).some(r => r.id === picked[j].id)) { ok = false; break; }
+          }
+        }
+        if (!ok) continue;
+        if (!best || picked.length < best.picked.length || (picked.length === best.picked.length && seats < best.seats)) {
+          best = { picked, seats };
+        }
+      }
+      if (best) {
+        closestHint = {
+          names: best.picked.map(p => p.name).join(' + '),
+          ids: best.picked.map(p => p.id),
+          total: totalSeats + best.seats
+        };
+      }
+    }
+    this._hintCache = { key: hintKey, value: closestHint };
+
+    const parties = PARTIES_RAW.map(p => {
+      const meta = BLOC_META[p.bloc];
+      const inCoalition = coalitionSet.has(p.id);
+      return {
+        id: p.id,
+        name: p.name,
+        seats: p.seats,
+        nearThreshold: !!p.nearThreshold && p.seats > 0,
+        belowThreshold: p.seats === 0,
+        belowLabel: p.pct ? `below threshold — polling ${p.pct}` : 'currently below threshold — 0 seats',
+        hasDelta: !!p.delta,
+        deltaLabel: p.delta > 0 ? `▲ ${p.delta}` : `▼ ${Math.abs(p.delta || 0)}`,
+        deltaColor: p.delta > 0 ? 'var(--success)' : 'var(--danger)',
+        blocLabel: meta.label,
+        tag: p.tag,
+        leader: p.leader,
+        blocColor: p.color,
+        seatBlocks: Array.from({ length: p.seats }, (_, i) => ({ key: i, color: p.color })),
+        hasSeatBlocks: p.seats > 0,
+        inCoalition: inCoalition,
+        cursor: 'pointer',
+        cardBg: inCoalition ? `color-mix(in srgb, ${p.color} 9%, var(--paper-raised))` : 'var(--paper-raised)',
+        cardBorder: p.nearThreshold
+          ? (inCoalition ? `1.5px dashed ${p.color}` : '1.5px dashed var(--rule-strong)')
+          : (inCoalition ? `1.5px solid ${p.color}` : '1px solid var(--rule)'),
+        cardShadow: inCoalition ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+        cardOpacity: p.seats === 0 ? 0.5 : 1,
+        note: p.note || '',
+        hasNote: !!p.note,
+        conflictHint: (!inCoalition && coalition.length > 0) ? (() => {
+          for (const seatedId of coalition) {
+            const seated = this.byId(seatedId);
+            if ((p.refusals || []).some(r => r.id === seatedId)) return `Refuses to sit with ${seated.name}`;
+            if ((seated.refusals || []).some(r => r.id === p.id)) return `${seated.name} refuses to sit with them`;
+          }
+          return '';
+        })() : '',
+        onTap: () => this.toggleAdd(p.id),
+        onInfo: (e) => this.openInfo(p.id, e),
+        onDragStart: (e) => { e.dataTransfer.setData('text/plain', p.id); }
+      };
+    });
+    parties.forEach(p => { p.hasConflictHint = !!p.conflictHint; });
+
+    let pmView = null;
+    if (governs && coalitionPartiesRaw.length) {
+      const maxSeats = Math.max(...coalitionPartiesRaw.map(p => p.seats));
+      const leaders = coalitionPartiesRaw.filter(p => p.seats === maxSeats);
+      if (leaders.length === 1) {
+        const pm = leaders[0];
+        pmView = {
+          tied: false,
+          name: pm.leader,
+          party: pm.name,
+          color: pm.color,
+          photo: pm.photo || null,
+          initials: pm.leader.split(' ').map(w => w[0]).slice(0, 2).join('')
+        };
+      } else {
+        pmView = { tied: true, names: leaders.map(p => p.leader).join(' or ') };
+      }
+    }
+
+    const blocOrder = ['arab', 'change', 'unaligned', 'netanyahu'];
+    const blocs = blocOrder.map(key => {
+      const blocParties = parties.filter(p => PARTIES_RAW.find(rp => rp.id === p.id).bloc === key).sort((a, b) => b.seats - a.seats);
+      return {
+        key,
+        label: BLOC_META[key].label,
+        total: blocParties.reduce((sum, p) => sum + p.seats, 0),
+        parties: blocParties
+      };
+    }).filter(b => b.parties.length > 0);
+
+    const infoParty = this.state.infoId ? PARTIES_RAW.find(p => p.id === this.state.infoId) : null;
+    const infoView = infoParty ? {
+      name: infoParty.name,
+      leader: infoParty.leader,
+      tag: infoParty.tag,
+      blocLabel: BLOC_META[infoParty.bloc].label,
+      blocColor: infoParty.color,
+      seats: infoParty.seats,
+      desc: infoParty.desc,
+      annex: infoParty.positions.annex,
+      twoState: infoParty.positions.twoState,
+      draft: infoParty.positions.draft,
+      spread: infoParty.spread
+    } : null;
+
+    let cumSeats = 0;
+    const coalitionParties = coalitionPartiesRaw.map(p => {
+      const centerPct = ((cumSeats + p.seats / 2) / 120) * 100;
+      cumSeats += p.seats;
+      return {
+        id: p.id, name: p.name, seats: p.seats, tag: p.tag, blocColor: p.color,
+        barSharePct: totalSeats > 0 ? (p.seats / totalSeats) * 100 : 0,
+        centerPct,
+        onEnter: () => this.setHover(p.id),
+        onLeave: () => this.setHover(null),
+        remove: () => this.remove(p.id)
+      };
+    });
+
+    const hoveredParty = this.state.hoverId ? coalitionParties.find(p => p.id === this.state.hoverId) : null;
+
+    const presets = PRESETS.map(preset => ({
+      id: preset.id,
+      label: preset.label,
+      seats: preset.ids.reduce((sum, id) => sum + (this.byId(id)?.seats || 0), 0),
+      load: () => this.loadPreset(preset.ids, preset.note)
+    }));
+
+    // Hemicycle: 120 dots in 5 arcs, filled left-to-right in spectrum order
+    const spectrumRank = { arab: 0, change: 1, unaligned: 2, netanyahu: 3 };
+    const arcFillParties = [...coalitionPartiesRaw].sort((a, b) => (spectrumRank[a.bloc] - spectrumRank[b.bloc]) || (b.seats - a.seats));
+    const dotColors = [];
+    arcFillParties.forEach(p => { for (let i = 0; i < p.seats; i++) dotColors.push(p.color); });
+    const rows = [{ r: 45, n: 15 }, { r: 58, n: 20 }, { r: 71, n: 24 }, { r: 84, n: 28 }, { r: 97, n: 33 }];
+    const dots = [];
+    rows.forEach(row => {
+      for (let i = 0; i < row.n; i++) {
+        const theta = Math.PI - (i / (row.n - 1)) * Math.PI;
+        dots.push({ theta, cx: 100 + row.r * Math.cos(theta), cy: 104 - row.r * Math.sin(theta) });
+      }
+    });
+    dots.sort((a, b) => b.theta - a.theta);
+    const line61 = dots[60];
+    const arcSvg = React.createElement('svg', { viewBox: '0 0 200 112', style: { width: '100%', maxWidth: '460px', display: 'block', margin: '0 auto' } },
+      dots.map((d, i) => React.createElement('circle', { key: i, cx: d.cx, cy: d.cy, r: 2.6, fill: i < dotColors.length ? dotColors[i] : 'var(--paper-sunken)', stroke: i < dotColors.length ? 'none' : 'var(--rule-strong)', strokeWidth: 0.4 })),
+      React.createElement('line', { x1: 100 + 38 * Math.cos(line61.theta), y1: 104 - 38 * Math.sin(line61.theta), x2: 100 + 105 * Math.cos(line61.theta), y2: 104 - 105 * Math.sin(line61.theta), stroke: 'var(--ink)', strokeWidth: 0.8 }),
+      React.createElement('text', { x: 100 + 110 * Math.cos(line61.theta), y: 100 - 110 * Math.sin(line61.theta), fontSize: 5.5, fontFamily: 'var(--font-sans)', fontWeight: 700, fill: 'var(--ink-2)', textAnchor: 'middle' }, '61')
+    );
+
+    const kingmaker = kingmakerNow();
+
+    const outlooks = OUTLOOKS.map(o => {
+      const seats = o.ids.reduce((sum, id) => sum + (this.byId(id)?.seats || 0), 0);
+      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats, load: () => { this.loadPreset(o.ids); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+    });
+
+    return {
+      pollingDate: (live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',
+      pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
+      dataNote,
+      hasDataWarning: warnings.length > 0,
+      dataWarnings: warnings,
+      stateOfPlay: (commentary && commentary.stateOfPlay) || this.props.stateOfPlay || "Likud now polls one seat ahead of Eisenkot's Yashar — but neither bloc reaches 61 without crossing a line someone has drawn. The Netanyahu bloc is stuck in the low to mid-50s while the change bloc clears 61 only if it adds Ra'am — which looks more likely should the rumors be true and former Yesh Atid MK Yoav Segelovich join the party, a move he has conditioned on Ra'am accepting Israel as a Jewish state.",
+      totalSeats,
+      barWidthPct: Math.min(100, (totalSeats / 120) * 100),
+      statusColor,
+      statusHeadline,
+      statusLabel,
+      coalitionCount: coalition.length,
+      partyWord: coalition.length === 1 ? 'party' : 'parties',
+      hasCoalition: coalition.length > 0,
+      hasNoCoalition: coalition.length === 0,
+      coalitionParties,
+      shareMenuOpen: this.state.shareMenuOpen,
+      toggleShareMenu: (e) => this.toggleShareMenu(e),
+      closeShareMenu: () => this.closeShareMenu(),
+      shareAsImage: () => this.shareImage(coalitionPartiesRaw, totalSeats, governs),
+      shareWhatsappUrl: `https://wa.me/?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' https://kowaz.com/coalition')}`,
+      shareXUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(this.shareText(coalitionPartiesRaw, totalSeats, governs))}&url=${encodeURIComponent('https://kowaz.com/coalition')}`,
+      shareInstagram: () => this.copyForInstagram(this.shareText(coalitionPartiesRaw, totalSeats, governs) + ' https://kowaz.com/coalition'),
+      hasToast: !!this.state.toast,
+      toastMsg: this.state.toast,
+      hasHoveredParty: !!hoveredParty,
+      hoveredLabel: hoveredParty ? `${hoveredParty.name} — ${hoveredParty.seats} seats` : '',
+      hoveredCenterPct: hoveredParty ? hoveredParty.centerPct : 0,
+      hasConflicts: conflicts.length > 0,
+      conflicts,
+      hasCautions: cautions.length > 0,
+      cautions,
+      hasPresetNote: !!this.state.presetNote,
+      presetNote: this.state.presetNote || '',
+      hasRaamNote: coalitionSet.has('raam') && coalitionPartiesRaw.some(p => p.bloc !== 'arab'),
+      showSubscribeNudge: coalition.length >= 3 && !this.state.nudgeDismissed,
+      dismissNudge: () => this.setState({ nudgeDismissed: true }),
+      hasClosestHint: !!closestHint,
+      closestHintText: closestHint ? `Add ${closestHint.names} to clear 61 (would reach ${closestHint.total})` : '',
+      applyClosestHint: closestHint ? (() => this.addMany(closestHint.ids)) : (() => {}),
+      canUndo: this.state.history.length > 0,
+      undo: () => this.undo(),
+      viewBar: this.state.viewMode === 'bar',
+      viewArc: this.state.viewMode === 'arc',
+      setViewBar: () => this.setView('bar'),
+      setViewArc: () => this.setView('arc'),
+      barBtnStyle: this.state.viewMode === 'bar' ? 'var(--ink)' : 'transparent',
+      barBtnColor: this.state.viewMode === 'bar' ? 'var(--paper)' : 'var(--ink-2)',
+      arcBtnStyle: this.state.viewMode === 'arc' ? 'var(--ink)' : 'transparent',
+      arcBtnColor: this.state.viewMode === 'arc' ? 'var(--paper)' : 'var(--ink-2)',
+      arcSvg,
+      parties,
+      blocs,
+      presets,
+      outlooks,
+      hasKingmaker: !!kingmaker.party,
+      hasNoKingmaker: !kingmaker.party,
+      kingmakerName: kingmaker.party ? kingmaker.party.name : '',
+      kingmakerCount: kingmaker.party ? kingmaker.party.count : 0,
+      viablePaths: kingmaker.viablePaths,
+      totalCombos: kingmaker.combos.toLocaleString('en-US'),
+      pmTiedVisible: !!pmView && pmView.tied,
+      pmTiedNames: (pmView && pmView.tied) ? pmView.names : '',
+      pmPhotoNetanyahu: !!pmView && !pmView.tied && pmView.name === 'Benjamin Netanyahu',
+      pmPhotoEisenkot: !!pmView && !pmView.tied && pmView.name === 'Gadi Eisenkot',
+      pmInitialsVisible: !!pmView && !pmView.tied && pmView.name !== 'Benjamin Netanyahu' && pmView.name !== 'Gadi Eisenkot',
+      pmName: (pmView && !pmView.tied) ? pmView.name : '',
+      pmParty: (pmView && !pmView.tied) ? pmView.party : '',
+      pmColor: (pmView && !pmView.tied) ? pmView.color : 'var(--ink-3)',
+      pmInitials: (pmView && !pmView.tied) ? pmView.initials : '',
+      hasInfo: !!infoView,
+      infoView,
+      closeInfo: () => this.closeInfo(),
+      stopClick: (e) => { e.stopPropagation(); },
+      showIntro: this.state.showIntro,
+      openIntro: () => this.openIntro(),
+      closeIntro: () => this.closeIntro(),
+      clearAll: () => this.clearAll(),
+      onTrayDragOver: (e) => { e.preventDefault(); },
+      onTrayDrop: (e) => { e.preventDefault(); const id = e.dataTransfer.getData('text/plain'); if (id) this.toggleAdd(id); }
+    };
+  }
+}
+</script>
+
+
+</body></html>

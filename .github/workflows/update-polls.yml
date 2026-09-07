@@ -1,0 +1,45 @@
+name: Update polling data
+
+# Israeli pollsters publish most days in an election run-up, so this checks
+# every morning. It only commits when a number actually moved.
+on:
+  schedule:
+    - cron: "0 5 * * *"      # 05:00 UTC daily
+  workflow_dispatch:          # and a "Run workflow" button
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # fetch_polls.py exits non-zero when it finds a column it does not
+      # recognise — a new party, a merge, a renamed pollster. That failure is
+      # the point: it emails you instead of quietly publishing a board whose
+      # seats no longer add to 120.
+      - name: Fetch latest polls
+        run: python3 scripts/fetch_polls.py
+
+      - name: Commit if anything changed
+        run: |
+          if git diff --quiet -- data/polls.json; then
+            echo "No change in the headline poll."
+            exit 0
+          fi
+          git config user.name  "poll-bot"
+          git config user.email "poll-bot@users.noreply.github.com"
+          SRC=$(python3 -c "import json;d=json.load(open('data/polls.json'));print(d['source']['label'], d['source']['displayDate'])")
+          git add data/polls.json
+          git commit -m "Polls: $SRC"
+          git push
+
+      - name: Summary
+        if: always()
+        run: python3 scripts/fetch_polls.py --summary >> "$GITHUB_STEP_SUMMARY"

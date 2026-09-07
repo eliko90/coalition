@@ -1,0 +1,52 @@
+<!--
+  Road to 61 — WordPress embed
+  ----------------------------
+  Paste this whole block into a "Custom HTML" block on the WordPress page at
+  kowaz.com/coalition.
+
+  Change ONLY the two lines marked CHANGE ME to wherever the app is hosted.
+  Both must be the same origin, and it must be https.
+
+  The iframe sizes itself: the app posts its height to this page as it renders,
+  so there is no inner scrollbar and no guessed fixed height. The `allow`
+  attribute is what keeps "Share" working from inside the frame — without
+  clipboard-write and web-share, the share menu silently fails.
+-->
+
+<div id="kcb-wrap" style="max-width:960px;margin:0 auto;">
+  <iframe
+    id="kcb-frame"
+    src="https://YOURNAME.github.io/coalition/"
+    title="Road to 61 — build Israel's next coalition"
+    scrolling="no"
+    allow="clipboard-write; web-share"
+    style="width:100%;height:2400px;border:0;display:block;overflow:hidden;"
+  ></iframe>
+  <noscript>
+    <p style="font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;">
+      This interactive needs JavaScript.
+      <a href="https://YOURNAME.github.io/coalition/">Open it in a new tab</a>.
+    </p>
+  </noscript>
+</div>
+
+<script>
+(function () {
+  // CHANGE ME — must match the iframe src origin exactly (no trailing slash).
+  var APP_ORIGIN = 'https://YOURNAME.github.io';
+
+  var frame = document.getElementById('kcb-frame');
+  if (!frame) return;
+
+  window.addEventListener('message', function (e) {
+    // Only listen to the app. Without this check any page in any other iframe
+    // on this post could resize ours.
+    if (e.origin !== APP_ORIGIN) return;
+    var d = e.data;
+    if (!d || d.type !== 'kcb-resize') return;
+    var h = parseInt(d.height, 10);
+    if (!h || h < 400 || h > 20000) return;
+    frame.style.height = h + 'px';
+  }, false);
+})();
+</script>

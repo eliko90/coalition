@@ -1,0 +1,69 @@
+{
+  "_comment": "Maps Wikipedia poll-table column headers to the party ids used in index.html. Edit this file — not the Python — when a party renames, merges, or appears. Any Wikipedia column not listed here, and any app party with no column, is reported as a WARNING by fetch_polls.py and fails the GitHub Action, so a new party can never be silently dropped.",
+  "headline": {
+    "firm": "Kantar",
+    "publisher": "Kan 11",
+    "_comment": "The single house used for the headline seat numbers. The newest poll from this FIRM wins; 'publisher' only breaks ties when the house published two polls on the same date. exactHouseMatch in polls.json records whether the preferred publisher was the one used."
+  },
+  "spread_window_days": 21,
+  "_spread_comment": "Per-party min-max range is computed across ALL pollsters within this many days of the headline poll, so the 'spread' text stays honest even though the headline is one house.",
+  "columns": {
+    "Likud": "likud",
+    "Together": "together",
+    "RZP": "rzp",
+    "Zehut": {
+      "merged_into": "rzp",
+      "since": "2026-09-01",
+      "note": "RZP and Zehut agreed to run as a technical bloc on 1 Sep 2026"
+    },
+    "Otzma": "otzma",
+    "Blue & White": "blue_white",
+    "Shas": "shas",
+    "UTJ": "utj",
+    "Yisrael Beiteinu": "beiteinu",
+    "Ra'am": "raam",
+    "Joint List": "hadash_taal",
+    "Dems": "democrats",
+    "Yashar": "yashar",
+    "Zionist Home": "zionist_home",
+    "Unity": {
+      "withdrew": "2026-09-04",
+      "note": "Withdrew from the election 4 Sep 2026"
+    },
+    "Amcha Yisrael": "amcha_yisrael",
+    "Reserv.": "reservists",
+    "The Reservists": "reservists",
+    "RZP-Zehut": "rzp",
+    "Winter party": {
+      "merged_into": "amcha_yisrael",
+      "note": "Ofer Winter's party, before it was named Amcha Yisrael on 25 Aug 2026"
+    },
+    "Winter": {
+      "merged_into": "amcha_yisrael",
+      "note": "Ofer Winter's party, before it was named Amcha Yisrael"
+    }
+  },
+  "ignore_columns": [
+    "Fieldworkdate",
+    "Fieldwork date",
+    "Polling firm",
+    "Publisher",
+    "Samplesize",
+    "Sample size",
+    "Others",
+    "Gov.",
+    "Gov."
+  ],
+  "app_parties_without_column": {
+    "balad": "Wikipedia reports a single 'Joint List' column; Balad is not polled separately. Decide editorially whether Balad still runs alone.",
+    "erdan_edelstein": "No Wikipedia column — the party is not being polled separately. Verify it is still running."
+  },
+  "current_cycle_header_must_contain": [
+    "Samplesize",
+    "Likud",
+    "Yashar"
+  ],
+  "_cycle_comment": "The page also carries hypothetical-scenario tables and tables from previous election cycles. Only the main chronological tables carry a 'Samplesize' column, so a table must have that AND every column listed here (exact header match) to be read. If the field realigns and a lead party renames, update this list.",
+  "history_days": 45,
+  "_history_comment": "How far back to read. Bounds ingestion to the tables covering the current party lineup — older tables list parties that no longer exist and would only add noise. Must be comfortably larger than spread_window_days so the previous same-house poll (for the delta arrows) is still in range."
+}
