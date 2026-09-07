@@ -706,6 +706,12 @@ def build(export_path, out_html):
 
     html = patch(
         html,
+        "    const presets = PRESETS.map(preset => ({",
+        "    const presets = ((commentary && commentary.presets) || PRESETS).map(preset => ({",
+        "presets-source")
+
+    html = patch(
+        html,
         "      Polling as of {{ pollingDate }} <span style=\"color:var(--clay);\">\u00b7</span> {{ pollingSource }}",
         "      Polling as of {{ pollingDate }} <span style=\"color:var(--clay);\">\u00b7</span> {{ pollingSource }}"
         "<sc-if value=\"{{ hasCountdown }}\" hint-placeholder-val=\"{{ false }}\">"
@@ -960,9 +966,11 @@ def build(export_path, out_html):
     html = patch(
         html,
         "      hasPresetNote: !!this.state.presetNote,",
-        "      robustnessText: robustness(\n"
+        "      // Arithmetic only. A coalition blocked by a stated refusal is not\n"
+        "      // \"steady\" however often it clears 61, so the red lines win.\n"
+        "      robustnessText: conflicts.length ? '' : robustness(\n"
         "        live && live.history, coalition, governs),\n"
-        "      hasRobustness: !!robustness(\n"
+        "      hasRobustness: !conflicts.length && !!robustness(\n"
         "        live && live.history, coalition, governs),\n"
         "      hasPresetNote: !!this.state.presetNote,",
         "robustness-view")

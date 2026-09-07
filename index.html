@@ -1549,7 +1549,7 @@ class Component extends DCLogic {
 
     const hoveredParty = this.state.hoverId ? coalitionParties.find(p => p.id === this.state.hoverId) : null;
 
-    const presets = PRESETS.map(preset => ({
+    const presets = ((commentary && commentary.presets) || PRESETS).map(preset => ({
       id: preset.id,
       label: preset.label,
       seats: preset.ids.reduce((sum, id) => sum + (this.byId(id)?.seats || 0), 0),
@@ -1622,9 +1622,11 @@ class Component extends DCLogic {
       conflicts,
       hasCautions: cautions.length > 0,
       cautions,
-      robustnessText: robustness(
+      // Arithmetic only. A coalition blocked by a stated refusal is not
+      // "steady" however often it clears 61, so the red lines win.
+      robustnessText: conflicts.length ? '' : robustness(
         live && live.history, coalition, governs),
-      hasRobustness: !!robustness(
+      hasRobustness: !conflicts.length && !!robustness(
         live && live.history, coalition, governs),
       hasPresetNote: !!this.state.presetNote,
       presetNote: this.state.presetNote || '',

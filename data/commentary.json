@@ -47,5 +47,66 @@
       "why": "Comfortably past 61 and blocked by one man: most of these partners have ruled out serving under Netanyahu, not under Likud. A Likud leadership change would rewrite the arithmetic overnight."
     }
   ],
-  "wildCardNote": "The wild card is Yoaz Hendel's The Reservists, now clearing the threshold at four seats after merging with Yaron Zelekha's New Economic Party. It sits squarely between the blocs and could join either, but its refusal to sit with the ultra-Orthodox over the draft closes off the most natural path on the right — which is why the change bloc's only route to 61 runs through it."
+  "wildCardNote": "The wild card is Yoaz Hendel's The Reservists, now clearing the threshold at four seats after merging with Yaron Zelekha's New Economic Party. It sits squarely between the blocs and could join either, but its refusal to sit with the ultra-Orthodox over the draft closes off the most natural path on the right — which is why the change bloc's only route to 61 runs through it.",
+  "_presetsComment": "The 'Try a scenario' buttons. Editable here so the scenario list can follow the campaign without a design re-export. 'note' shows as a caveat when the scenario is loaded.",
+  "presets": [
+    {
+      "id": "current",
+      "label": "Current government",
+      "ids": [
+        "likud",
+        "rzp",
+        "otzma",
+        "shas",
+        "utj"
+      ]
+    },
+    {
+      "id": "change",
+      "label": "Change bloc",
+      "ids": [
+        "together",
+        "democrats",
+        "beiteinu",
+        "yashar"
+      ]
+    },
+    {
+      "id": "eisenkot_broad",
+      "label": "Change bloc, with Ra'am",
+      "ids": [
+        "yashar",
+        "together",
+        "democrats",
+        "beiteinu",
+        "raam",
+        "reservists"
+      ]
+    },
+    {
+      "id": "stalemate",
+      "label": "Netanyahu bloc at full stretch",
+      "ids": [
+        "likud",
+        "rzp",
+        "otzma",
+        "shas",
+        "utj",
+        "amcha_yisrael"
+      ],
+      "note": "Even with Winter's new party, the bloc tops out in the mid-50s. There is no further seat available to it that is not Arab-majority."
+    },
+    {
+      "id": "unity",
+      "label": "Unity — needs a new Likud leader",
+      "ids": [
+        "likud",
+        "yashar",
+        "together",
+        "beiteinu",
+        "democrats"
+      ],
+      "note": "Comfortably past 61 on the numbers, and irrelevant while Netanyahu leads Likud: Bennett, Lapid and Lieberman have all ruled out serving under him. This is a scenario about Likud's leadership, not about the arithmetic."
+    }
+  ]
 }
