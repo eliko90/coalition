@@ -353,7 +353,7 @@
           </div>
         </div>
       </div>
-      <sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 10px;min-height:32px;background:{{ q.bg }};color:{{ q.fg }};border:1px solid {{ q.border }};border-radius:var(--r-pill);cursor:pointer;opacity:{{ q.opacity }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button></sc-for></div></div><sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
         <div style="margin-top:10px;">{{ arcSvg }}</div>
       </sc-if>
       <sc-if value="{{ viewBar }}" hint-placeholder-val="{{ false }}">
@@ -992,6 +992,22 @@ function leanSentence(a, live) {
   return `${a.firm} has run ${n} ${n === 1 ? 'seat' : 'seats'} ${dir} the field ` +
          `median for ${live.leanBlocLabel || 'the largest bloc'}, across ` +
          `${a.leanPolls} polls in the last 30 days.`;
+}
+
+/* Compact labels for the quick strip. The full names are kept everywhere the
+   reader has room to read them. */
+const SHORT_NAMES = {
+  'United Torah Judaism': 'UTJ',
+  'Religious Zionism': 'Rel. Zionism',
+  'Yisrael Beiteinu': 'Beiteinu',
+  'The Democrats': 'Democrats',
+  'Otzma Yehudit': 'Otzma',
+  'Amcha Yisrael': 'Amcha',
+  'The Reservists': 'Reservists',
+  'Blue & White': 'Blue & White'
+};
+function shortName(name) {
+  return SHORT_NAMES[name] || (name.length > 14 ? name.split(' ')[0] : name);
 }
 
 function daysSince(iso) {
@@ -1781,6 +1797,21 @@ class Component extends DCLogic {
       blockedList: blockedHint && blockedHint.broken ? blockedHint.broken : [],
       applyBlockedHint: (blockedHint && blockedHint.ids)
         ? (() => this.addMany(blockedHint.ids)) : (() => {}),
+      quickParties: parties.filter(p => p.seats > 0).map(p => ({
+        id: p.id,
+        name: shortName(p.name),
+        seats: p.seats,
+        inCoalition: p.inCoalition,
+        dot: p.blocColor,
+        bg: p.inCoalition ? p.blocColor : 'var(--paper-raised)',
+        fg: p.inCoalition ? 'var(--paper)' : 'var(--ink)',
+        border: p.inCoalition ? p.blocColor : 'var(--rule-strong)',
+        opacity: p.hasConflictHint ? '0.55' : '1',
+        aria: `${p.name}, ${p.seats} seats` +
+          (p.inCoalition ? ', in your coalition' : '') +
+          '. Press to ' + (p.inCoalition ? 'remove' : 'add') + '.',
+        toggle: () => this.toggleAdd(p.id)
+      })),
       hasClosestHint: !!closestHint,
       closestHintText: closestHint ? `Add ${closestHint.names} to clear 61 (would reach ${closestHint.total})` : '',
       applyClosestHint: closestHint ? (() => this.addMany(closestHint.ids)) : (() => {}),

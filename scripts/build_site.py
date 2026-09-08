@@ -384,6 +384,22 @@ function leanSentence(a, live) {
          `${a.leanPolls} polls in the last 30 days.`;
 }
 
+/* Compact labels for the quick strip. The full names are kept everywhere the
+   reader has room to read them. */
+const SHORT_NAMES = {
+  'United Torah Judaism': 'UTJ',
+  'Religious Zionism': 'Rel. Zionism',
+  'Yisrael Beiteinu': 'Beiteinu',
+  'The Democrats': 'Democrats',
+  'Otzma Yehudit': 'Otzma',
+  'Amcha Yisrael': 'Amcha',
+  'The Reservists': 'Reservists',
+  'Blue & White': 'Blue & White'
+};
+function shortName(name) {
+  return SHORT_NAMES[name] || (name.length > 14 ? name.split(' ')[0] : name);
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -506,6 +522,9 @@ OVERLAY_OLD = 'style="position:fixed;inset:0;background:rgba(28,26,22,0.78);back
 OVERLAY_NEW = 'style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;z-index:50;"'
 PANEL_OLD = 'style="max-width:420px;width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:22px;position:relative;"'
 PANEL_NEW = 'style="max-width:min(640px,100%);width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px 28px;position:relative;max-height:calc(100vh - 40px);overflow-y:auto;"'
+
+
+QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 10px;min-height:32px;background:{{ q.bg }};color:{{ q.fg }};border:1px solid {{ q.border }};border-radius:var(--r-pill);cursor:pointer;opacity:{{ q.opacity }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button></sc-for></div></div>'
 
 
 def build(export_path, out_html):
@@ -1313,6 +1332,38 @@ def build(export_path, out_html):
         "grid-template-columns:repeat(auto-fit, minmax(210px, 1fr))",
         "grid-template-columns:repeat(auto-fit, minmax(250px, 1fr))",
         "bloc-grid-width")
+
+    # A complete party strip inside the first screenful. position:sticky is
+    # inert in the embed — the iframe is its own full height, so there is no
+    # scroll container for a header to pin to — and the page runs to 8,000px.
+    # Without this, adding or removing a party means scrolling to the grid and
+    # back to the total every time.
+    html = patch(
+        html,
+        '<sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">',
+        QUICK_STRIP + '<sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">',
+        "quick-strip-markup")
+
+    html = patch(
+        html,
+        "      hasClosestHint: !!closestHint,",
+        "      quickParties: parties.filter(p => p.seats > 0).map(p => ({\n"
+        "        id: p.id,\n"
+        "        name: shortName(p.name),\n"
+        "        seats: p.seats,\n"
+        "        inCoalition: p.inCoalition,\n"
+        "        dot: p.blocColor,\n"
+        "        bg: p.inCoalition ? p.blocColor : 'var(--paper-raised)',\n"
+        "        fg: p.inCoalition ? 'var(--paper)' : 'var(--ink)',\n"
+        "        border: p.inCoalition ? p.blocColor : 'var(--rule-strong)',\n"
+        "        opacity: p.hasConflictHint ? '0.55' : '1',\n"
+        "        aria: `${p.name}, ${p.seats} seats` +\n"
+        "          (p.inCoalition ? ', in your coalition' : '') +\n"
+        "          '. Press to ' + (p.inCoalition ? 'remove' : 'add') + '.',\n"
+        "        toggle: () => this.toggleAdd(p.id)\n"
+        "      })),\n"
+        "      hasClosestHint: !!closestHint,",
+        "quick-strip-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
