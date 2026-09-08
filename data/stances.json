@@ -1,0 +1,249 @@
+{
+  "_comment": "Short stance labels for the issues grid. Two per cell: a tone and the wording. Tone sets the colour and is one of 'a', 'b', 'mid' or 'none' — 'a' and 'b' are the two sides of that issue, so parties sharing a colour in a column are on the same side. It carries no approval: on annexation 'a' is for and on the draft 'a' is enforce. The full sourced sentence stays in each party's panel; this is only the scannable version. Drafted from those sentences — correct anything you would put differently.",
+  "_issues": [
+    {
+      "key": "annex",
+      "label": "Annexation",
+      "a": "For",
+      "b": "Against"
+    },
+    {
+      "key": "twoState",
+      "label": "Two states",
+      "a": "For",
+      "b": "Against"
+    },
+    {
+      "key": "draft",
+      "label": "Haredi draft",
+      "a": "Draft them",
+      "b": "Exempt them"
+    }
+  ],
+  "stances": {
+    "likud": {
+      "annex": [
+        "mid",
+        "Settlement, not annexation"
+      ],
+      "twoState": [
+        "b",
+        "Opposed"
+      ],
+      "draft": [
+        "b",
+        "Shields yeshiva students"
+      ]
+    },
+    "rzp": {
+      "annex": [
+        "a",
+        "Full annexation"
+      ],
+      "twoState": [
+        "b",
+        "Firmly opposed"
+      ],
+      "draft": [
+        "b",
+        "Broad exemptions"
+      ]
+    },
+    "otzma": {
+      "annex": [
+        "a",
+        "Sovereignty over the West Bank"
+      ],
+      "twoState": [
+        "b",
+        "Firmly opposed"
+      ],
+      "draft": [
+        "a",
+        "Enforce it on Haredim"
+      ]
+    },
+    "shas": {
+      "annex": [
+        "none",
+        "No fixed position"
+      ],
+      "twoState": [
+        "none",
+        "No fixed position"
+      ],
+      "draft": [
+        "b",
+        "Opposed — its defining issue"
+      ]
+    },
+    "utj": {
+      "annex": [
+        "none",
+        "No fixed position"
+      ],
+      "twoState": [
+        "none",
+        "No fixed position"
+      ],
+      "draft": [
+        "b",
+        "Opposed — its defining issue"
+      ]
+    },
+    "beiteinu": {
+      "annex": [
+        "mid",
+        "Separation, not annexation"
+      ],
+      "twoState": [
+        "mid",
+        "Skeptical"
+      ],
+      "draft": [
+        "a",
+        "Mandatory for Haredim"
+      ]
+    },
+    "yashar": {
+      "annex": [
+        "b",
+        "Opposed"
+      ],
+      "twoState": [
+        "none",
+        "No committed position"
+      ],
+      "draft": [
+        "a",
+        "Broader, more equal"
+      ]
+    },
+    "together": {
+      "annex": [
+        "b",
+        "Opposes full annexation"
+      ],
+      "twoState": [
+        "b",
+        "Not in the near term"
+      ],
+      "draft": [
+        "a",
+        "Broader, more equal"
+      ]
+    },
+    "democrats": {
+      "annex": [
+        "b",
+        "Opposed"
+      ],
+      "twoState": [
+        "a",
+        "Supports"
+      ],
+      "draft": [
+        "a",
+        "More equal; no blanket exemption"
+      ]
+    },
+    "reservists": {
+      "annex": [
+        "mid",
+        "Settlement, not annexation"
+      ],
+      "twoState": [
+        "b",
+        "Opposed"
+      ],
+      "draft": [
+        "a",
+        "Broader — its founding issue"
+      ]
+    },
+    "amcha_yisrael": {
+      "annex": [
+        "mid",
+        "Right-wing, no platform yet"
+      ],
+      "twoState": [
+        "b",
+        "Opposed"
+      ],
+      "draft": [
+        "none",
+        "No published position"
+      ]
+    },
+    "haredi_public": {
+      "annex": [
+        "none",
+        "No published position"
+      ],
+      "twoState": [
+        "none",
+        "No published position"
+      ],
+      "draft": [
+        "mid",
+        "Speaks for working Haredim"
+      ]
+    },
+    "raam": {
+      "annex": [
+        "b",
+        "Opposed"
+      ],
+      "twoState": [
+        "a",
+        "Supports"
+      ],
+      "draft": [
+        "none",
+        "Not a focus"
+      ]
+    },
+    "hadash_taal": {
+      "annex": [
+        "b",
+        "Strongly opposed"
+      ],
+      "twoState": [
+        "a",
+        "Supports, on 1967 lines"
+      ],
+      "draft": [
+        "a",
+        "Equal obligations"
+      ]
+    },
+    "blue_white": {
+      "annex": [
+        "b",
+        "Opposes unilateral annexation"
+      ],
+      "twoState": [
+        "mid",
+        "Open, but skeptical"
+      ],
+      "draft": [
+        "a",
+        "Mandatory and equal"
+      ]
+    },
+    "balad": {
+      "annex": [
+        "b",
+        "Strongly opposed"
+      ],
+      "twoState": [
+        "mid",
+        "One state of all its citizens"
+      ],
+      "draft": [
+        "none",
+        "Not a focus"
+      ]
+    }
+  }
+}

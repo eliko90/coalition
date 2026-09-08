@@ -136,6 +136,7 @@ const CANONICAL_URL = '__CANONICAL__';
 const POLLS_URL = 'data/polls.json';
 const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
+const STANCES_URL = 'data/stances.json';
 const STALE_AFTER_DAYS = 14;
 
 /* Shown when Ra'am is in a coalition with a non-Arab party. Overridden by
@@ -412,6 +413,19 @@ function overlayBox() {
   return { top: Math.max(0, VIEWPORT.offset), height: VIEWPORT.height };
 }
 
+/* Colour by side, not by approval: two parties sharing a colour in a column
+   are on the same side of that question. On annexation "a" is for it; on the
+   draft "a" is drafting them. The neutral pair keeps the grid from reading as
+   a scorecard. */
+const STANCE_TONES = {
+  a:    { bg: 'color-mix(in srgb, var(--navy) 13%, var(--paper-raised))',
+          fg: 'var(--ink)', border: 'color-mix(in srgb, var(--navy) 34%, transparent)' },
+  b:    { bg: 'color-mix(in srgb, var(--clay) 13%, var(--paper-raised))',
+          fg: 'var(--ink)', border: 'color-mix(in srgb, var(--clay) 34%, transparent)' },
+  mid:  { bg: 'var(--paper-raised)', fg: 'var(--ink-2)', border: 'var(--rule-strong)' },
+  none: { bg: 'transparent', fg: 'var(--ink-3)', border: 'var(--rule)' }
+};
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -463,16 +477,17 @@ LOAD_POLLS = r"""
     Promise.all([
       json(POLLS_URL),
       json(EXTRA_URL).catch(() => []),
-      json(COMMENTARY_URL).catch(() => null)
+      json(COMMENTARY_URL).catch(() => null),
+      json(STANCES_URL).catch(() => null)
     ])
-      .then(([live, extra, commentary]) => {
+      .then(([live, extra, commentary, stances]) => {
         if (!live || !live.parties || !live.source) throw new Error('bad shape');
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
         PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
         const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
         this.setState(st => ({
-          live: live, commentary: commentary, liveError: '',
+          live: live, commentary: commentary, stances: stances, liveError: '',
           coalition: (shared && !st.coalition.length) ? shared : st.coalition
         }));
       })
@@ -556,6 +571,10 @@ PANEL_NEW = 'style="max-width:min(640px,100%);width:100%;background:var(--paper-
 
 
 QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;"><span class="ek-meta" style="font-size:0.68rem;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</span><sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;gap:6px;flex:none;"><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ undo }}" aria-label="Undo the last change" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--ink-3);border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">↺ Undo</button></sc-if><button sc-camel-on-click="{{ clearAll }}" aria-label="Clear the coalition" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--clay-deep);border:1px solid var(--clay);border-radius:var(--r-pill);cursor:pointer;">Clear</button></span></sc-if></div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div>'
+
+
+ISSUES_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:26px 20px 0;">'
+ISSUES_GRID = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:30px 20px 6px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">WHERE THEY STAND</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">The three questions that draw the red lines above. Parties sharing a colour in a column are on the same side of it — the colour marks the side, not a verdict. Tap any party for the full position.</p><div style="overflow-x:auto;"><div style="min-width:520px;"><div style="display:grid;grid-template-columns:minmax(150px,1.1fr) repeat(3, minmax(120px,1fr));gap:6px;align-items:end;margin-bottom:6px;"><div></div><sc-for list="{{ issueCols }}" as="col" hint-placeholder-count="0"><div class="ek-meta" style="font-size:0.68rem;">{{ col.label }}</div></sc-for></div><sc-for list="{{ issueRows }}" as="row" hint-placeholder-count="0"><div style="display:grid;grid-template-columns:minmax(150px,1.1fr) repeat(3, minmax(120px,1fr));gap:6px;margin-bottom:6px;align-items:stretch;"><button sc-camel-on-click="{{ row.open }}" aria-label="{{ row.aria }}" style="display:flex;align-items:center;gap:7px;text-align:left;background:none;border:none;padding:6px 2px;cursor:pointer;font-family:var(--font-sans);font-weight:700;font-size:0.82rem;color:var(--ink);min-height:38px;"><span style="width:8px;height:8px;border-radius:50%;background:{{ row.color }};flex:none;"></span>{{ row.name }} <span style="font-weight:600;color:var(--ink-3);">{{ row.seats }}</span></button><sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="0"><div title="{{ c.full }}" style="background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }};border-radius:var(--r-sm);padding:7px 9px;font-family:var(--font-sans);font-size:0.76rem;line-height:1.3;display:flex;align-items:center;">{{ c.label }}</div></sc-for></div></sc-for></div></div></div></sc-if>'
 
 
 def move_scenarios(html):
@@ -1505,6 +1524,42 @@ def build(export_path, out_html):
         '<div style="max-width:1140px;margin:0 auto;padding:24px 20px 28px;">',
         '<div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">',
         "scenarios-padding")
+
+    # "Where they stand": the three questions that generate the red lines,
+    # side by side. The full sourced sentence stays in each party's panel.
+    html = patch(html, ISSUES_ANCHOR, ISSUES_GRID + ISSUES_ANCHOR, "issues-grid-markup")
+
+    html = patch(
+        html,
+        "      hasClosestHint: !!closestHint,",
+        "      hasIssues: !!(this.state.stances && this.state.stances.stances),\n"
+        "      issueCols: ((this.state.stances || {})._issues || []),\n"
+        "      issueRows: (() => {\n"
+        "        const st = this.state.stances;\n"
+        "        if (!st || !st.stances) return [];\n"
+        "        const cols = st._issues || [];\n"
+        "        return parties.filter(p => p.seats > 0).map(p => {\n"
+        "          const raw = PARTIES_VIEW.find(x => x.id === p.id) || {};\n"
+        "          const pos = raw.positions || {};\n"
+        "          const mine = st.stances[p.id] || {};\n"
+        "          return {\n"
+        "            id: p.id, name: p.name, seats: p.seats, color: p.blocColor,\n"
+        "            aria: `More about ${p.name}`,\n"
+        "            open: (e) => this.openInfo(p.id, e),\n"
+        "            cells: cols.map(col => {\n"
+        "              const cell = mine[col.key] || ['none', '—'];\n"
+        "              const tone = STANCE_TONES[cell[0]] || STANCE_TONES.none;\n"
+        "              return {\n"
+        "                label: cell[1],\n"
+        "                full: pos[col.key] || cell[1],\n"
+        "                bg: tone.bg, fg: tone.fg, border: tone.border\n"
+        "              };\n"
+        "            })\n"
+        "          };\n"
+        "        });\n"
+        "      })(),\n"
+        "      hasClosestHint: !!closestHint,",
+        "issues-grid-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
