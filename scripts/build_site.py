@@ -1290,6 +1290,16 @@ def build(export_path, out_html):
         "letter-spacing:0.02em;padding:6px 11px;min-height:32px;",
         "card-miss-size")
 
+    # "Why this won't work" was capped at 160px with its own scrollbar. With
+    # the vetoes now carrying their sourcing, that hid both the heading and
+    # whichever refusal came last — the one thing on the page a reader most
+    # needs to read in full.
+    html = patch(
+        html,
+        "border-radius:var(--r-md);padding:12px 14px;max-height:160px;overflow-y:auto;",
+        "border-radius:var(--r-md);padding:12px 14px;",
+        "conflicts-no-clip")
+
     # ---- byline markup ----------------------------------------------------
     html = patch(
         html,

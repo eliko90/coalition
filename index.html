@@ -404,7 +404,7 @@
         </div>
       </sc-if>
       <sc-if value="{{ hasConflicts }}" hint-placeholder-val="{{ false }}">
-        <div style="margin-top:30px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-md);padding:12px 14px;max-height:160px;overflow-y:auto;">
+        <div style="margin-top:30px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-md);padding:12px 14px;">
           <div class="ek-h4" style="color:var(--clay-deep);margin:0 0 6px;font-size:1.05rem;">Why this won't work</div>
           <sc-for list="{{ conflicts }}" as="c" hint-placeholder-count="0">
             <p class="ek-body" style="font-size:0.92rem;margin:0 0 4px;color:var(--ink);line-height:1.4;"><strong>{{ c.a }}</strong> has ruled out sitting with <strong>{{ c.b }}</strong> — {{ c.text }}</p>
