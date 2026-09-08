@@ -13,7 +13,9 @@
   clipboard-write and web-share, the share menu silently fails.
 -->
 
-<div id="kcb-wrap" style="max-width:960px;margin:0 auto;">
+<!-- No width cap here: the app sets its own, so changing how wide it
+     runs never means re-pasting this block again. -->
+<div id="kcb-wrap" style="max-width:100%;margin:0 auto;">
   <iframe
     id="kcb-frame"
     src="https://eliko90.github.io/coalition/"

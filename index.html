@@ -308,7 +308,7 @@
     <div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--font-sans);font-size:0.9rem;font-weight:600;padding:10px 16px;border-radius:var(--r-pill);box-shadow:var(--shadow-lg);z-index:80;max-width:90vw;text-align:center;">{{ toastMsg }}</div>
   </sc-if>
 
-  <div style="max-width:960px;margin:0 auto;padding:36px 20px 0;">
+  <div style="max-width:1140px;margin:0 auto;padding:36px 20px 0;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
       <div>
         <div style="width:40px;height:3px;background:var(--clay);margin-bottom:10px;"></div>
@@ -336,8 +336,8 @@
     </div>
   </div>
 
-  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
-    <div style="max-width:960px;margin:0 auto;padding:14px 20px 16px;">
+  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+    <div style="max-width:1140px;margin:0 auto;padding:14px 20px 16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
         <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
           <span style="font-family:var(--font-serif);font-weight:600;font-size:2.8rem;line-height:1;letter-spacing:-0.02em;color:var(--ink);">{{ totalSeats }}</span>
@@ -444,7 +444,7 @@
   </div>
 
   <div style="background:var(--paper-sunken);border-bottom:1px solid var(--rule);">
-  <div style="max-width:960px;margin:0 auto;padding:24px 20px 28px;">
+  <div style="max-width:1140px;margin:0 auto;padding:24px 20px 28px;">
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
       <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
       <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
@@ -460,7 +460,7 @@
     </div>
   </div>
 
-  <div style="max-width:960px;margin:0 auto;padding:22px 20px 0;">
+  <div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
       <div style="display:flex;align-items:baseline;gap:12px;">
         <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
@@ -504,7 +504,7 @@
     </sc-if>
   </div>
 
-  <div style="max-width:960px;margin:0 auto;padding:26px 20px 0;">
+  <div style="max-width:1140px;margin:0 auto;padding:26px 20px 0;">
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
       <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
       <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">ALL PARTIES <span style="color:var(--ink-3);font-weight:600;">· 120 seats</span></div>
@@ -515,7 +515,7 @@
       <div style="flex:1;height:2px;background:linear-gradient(to right, #B0492C, #4C6A3D, #A6763D, #6E7B8A, #1E2C36);border-radius:var(--r-pill);"></div>
       <span class="ek-meta" style="color:var(--ink-3);white-space:nowrap;">RIGHT</span>
     </div>
-    <div class="kb-blocs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:24px;align-items:start;">
+    <div class="kb-blocs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:24px;align-items:start;">
       <sc-for list="{{ blocs }}" as="bloc" hint-placeholder-count="4">
         <div>
           <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:12px;">
@@ -615,7 +615,7 @@
   </sc-if>
 
   <div style="background:var(--navy);margin-top:48px;">
-  <div style="max-width:960px;margin:0 auto;padding:44px 20px 52px;">
+  <div style="max-width:1140px;margin:0 auto;padding:44px 20px 52px;">
     <div style="padding:0 0 30px;">
       <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;">
         <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
@@ -653,7 +653,7 @@
   </div>
   </div>
 
-  <div style="max-width:960px;margin:0 auto;padding:0 20px;">
+  <div style="max-width:1140px;margin:0 auto;padding:0 20px;">
     <div style="padding:28px 0 40px;">
       <div style="width:40px;height:3px;background:var(--clay);margin-bottom:14px;"></div>
       <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-2);margin-bottom:6px;">Why these numbers</div>

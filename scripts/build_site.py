@@ -1300,6 +1300,20 @@ def build(export_path, out_html):
         "border-radius:var(--r-md);padding:12px 14px;",
         "conflicts-no-clip")
 
+    # The design centres everything in a 960px column. Embedded in a theme that
+    # offers 1140, that left a wide empty margin either side and pushed the
+    # party grid further down the page than it needed to be. The embed wrapper
+    # no longer caps width at all, so this number is the only one to change.
+    html = patch(html, "max-width:960px", "max-width:1140px", "container-width", count=9)
+
+    # More width means more party cards per row, which is the part that
+    # actually shortens the scroll.
+    html = patch(
+        html,
+        "grid-template-columns:repeat(auto-fit, minmax(210px, 1fr))",
+        "grid-template-columns:repeat(auto-fit, minmax(250px, 1fr))",
+        "bloc-grid-width")
+
     # ---- byline markup ----------------------------------------------------
     html = patch(
         html,
