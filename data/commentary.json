@@ -94,7 +94,7 @@
         "beiteinu",
         "raam"
       ],
-      "note": "Still four short, and it crosses two declared refusals: Bennett has ruled out a repeat 'post-October 7', Lieberman has ruled out relying on Ra'am at all. Only Eisenkot and Golan are open to it."
+      "note": "It crosses two declared refusals: Bennett has ruled out a repeat 'post-October 7', and Lieberman has ruled out relying on Ra'am at all. Only Eisenkot and Golan are open to it."
     },
     {
       "id": "current_winter",
@@ -107,7 +107,7 @@
         "utj",
         "amcha_yisrael"
       ],
-      "note": "The Netanyahu bloc at its ceiling. There is no further seat available to it that is not Arab-majority, which is why Winter's four seats do not solve the problem Netanyahu warned they would create."
+      "note": "The Netanyahu bloc at its ceiling, {net}. There is no further seat available to it that is not Arab-majority, which is why Winter's seats do not solve the problem Netanyahu warned they would create."
     }
   ],
   "_thresholdComment": "The 'if they miss' buttons. `drop` lists the parties that fail to clear 3.25%; their votes are redistributed and the whole board recomputes, so the notes stay qualitative and the numbers come from the live poll.",
@@ -116,7 +116,7 @@
       "id": "all",
       "label": "Everyone clears",
       "drop": [],
-      "note": "Deadlock. Neither bloc reaches 61, and the only majority runs through Ra'am — which Bennett and Lieberman have both ruled out. A minority government or another election."
+      "note": "Netanyahu {net}, the change bloc {change}, {zionist} once Hendel joins. Whether that is enough depends on the poll — and beyond it the only seats left are Ra'am's, which Bennett and Lieberman have both ruled out relying on."
     },
     {
       "id": "winter",
@@ -124,7 +124,7 @@
       "drop": [
         "amcha_yisrael"
       ],
-      "note": "The biggest single swing available on election night: Winter's votes redistribute, the Netanyahu bloc drops three and Eisenkot's side gains three. Netanyahu warned his own camp about exactly this."
+      "note": "Winter's votes redistribute: the Netanyahu bloc lands on {net}, Eisenkot's side on {zionist} with Hendel. Netanyahu warned his own camp about exactly this."
     },
     {
       "id": "smotrich",
@@ -132,7 +132,7 @@
       "drop": [
         "rzp"
       ],
-      "note": "Religious Zionism has been shown at zero by several pollsters. Losing it costs the Netanyahu bloc more than Winter does, and hands Eisenkot's side the seats — without needing Winter to fail at all."
+      "note": "Religious Zionism has been shown at zero by several pollsters. Losing it puts the Netanyahu bloc on {net} against {zionist} — and costs him more than losing Winter does."
     },
     {
       "id": "winter_smotrich",
@@ -141,7 +141,7 @@
         "amcha_yisrael",
         "rzp"
       ],
-      "note": "The Netanyahu bloc collapses and a Zionist coalition — no Ra'am needed — comes within one seat of governing. The best case available to Eisenkot."
+      "note": "The Netanyahu bloc collapses to {net}, and a Zionist coalition with no Ra'am in it reaches {zionist}. The best case available to Eisenkot."
     },
     {
       "id": "hendel",
@@ -149,7 +149,7 @@
       "drop": [
         "reservists"
       ],
-      "note": "Barely moves the blocs, and it costs Eisenkot his only majority: the route through Ra'am falls below 61, so even reaching for it leaves him short."
+      "note": "Barely moves the blocs — {net} against {change} — but it takes away the four seats that were Eisenkot's margin, and even reaching for Ra'am only gets him to {withRaam}."
     },
     {
       "id": "raam",
@@ -157,7 +157,7 @@
       "drop": [
         "raam"
       ],
-      "note": "Helps Eisenkot's Zionist total and removes his majority at the same time, since the seats that got him to 61 were Ra'am's. Still nobody governs."
+      "note": "Ra'am's seats redistribute and Eisenkot's Zionist total rises to {zionist}, while Netanyahu lands on {net}. The route that ran through Ra'am is simply gone."
     }
   ]
 }

@@ -438,6 +438,29 @@ const STANCE_TONES = {
   none: { bg: 'transparent', fg: 'var(--ink-3)', border: 'var(--rule)' }
 };
 
+/* Editorial notes carry numbers, and the numbers change with the poll. Written
+   out they go wrong the moment a reader switches pollster — a note reading
+   "within one seat of governing" sat above a board saying "Governs, +4 to
+   spare". So a note writes {net}, {change}, {zionist} or {withRaam} and the
+   figure is filled from whatever is on screen. */
+function fillNote(text, view) {
+  if (!text) return '';
+  const sum = pred => view.reduce((n, p) => n + (pred(p) ? p.seats : 0), 0);
+  const seatsOf = id => {
+    const p = view.find(x => x.id === id);
+    return p ? p.seats : 0;
+  };
+  const change = sum(p => p.bloc === 'change');
+  const vals = {
+    net: sum(p => p.bloc === 'netanyahu'),
+    change: change,
+    zionist: change + seatsOf('reservists'),
+    withRaam: change + seatsOf('reservists') + seatsOf('raam')
+  };
+  return text.replace(/\{(net|change|zionist|withRaam)\}/g,
+                      (m, k) => String(vals[k]));
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -573,7 +596,7 @@ KM_NEW = '{{ kingmakerNoneText }}'
 
 STICKY = '<div style="position:sticky;top:0;z-index:5;background:color-mix('
 MISS_BTN = '<sc-if value="{{ infoView.canMiss }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ infoView.toggleMiss }}" style="margin:0 0 16px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:transparent;color:var(--clay-deep);border:1.5px dashed var(--clay);border-radius:var(--r-sm);cursor:pointer;">{{ infoView.missLabel }}</button></sc-if>'
-MISS_BANNER = '<sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if>'
+MISS_BANNER = '<sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} {{ droppedVerb }} the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if>'
 
 
 CARD_MISS_OLD = '<sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">\n                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>'
@@ -1857,6 +1880,24 @@ def build(export_path, out_html):
         "    const hintKey = [...coalition].sort().join(',') + '|' +\n"
         "      PARTIES_VIEW.map(p => p.id + ':' + p.seats).join(',');",
         "hint-cache-key")
+
+    # Route both editorial notes through the interpolator.
+    for old, new, name in [
+        ("      presetNote: this.state.presetNote || '',",
+         "      presetNote: fillNote(this.state.presetNote, PARTIES_VIEW),", "preset-note-fill"),
+        ("      thresholdNote: this.state.thresholdNote || '',",
+         "      thresholdNote: fillNote(this.state.thresholdNote, PARTIES_VIEW),",
+         "threshold-note-fill"),
+    ]:
+        html = patch(html, old, new, name)
+
+    # "Short by 1 seats"
+    html = patch(
+        html,
+        "        statusHeadline = `Short by ${61 - totalSeats} seats`;",
+        "        statusHeadline = `Short by ${61 - totalSeats} `\n"
+        "          + (61 - totalSeats === 1 ? 'seat' : 'seats');",
+        "short-by-plural")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

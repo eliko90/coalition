@@ -342,7 +342,7 @@
     </div>
   </div>
 
-  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div><sc-if value="{{ hasThresholdNote }}" hint-placeholder-val="{{ false }}"><div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">{{ thresholdNote }}</div></sc-if></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} {{ droppedVerb }} the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div><sc-if value="{{ hasThresholdNote }}" hint-placeholder-val="{{ false }}"><div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">{{ thresholdNote }}</div></sc-if></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
     <div style="max-width:1140px;margin:0 auto;padding:14px 20px 16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
         <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
@@ -1048,6 +1048,29 @@ const STANCE_TONES = {
   none: { bg: 'transparent', fg: 'var(--ink-3)', border: 'var(--rule)' }
 };
 
+/* Editorial notes carry numbers, and the numbers change with the poll. Written
+   out they go wrong the moment a reader switches pollster — a note reading
+   "within one seat of governing" sat above a board saying "Governs, +4 to
+   spare". So a note writes {net}, {change}, {zionist} or {withRaam} and the
+   figure is filled from whatever is on screen. */
+function fillNote(text, view) {
+  if (!text) return '';
+  const sum = pred => view.reduce((n, p) => n + (pred(p) ? p.seats : 0), 0);
+  const seatsOf = id => {
+    const p = view.find(x => x.id === id);
+    return p ? p.seats : 0;
+  };
+  const change = sum(p => p.bloc === 'change');
+  const vals = {
+    net: sum(p => p.bloc === 'netanyahu'),
+    change: change,
+    zionist: change + seatsOf('reservists'),
+    withRaam: change + seatsOf('reservists') + seatsOf('raam')
+  };
+  return text.replace(/\{(net|change|zionist|withRaam)\}/g,
+                      (m, k) => String(vals[k]));
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -1503,7 +1526,8 @@ class Component extends DCLogic {
         statusHeadline = totalSeats === 61 ? 'Governs — exactly 61' : `Governs — +${totalSeats - 61} to spare`;
       } else {
         statusColor = 'var(--danger)';
-        statusHeadline = `Short by ${61 - totalSeats} seats`;
+        statusHeadline = `Short by ${61 - totalSeats} `
+          + (61 - totalSeats === 1 ? 'seat' : 'seats');
       }
     }
 
@@ -1874,7 +1898,7 @@ class Component extends DCLogic {
           apply: () => { if (moot) return; this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' }); }
         };
       }),
-      thresholdNote: this.state.thresholdNote || '',
+      thresholdNote: fillNote(this.state.thresholdNote, PARTIES_VIEW),
       hasThresholdNote: !!this.state.thresholdNote && dropped.length > 0,
       hasDropped: dropped.length > 0,
       droppedVerb: dropped.length === 1 ? 'misses' : 'miss',
@@ -1927,7 +1951,7 @@ class Component extends DCLogic {
       hasRobustness: !conflicts.length && !!robustness(
         live && live.history, coalition, governs),
       hasPresetNote: !!this.state.presetNote,
-      presetNote: this.state.presetNote || '',
+      presetNote: fillNote(this.state.presetNote, PARTIES_VIEW),
       hasRaamNote: coalitionSet.has('raam') && coalitionPartiesRaw.some(p => p.bloc !== 'arab'),
       showSubscribeNudge: coalition.length >= 3 && !this.state.nudgeDismissed,
       dismissNudge: () => this.setState({ nudgeDismissed: true }),
