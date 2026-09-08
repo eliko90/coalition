@@ -327,7 +327,7 @@
         <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
         <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
       </div>
-      <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div style="font-family:var(--font-serif);font-weight:600;font-size:1.35rem;line-height:1;color:var(--paper);">{{ k.odds }}%</div><div class="ek-small" style="margin-top:3px;color:rgba(246,242,233,0.86);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst's ranking, not a forecast.</div></div></sc-if></div>
+      <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst's ranking, not a forecast.</div></div></sc-if></div>
     </div></div></div><div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
       Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}<sc-if value="{{ hasCountdown }}" hint-placeholder-val="{{ false }}"><span> <span style="color:var(--clay);">·</span> <strong style="color:var(--ink-2);">{{ countdown }}</strong></span></sc-if>
       <sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div></sc-if>
@@ -466,7 +466,7 @@
   <div style="background:var(--paper-sunken);border-bottom:1px solid var(--rule);">
   
 
-  <div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">
+  <sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div></div></sc-if><div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
       <div style="display:flex;align-items:baseline;gap:12px;">
         <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
@@ -510,7 +510,7 @@
     </sc-if>
   </div>
 
-  <sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:30px 20px 6px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">WHERE THEY STAND</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">The three questions that draw the red lines above. Parties sharing a colour in a column are on the same side of it — the colour marks the side, not a verdict. Tap any party for the full position.</p><div style="overflow-x:auto;"><div style="min-width:{{ issueMinWidth }};"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;align-items:end;margin-bottom:6px;"><div></div><sc-for list="{{ issueCols }}" as="col" hint-placeholder-count="0"><div class="ek-meta" style="font-size:0.68rem;">{{ col.label }}</div></sc-for></div><sc-for list="{{ issueRows }}" as="row" hint-placeholder-count="0"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;margin-bottom:6px;align-items:stretch;"><button sc-camel-on-click="{{ row.open }}" aria-label="{{ row.aria }}" style="display:flex;align-items:center;gap:7px;text-align:left;background:none;border:none;padding:6px 2px;cursor:pointer;font-family:var(--font-sans);font-weight:700;font-size:0.82rem;color:var(--ink);min-height:38px;"><span style="width:8px;height:8px;border-radius:50%;background:{{ row.color }};flex:none;"></span>{{ row.name }} <span style="font-weight:600;color:var(--ink-3);">{{ row.seats }}</span></button><sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="0"><div title="{{ c.full }}" style="background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }};border-radius:var(--r-sm);padding:7px 9px;font-family:var(--font-sans);font-size:0.76rem;line-height:1.3;display:flex;align-items:center;">{{ c.label }}</div></sc-for></div></sc-for></div></div></div></sc-if><div style="max-width:1140px;margin:0 auto;padding:26px 20px 0;">
+  <sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:30px 20px 6px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">WHERE THEY STAND</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">The three questions that draw the red lines above. Parties sharing a colour in a column are on the same side of it — the colour marks the side, not a verdict. Tap any party for the full position.</p><div style="overflow-x:auto;"><div style="min-width:{{ issueMinWidth }};"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;align-items:end;margin-bottom:6px;"><div></div><sc-for list="{{ issueCols }}" as="col" hint-placeholder-count="0"><div class="ek-meta" style="font-size:0.68rem;">{{ col.label }}</div></sc-for></div><sc-for list="{{ issueRows }}" as="row" hint-placeholder-count="0"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;margin-bottom:6px;align-items:stretch;"><button sc-camel-on-click="{{ row.open }}" aria-label="{{ row.aria }}" style="display:flex;align-items:center;gap:7px;text-align:left;background:none;border:none;padding:6px 2px;cursor:pointer;font-family:var(--font-sans);font-weight:700;font-size:0.82rem;color:var(--ink);min-height:38px;"><span style="width:8px;height:8px;border-radius:50%;background:{{ row.color }};flex:none;"></span>{{ row.name }} <span style="font-weight:600;color:var(--ink-3);">{{ row.seats }}</span></button><sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="0"><div title="{{ c.full }}" style="background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }};border-radius:var(--r-sm);padding:7px 9px;font-family:var(--font-sans);font-size:0.76rem;line-height:1.3;display:flex;align-items:center;">{{ c.label }}</div></sc-for></div></sc-for></div></div></div></sc-if><div style="max-width:1140px;margin:0 auto;padding:26px 20px 0;">
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
       <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
       <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">ALL PARTIES <span style="color:var(--ink-3);font-weight:600;">· 120 seats</span></div>
@@ -632,7 +632,7 @@
       <sc-for list="{{ outlooks }}" as="o" hint-placeholder-count="3">
         <button sc-camel-on-click="{{ o.load }}" class="kb-card" style="text-align:left;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:22px 20px;cursor:pointer;box-shadow:var(--shadow-sm);font-family:var(--font-sans);display:flex;flex-direction:column;gap:12px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
-            <span style="font-family:var(--font-serif);font-weight:600;font-size:2.2rem;line-height:1;color:var(--clay);">{{ o.odds }}<span style="font-size:1.1rem;">%</span></span>
+            <span style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--clay);">{{ o.standing }}</span>
             <span class="ek-meta" style="color:var(--ink-3);">{{ o.seats }} SEATS</span>
           </div>
           <div style="font-family:var(--font-serif);font-weight:600;font-size:1.15rem;line-height:1.25;color:var(--ink);min-height:2.5em;display:flex;align-items:flex-start;">{{ o.label }}</div>
@@ -1162,9 +1162,16 @@ class Component extends DCLogic {
         PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
         const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
+        // With nothing shared and nothing built, open on the likeliest outcome
+        // rather than an empty board — the hemicycle should say something the
+        // moment it appears.
+        const known = new Set(PARTIES_RAW.filter(p => p.seats > 0).map(p => p.id));
+        const top = (commentary && commentary.outlooks && commentary.outlooks[0]) || null;
+        const opening = top ? (top.ids || []).filter(id => known.has(id)) : [];
         this.setState(st => ({
           live: live, commentary: commentary, stances: stances, liveError: '',
-          coalition: (shared && !st.coalition.length) ? shared : st.coalition
+          coalition: shared && !st.coalition.length ? shared
+            : (!st.coalition.length && !st.touched ? opening : st.coalition)
         }));
       })
       .catch(err => {
@@ -1427,6 +1434,9 @@ class Component extends DCLogic {
      be a guess stacked on a guess, and the banner could only explain one. */
   pickPoll(id) { this.setState({ pollId: id, dropped: [] }); }
 
+  /* Once the reader has changed the board it is theirs; nothing reopens it. */
+  _touch() { if (!this.state.touched) this.setState({ touched: true }); }
+
   byId(id) { return PARTIES_VIEW.find(p => p.id === id); }
 
   toggleAdd(id) {
@@ -1527,7 +1537,8 @@ class Component extends DCLogic {
 
     let closestHint = null;
     let blockedHint = null;
-    const hintKey = [...coalition].sort().join(',');
+    const hintKey = [...coalition].sort().join(',') + '|' +
+      PARTIES_VIEW.map(p => p.id + ':' + p.seats).join(',');
     if (this._hintCache && this._hintCache.key === hintKey) {
       closestHint = this._hintCache.value;
       blockedHint = this._hintCache.blocked;
@@ -1784,9 +1795,10 @@ class Component extends DCLogic {
 
     const kingmaker = kingmakerNow();
 
-    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map(o => {
+    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map((o, i) => {
       const seats = o.ids.reduce((sum, id) => sum + (this.byId(id)?.seats || 0), 0);
-      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats, load: () => { this.loadPreset(o.ids); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); } };
+      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats,
+        standing: ['Most likely', 'Next most likely', 'Outside chance'][i] || 'Also possible', load: () => { this.loadPreset(o.ids); if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' }); } };
     });
 
     return {
@@ -1811,7 +1823,7 @@ class Component extends DCLogic {
             + `refusals are summaries of parties' publicly stated coalition positions.`
           : 'Seat projections as recorded on Wikipedia\'s polling page for the 2026 Israeli '
             + 'legislative election.'),
-      topCalls: outlooks.slice(0, 2).map(o => ({ odds: o.odds, label: o.label })),
+      topCalls: outlooks.slice(0, 2).map(o => ({ standing: o.standing, label: o.label })),
       hasTopCalls: outlooks.length > 1,
       hasDataNote: !!dataNote,
       hasPollPicker: alternates.length > 1,
@@ -1840,15 +1852,26 @@ class Component extends DCLogic {
         const drop = t.drop || [];
         const same = drop.length === dropped.length &&
           drop.every(id => dropped.includes(id));
+        // In a poll where the party already sits at zero there is
+        // nothing to redistribute, so the scenario says nothing.
+        const moot = drop.length > 0 && drop.every(id => {
+          const p = PARTIES_RAW.find(x => x.id === id);
+          return !p || p.seats === 0;
+        });
         // Recompute against this scenario, so each button carries its own answer.
         return {
-          label: t.label,
+          label: moot ? t.label + ' \u2014 already does' : t.label,
+          moot,
+          title: moot
+            ? 'This poll already has them below the threshold'
+            : (t.note || ''),
+          opacity: moot ? '0.45' : '1',
           active: same,
           bg: same ? 'var(--clay)' : 'transparent',
           fg: same ? 'var(--paper)' : 'var(--ink)',
           border: same ? 'var(--clay)' : 'var(--rule-strong)',
           borderStyle: drop.length ? 'dashed' : 'solid',
-          apply: () => this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' })
+          apply: () => { if (moot) return; this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' }); }
         };
       }),
       thresholdNote: this.state.thresholdNote || '',

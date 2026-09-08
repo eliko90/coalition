@@ -498,9 +498,16 @@ LOAD_POLLS = r"""
         PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
         const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
+        // With nothing shared and nothing built, open on the likeliest outcome
+        // rather than an empty board — the hemicycle should say something the
+        // moment it appears.
+        const known = new Set(PARTIES_RAW.filter(p => p.seats > 0).map(p => p.id));
+        const top = (commentary && commentary.outlooks && commentary.outlooks[0]) || null;
+        const opening = top ? (top.ids || []).filter(id => known.has(id)) : [];
         this.setState(st => ({
           live: live, commentary: commentary, stances: stances, liveError: '',
-          coalition: (shared && !st.coalition.length) ? shared : st.coalition
+          coalition: shared && !st.coalition.length ? shared
+            : (!st.coalition.length && !st.touched ? opening : st.coalition)
         }));
       })
       .catch(err => {
@@ -595,12 +602,15 @@ METHOD_P2_OLD = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;tex
 METHOD_P2_NEW = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>'
 
 
+COALITION_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">'
 THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}">'
-THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }}</button></sc-for></div></div></sc-if>'
+THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div></div></sc-if>'
 
 
+ODDS_OLD = '<span style="font-family:var(--font-serif);font-weight:600;font-size:2.2rem;line-height:1;color:var(--clay);">{{ o.odds }}<span style="font-size:1.1rem;">%</span></span>'
+ODDS_NEW = '<span style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--clay);">{{ o.standing }}</span>'
 STATE_P_OLD = '<p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>'
-STATE_P_NEW = '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div style="font-family:var(--font-serif);font-weight:600;font-size:1.35rem;line-height:1;color:var(--paper);">{{ k.odds }}%</div><div class="ek-small" style="margin-top:3px;color:rgba(246,242,233,0.86);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst\'s ranking, not a forecast.</div></div></sc-if></div>'
+STATE_P_NEW = '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst\'s ranking, not a forecast.</div></div></sc-if></div>'
 BYLINE_META = '<div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">'
 BLOCS_TAIL = '</div>\n            </sc-for>\n          </div>\n        </div>\n      </sc-for>\n    </div>'
 
@@ -1398,7 +1408,10 @@ def build(export_path, out_html):
 
   /* Switching poll clears any threshold hypothetical: the two together would
      be a guess stacked on a guess, and the banner could only explain one. */
-  pickPoll(id) { this.setState({ pollId: id, dropped: [] }); }""",
+  pickPoll(id) { this.setState({ pollId: id, dropped: [] }); }
+
+  /* Once the reader has changed the board it is theirs; nothing reopens it. */
+  _touch() { if (!this.state.touched) this.setState({ touched: true }); }""",
         "pick-poll-method")
 
     html = patch(
@@ -1686,7 +1699,7 @@ def build(export_path, out_html):
 
     # "If they miss the threshold": the same redistribution the party toggles
     # use, offered as the scenarios that actually decide the election.
-    html = patch(html, THRESH_ANCHOR, THRESH_BLOCK + THRESH_ANCHOR, "threshold-block-markup")
+    html = patch(html, COALITION_ANCHOR, THRESH_BLOCK + COALITION_ANCHOR, "threshold-block-markup")
 
     html = patch(
         html,
@@ -1696,15 +1709,26 @@ def build(export_path, out_html):
         "        const drop = t.drop || [];\n"
         "        const same = drop.length === dropped.length &&\n"
         "          drop.every(id => dropped.includes(id));\n"
+        "        // In a poll where the party already sits at zero there is\n"
+        "        // nothing to redistribute, so the scenario says nothing.\n"
+        "        const moot = drop.length > 0 && drop.every(id => {\n"
+        "          const p = PARTIES_RAW.find(x => x.id === id);\n"
+        "          return !p || p.seats === 0;\n"
+        "        });\n"
         "        // Recompute against this scenario, so each button carries its own answer.\n"
         "        return {\n"
-        "          label: t.label,\n"
+        "          label: moot ? t.label + ' \\u2014 already does' : t.label,\n"
+        "          moot,\n"
+        "          title: moot\n"
+        "            ? 'This poll already has them below the threshold'\n"
+        "            : (t.note || ''),\n"
+        "          opacity: moot ? '0.45' : '1',\n"
         "          active: same,\n"
         "          bg: same ? 'var(--clay)' : 'transparent',\n"
         "          fg: same ? 'var(--paper)' : 'var(--ink)',\n"
         "          border: same ? 'var(--clay)' : 'var(--rule-strong)',\n"
         "          borderStyle: drop.length ? 'dashed' : 'solid',\n"
-        "          apply: () => this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' })\n"
+        "          apply: () => { if (moot) return; this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' }); }\n"
         "        };\n"
         "      }),\n"
         "      thresholdNote: this.state.thresholdNote || '',\n"
@@ -1795,10 +1819,39 @@ def build(export_path, out_html):
     html = patch(
         html,
         "      hasDataNote: !!dataNote,",
-        "      topCalls: outlooks.slice(0, 2).map(o => ({ odds: o.odds, label: o.label })),\n"
+        "      topCalls: outlooks.slice(0, 2).map(o => ({ standing: o.standing, label: o.label })),\n"
         "      hasTopCalls: outlooks.length > 1,\n"
         "      hasDataNote: !!dataNote,",
         "state-of-play-aside-view")
+
+    # A percentage implies a model. There is no model — it is a considered
+    # ranking, so it is presented as one. The order still comes from the odds
+    # in commentary.json; only the number stops being shown.
+    html = patch(html, ODDS_OLD, ODDS_NEW, "outlook-odds-to-ranking")
+
+    html = patch(
+        html,
+        "      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats,",
+        "      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats,\n"
+        "        standing: ['Most likely', 'Next most likely', 'Outside chance'][i] || 'Also possible',",
+        "outlook-standing")
+
+    html = patch(
+        html,
+        "    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map(o => {",
+        "    const outlooks = ((commentary && commentary.outlooks) || OUTLOOKS).map((o, i) => {",
+        "outlook-index")
+
+    # The hint cache was keyed on which parties are selected, but the answer
+    # also depends on how many seats they have. Switching poll, or pushing a
+    # party under the threshold, kept the previous verdict — so a coalition
+    # that now governs at 61 still carried "nothing reaches 61 from here".
+    html = patch(
+        html,
+        "    const hintKey = [...coalition].sort().join(',');",
+        "    const hintKey = [...coalition].sort().join(',') + '|' +\n"
+        "      PARTIES_VIEW.map(p => p.id + ':' + p.seats).join(',');",
+        "hint-cache-key")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
