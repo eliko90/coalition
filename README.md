@@ -136,17 +136,32 @@ human: a party in the polls but not on the board, a party on the board that has
 stopped being polled, seats not adding to 120, a poll gone stale. Readers never
 see it.
 
-## What the live numbers changed
+## What the live data has changed since the design
 
-As of the Kantar poll of 3 Sep 2026, against the snapshot the design was built
-on (9 Aug):
+The design was built on a 9 August snapshot. Since then, from the live feed and
+a fact-check of the red lines:
 
-- **Yashar has overtaken Likud**, 24 to 21. The baked-in text said Likud led by one.
-- **"Change bloc, with Ra'am" now reaches 60, not 61.** It was the leading path
-  to a government; it no longer clears on its own.
-- **Amcha Yisrael** did not exist in August and now polls around four seats.
-- **Balad and Erdan–Edelstein** have stopped appearing in polls at all.
+- **Yashar leads Likud**, 23 to 20. The baked-in text said Likud led by one.
+- **Zionist Home dissolved** on 6 Sep — Tropper joined Yashar, Hendel kept the
+  party and merged with the New Economic Party as **The Reservists**.
+- **Amcha Yisrael** (Ofer Winter) did not exist in August and now polls four.
+- **Erdan-Edelstein withdrew**; Balad is no longer polled separately.
+- **Three Ra'am refusals were missing** — Yashar, Beyachad and Yisrael Beiteinu
+  have all declared they will not rely on it, as has every change-bloc leader
+  except Yair Golan. Recorded as soft: Bennett signed that pledge in 2021 and
+  broke it within months.
+- **Yashar refusing Likud was missing too.** Without it the solver offered a
+  Netanyahu-led government containing Eisenkot as the only path to 61.
 
-`data/commentary.json` has been updated to match. The three scenarios under
-"What happens next" and their odds are still the August ones and are worth a
-fresh pass — they live in `OUTLOOKS` in the design.
+With the red lines complete, no combination reaches 61 without crossing one.
+
+Party data lives in `data/parties-extra.json`, prose in `data/commentary.json` —
+both editable on GitHub without a rebuild.
+
+### Still open
+
+- Eisenkot is preparing a **minority government** of 58-59 seats, governing with
+  Arab parties supporting from outside rather than joining. The board only knows
+  61 in-coalition seats, so it cannot show the route currently most likely.
+- The vetoes are still unsourced on the page itself. Each one is now accurate,
+  but a reader cannot check it without taking your word.
