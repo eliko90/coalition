@@ -408,9 +408,19 @@ function shortName(name) {
    is the only one that knows, so it reports the visible slice and the overlay
    is positioned absolutely over that instead. */
 let VIEWPORT = null;   // {offset, height} in this document's coordinates
-function overlayBox() {
-  if (!VIEWPORT || !VIEWPORT.height) return null;
-  return { top: Math.max(0, VIEWPORT.offset), height: VIEWPORT.height };
+function overlayBox(anchorY) {
+  if (VIEWPORT && VIEWPORT.height) {
+    return { top: Math.max(0, VIEWPORT.offset), height: VIEWPORT.height, centred: true };
+  }
+  // No word from the parent — either the embed predates the viewport messages
+  // or this is a frame that never sends them. Fall back to the position of the
+  // control that opened the panel, which is at least where the reader is
+  // looking. A nominal screen height keeps the dimming from swallowing the
+  // whole document.
+  if (anchorY != null) {
+    return { top: Math.max(0, anchorY - 24), height: 720, centred: false };
+  }
+  return null;
 }
 
 /* Colour by side, not by approval: two parties sharing a colour in a column
@@ -1238,6 +1248,16 @@ def build(export_path, out_html):
 
   /* The parent reports on scroll, but a panel can open before any scroll has
      happened. Ask at the moment it matters. */
+  /* Where on the page the control that opened the panel sits. Only used when
+     the parent has not reported a viewport. */
+  anchorFrom(e) {
+    try {
+      const el = e && (e.currentTarget || e.target);
+      if (!el || !el.getBoundingClientRect) return null;
+      return el.getBoundingClientRect().top + (window.scrollY || 0);
+    } catch (err) { return null; }
+  }
+
   askViewport() {
     try {
       if (window.parent && window.parent !== window) {
@@ -1481,12 +1501,13 @@ def build(export_path, out_html):
         html,
         "      hasInfo: !!infoView,",
         "      overlayStyle: (() => {\n"
-        "        const box = overlayBox();\n"
+        "        const box = overlayBox(this.state.anchorY);\n"
         "        const base = 'background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);'\n"
         "          + 'display:flex;align-items:center;justify-content:center;padding:20px;'\n"
         "          + 'overflow-y:auto;z-index:50;';\n"
         "        return box\n"
-        "          ? `position:absolute;left:0;right:0;top:${box.top}px;height:${box.height}px;${base}`\n"
+        "          ? `position:absolute;left:0;right:0;top:${box.top}px;height:${box.height}px;`\n"
+        "            + base.replace('align-items:center', box.centred ? 'align-items:center' : 'align-items:flex-start')\n"
         "          : `position:fixed;inset:0;${base}`;\n"
         "      })(),\n"
         "      hasInfo: !!infoView,",
@@ -1495,7 +1516,7 @@ def build(export_path, out_html):
     for old, new, name in [
         ("  openInfo(id, e) { if (e) e.stopPropagation(); this.setState({ infoId: id }); }",
          "  openInfo(id, e) { if (e) e.stopPropagation(); this.askViewport(); "
-         "this.setState({ infoId: id }); }", "openinfo-viewport"),
+         "this.setState({ infoId: id, anchorY: this.anchorFrom(e) }); }", "openinfo-viewport"),
         ("  openIntro() { this.setState({ showIntro: true }); }",
          "  openIntro() { this.askViewport(); this.setState({ showIntro: true }); }",
          "openintro-viewport"),
