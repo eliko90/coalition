@@ -599,6 +599,7 @@ THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }
 THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }}</button></sc-for></div></div></sc-if>'
 
 
+BYLINE_META = '<div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">'
 BLOCS_TAIL = '</div>\n            </sc-for>\n          </div>\n        </div>\n      </sc-for>\n    </div>'
 
 
@@ -635,10 +636,15 @@ def move_analysis(html):
         raise BuildError("state-of-play group unexpectedly swallowed the outlooks")
     html = html[:start] + html[j:]
     # It leaves a dark section and lands on paper, so it carries its own band.
-    wrapped = ('<div style="background:var(--navy);margin-bottom:8px;">'
-               '<div style="max-width:1140px;margin:0 auto;padding:34px 20px 10px;">'
-               + block + '</div></div>')
-    return patch(html, STICKY, wrapped + STICKY, "analysis-moved")
+    # The hero sits inside a 1140 container with its own padding, so the band
+    # is drawn with a negative inset rather than by escaping the wrapper.
+    wrapped = ('<div style="background:var(--navy);margin:6px -20px 22px;'
+               'border-radius:var(--r-md);">'
+               '<div style="padding:30px 26px 8px;">' + block + '</div></div>')
+    # Above the data header, not between it and the board — sitting after the
+    # poll picker it split the source line from the numbers it describes, and
+    # a dark slab landed in the middle of the tool.
+    return patch(html, BYLINE_META, wrapped + BYLINE_META, "analysis-moved")
 
 
 def move_scenarios(html):
@@ -1771,6 +1777,13 @@ def build(export_path, out_html):
     # background — under the 4.5 WCAG AA needs for normal-size text. This is
     # the same hue, darkened until it passes.
     html = patch(html, '--ink-3:        #79705F', '--ink-3:        #6B6252', "ink3-contrast", count=1)
+
+    # The 40px rule above the kicker — the kicker carries the mark already.
+    html = patch(
+        html,
+        '<div style="width:40px;height:3px;background:var(--clay);margin-bottom:10px;"></div>',
+        '',
+        "drop-hero-rule")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
