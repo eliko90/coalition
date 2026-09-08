@@ -657,8 +657,8 @@
     <div style="padding:28px 0 40px;">
       <div style="width:40px;height:3px;background:var(--clay);margin-bottom:14px;"></div>
       <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-2);margin-bottom:6px;">Why these numbers</div>
-      <p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">This tool uses the Kantar/Kan 11 poll rather than an all-pollster average. Channel 14's polls consistently show the Netanyahu bloc far ahead of every other pollster and are excluded. At the same time, Israeli polls have historically underestimated the right on election day — so rather than average toward the more optimistic-for-the-opposition surveys, I use Kan 11, which tends to sit slightly to the right of the pack. Treat it as one considered snapshot, not a forecast.</p>
-      <p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">Seat projections from the Kantar/Kan 11 poll, fieldwork Aug 9, 2026, as recorded on Wikipedia's polling page for the 2026 Israeli legislative election. Change arrows compare against the previous polling round; pollster ranges span recent published polls. Refusal statements are simplified summaries of parties' publicly stated coalition positions, for illustration.</p>
+      <p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">{{ methodologyNote }}</p>
+      <p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>
       <p class="ek-caption" style="margin:0 0 4px;">A tool by Eli Kowaz — <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link">subscribe to The Middle Ground</a>.</p>
       <p class="ek-caption" style="margin:0;">Read more Israeli election analysis at <a href="https://kowaz.substack.com" target="_blank" rel="noopener" class="ek-link">The Middle Ground</a>.</p>
     </div>
@@ -1783,6 +1783,24 @@ class Component extends DCLogic {
       pollingDate: (chosen && chosen.displayDateLong) || (live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',
       pollingSource: chosen ? `${chosen.firm}/${chosen.publisher}` : ((live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11'),
       dataNote,
+      methodologyNote: (commentary && commentary.methodologyNote) ||
+        (`The headline numbers are one pollster — ${live ? live.source.pollster : 'Kantar'} `
+         + `for ${live ? live.source.publisher : 'Kan 11'} — rather than an average across `
+         + `houses that disagree by up to eleven seats on the size of the Netanyahu bloc. `
+         + `Israeli polls have historically understated the right, and this house sits `
+         + `slightly to the right of the pack. Other recent polls can be selected above, `
+         + `including Channel 14's, which is shown with a note on who owns it. Treat any of `
+         + `them as one considered snapshot, not a forecast.`),
+      sourceNote: (commentary && commentary.sourceNote) ||
+        (live
+          ? `Seat projections from the ${live.source.label} poll, fieldwork `
+            + `${live.source.displayDate}, as recorded on Wikipedia's polling page for the `
+            + `2026 Israeli legislative election and refreshed automatically each morning. `
+            + `Change arrows compare with that house's previous poll; the range on each `
+            + `party spans every pollster over ${live.spreadWindowDays} days. Positions and `
+            + `refusals are summaries of parties' publicly stated coalition positions.`
+          : 'Seat projections as recorded on Wikipedia\'s polling page for the 2026 Israeli '
+            + 'legislative election.'),
       hasDataNote: !!dataNote,
       hasPollPicker: alternates.length > 1,
       pollNote: (() => {

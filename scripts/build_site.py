@@ -587,6 +587,12 @@ ISSUES_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:26px 20px 0;
 ISSUES_GRID = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:30px 20px 6px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">WHERE THEY STAND</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">The three questions that draw the red lines above. Parties sharing a colour in a column are on the same side of it — the colour marks the side, not a verdict. Tap any party for the full position.</p><div style="overflow-x:auto;"><div style="min-width:{{ issueMinWidth }};"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;align-items:end;margin-bottom:6px;"><div></div><sc-for list="{{ issueCols }}" as="col" hint-placeholder-count="0"><div class="ek-meta" style="font-size:0.68rem;">{{ col.label }}</div></sc-for></div><sc-for list="{{ issueRows }}" as="row" hint-placeholder-count="0"><div style="display:grid;grid-template-columns:{{ issueGridCols }};gap:6px;margin-bottom:6px;align-items:stretch;"><button sc-camel-on-click="{{ row.open }}" aria-label="{{ row.aria }}" style="display:flex;align-items:center;gap:7px;text-align:left;background:none;border:none;padding:6px 2px;cursor:pointer;font-family:var(--font-sans);font-weight:700;font-size:0.82rem;color:var(--ink);min-height:38px;"><span style="width:8px;height:8px;border-radius:50%;background:{{ row.color }};flex:none;"></span>{{ row.name }} <span style="font-weight:600;color:var(--ink-3);">{{ row.seats }}</span></button><sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="0"><div title="{{ c.full }}" style="background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }};border-radius:var(--r-sm);padding:7px 9px;font-family:var(--font-sans);font-size:0.76rem;line-height:1.3;display:flex;align-items:center;">{{ c.label }}</div></sc-for></div></sc-for></div></div></div></sc-if>'
 
 
+METHOD_P1_OLD = '<p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">This tool uses the Kantar/Kan 11 poll rather than an all-pollster average. Channel 14\'s polls consistently show the Netanyahu bloc far ahead of every other pollster and are excluded. At the same time, Israeli polls have historically underestimated the right on election day — so rather than average toward the more optimistic-for-the-opposition surveys, I use Kan 11, which tends to sit slightly to the right of the pack. Treat it as one considered snapshot, not a forecast.</p>'
+METHOD_P1_NEW = '<p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">{{ methodologyNote }}</p>'
+METHOD_P2_OLD = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">Seat projections from the Kantar/Kan 11 poll, fieldwork Aug 9, 2026, as recorded on Wikipedia\'s polling page for the 2026 Israeli legislative election. Change arrows compare against the previous polling round; pollster ranges span recent published polls. Refusal statements are simplified summaries of parties\' publicly stated coalition positions, for illustration.</p>'
+METHOD_P2_NEW = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>'
+
+
 def move_scenarios(html):
     """Relocate the "Try a scenario" block to just under the party strip.
 
@@ -1589,6 +1595,36 @@ def build(export_path, out_html):
         "      })(),\n"
         "      hasClosestHint: !!closestHint,",
         "issues-grid-view")
+
+    # "Why these numbers" hard-coded a fieldwork date and claimed Channel 14
+    # was excluded — no longer true now that any recent poll can be selected.
+    # Both paragraphs become live text, overridable from commentary.json.
+    html = patch(html, METHOD_P1_OLD, METHOD_P1_NEW, "methodology-1")
+    html = patch(html, METHOD_P2_OLD, METHOD_P2_NEW, "methodology-2")
+
+    html = patch(
+        html,
+        "      hasDataNote: !!dataNote,",
+        "      methodologyNote: (commentary && commentary.methodologyNote) ||\n"
+        "        (`The headline numbers are one pollster — ${live ? live.source.pollster : 'Kantar'} `\n"
+        "         + `for ${live ? live.source.publisher : 'Kan 11'} — rather than an average across `\n"
+        "         + `houses that disagree by up to eleven seats on the size of the Netanyahu bloc. `\n"
+        "         + `Israeli polls have historically understated the right, and this house sits `\n"
+        "         + `slightly to the right of the pack. Other recent polls can be selected above, `\n"
+        "         + `including Channel 14's, which is shown with a note on who owns it. Treat any of `\n"
+        "         + `them as one considered snapshot, not a forecast.`),\n"
+        "      sourceNote: (commentary && commentary.sourceNote) ||\n"
+        "        (live\n"
+        "          ? `Seat projections from the ${live.source.label} poll, fieldwork `\n"
+        "            + `${live.source.displayDate}, as recorded on Wikipedia's polling page for the `\n"
+        "            + `2026 Israeli legislative election and refreshed automatically each morning. `\n"
+        "            + `Change arrows compare with that house's previous poll; the range on each `\n"
+        "            + `party spans every pollster over ${live.spreadWindowDays} days. Positions and `\n"
+        "            + `refusals are summaries of parties' publicly stated coalition positions.`\n"
+        "          : 'Seat projections as recorded on Wikipedia\\'s polling page for the 2026 Israeli '\n"
+        "            + 'legislative election.'),\n"
+        "      hasDataNote: !!dataNote,",
+        "methodology-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
