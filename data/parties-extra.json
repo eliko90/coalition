@@ -94,7 +94,7 @@
       },
       {
         "id": "raam",
-        "text": "Every leader in the change bloc except Yair Golan has declared they will not rely on Ra'am to form a government. Bennett signed the same pledge in 2021 and broke it within months; Segelovich joining Ra'am's list is aimed squarely at giving them a way back.",
+        "text": "Bennett has ruled out resuming a partnership with Ra'am 'post-October 7'. He signed the same pledge on live television in 2021 and brought Ra'am into government months later; Segelovich joining its list is aimed at giving him a way back.",
         "soft": true
       }
     ],
@@ -102,7 +102,7 @@
     "id": "together"
   },
   {
-    "_why": "Adds the missing Likud refusal — Eisenkot is running to end Netanyahu's rule and would take the caretaker premiership himself rather than serve under him. Without it the solver offered a Netanyahu-led government containing Yashar as the only viable path to 61.",
+    "_why": "Eisenkot opposes Ra'am joining the coalition but is preparing a minority government that depends on Arab support from outside it, so his position on Ra'am is a caution, not a refusal — unlike Bennett, who ruled out a repeat outright, and Lieberman, who has also ruled out Eisenkot's minority plan.",
     "refusals": [
       {
         "id": "otzma",
@@ -116,14 +116,15 @@
         "id": "likud",
         "text": "Eisenkot is running to end Netanyahu's rule, and has prepared to lead a minority government rather than serve under him.",
         "soft": true
-      },
-      {
-        "id": "raam",
-        "text": "Eisenkot opposes bringing Ra'am into the coalition, and rejected Abbas's offer to join the change bloc. He has floated a minority government backed from outside instead.",
-        "soft": true
       }
     ],
-    "id": "yashar"
+    "id": "yashar",
+    "cautions": [
+      {
+        "id": "raam",
+        "text": "Eisenkot opposes bringing Ra'am into the coalition and rejected Abbas's offer to join the change bloc — but he is preparing a minority government that would depend on Arab support from outside it, so this is a line about the cabinet table, not about the votes."
+      }
+    ]
   },
   {
     "_why": "Lieberman's refusal of Netanyahu is stated flatly, so no longer soft. Adds the Ra'am refusal.",
@@ -134,7 +135,7 @@
       },
       {
         "id": "raam",
-        "text": "Every leader in the change bloc except Yair Golan has declared they will not rely on Ra'am to form a government. Bennett signed the same pledge in 2021 and broke it within months; Segelovich joining Ra'am's list is aimed squarely at giving them a way back.",
+        "text": "Lieberman has ruled out relying on Ra'am, and has also ruled out joining the minority government Eisenkot floated that would depend on Arab support from outside.",
         "soft": true
       }
     ],
