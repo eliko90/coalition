@@ -62,9 +62,15 @@
       {
         "id": "utj",
         "text": "Hendel has ruled out sitting with the ultra-Orthodox parties over the draft-exemption fight."
+      },
+      {
+        "id": "raam",
+        "text": "Hendel has ruled out relying on Ra'am to form a government, joining every leader in the change bloc except Yair Golan.",
+        "soft": true
       }
     ],
-    "cautions": []
+    "cautions": [],
+    "_why": "Hendel has ruled out relying on Ra'am. Soft, like Bennett's and Lieberman's — a declared position in a campaign, not a constitutional bar."
   },
   {
     "id": "zionist_home",
@@ -184,5 +190,28 @@
       }
     ],
     "id": "utj"
+  },
+  {
+    "id": "haredi_public",
+    "name": "The Haredi Public",
+    "seats": 0,
+    "pct": "1.2%",
+    "delta": 0,
+    "spread": "0.4–1.5% across recent polls — reported inside 'Others', so no pollster gives it a column of its own",
+    "bloc": "unaligned",
+    "color": "#7A6E55",
+    "tag": "Ultra-Orthodox, anti-establishment",
+    "leader": "Moti Leitner",
+    "note": "Below the threshold — bloc placement unconfirmed",
+    "nearThreshold": true,
+    "_why": "Polls inside the 'Others' column, so fetch_polls.py cannot see it; seats and percentage are set by hand here. Left unaligned deliberately: it is a revolt against the Haredi leadership rather than an extension of it, and it has not said whose government it would join.",
+    "desc": "Launched ahead of the 2026 election by Beit Shemesh deputy mayor Moti Leitner, out of what it calls a disconnect between the Haredi public and its political leadership. It speaks for working and immigrant Haredim underrepresented by Shas and UTJ, and put Dr Nechumi Yaffe on its slate — the first woman ever to run for the Knesset on an ultra-Orthodox list. It has not cleared the threshold in any poll.",
+    "positions": {
+      "annex": "No published position.",
+      "twoState": "No published position.",
+      "draft": "Speaks for working Haredim, which cuts against the blanket exemption Shas and UTJ defend — but it has not set out a position."
+    },
+    "refusals": [],
+    "cautions": []
   }
 ]

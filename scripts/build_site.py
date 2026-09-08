@@ -524,7 +524,7 @@ PANEL_OLD = 'style="max-width:420px;width:100%;background:var(--paper-raised);bo
 PANEL_NEW = 'style="max-width:min(640px,100%);width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px 28px;position:relative;max-height:calc(100vh - 40px);overflow-y:auto;"'
 
 
-QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 10px;min-height:32px;background:{{ q.bg }};color:{{ q.fg }};border:1px solid {{ q.border }};border-radius:var(--r-pill);cursor:pointer;opacity:{{ q.opacity }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button></sc-for></div></div>'
+QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div>'
 
 
 def build(export_path, out_html):
@@ -1357,6 +1357,17 @@ def build(export_path, out_html):
         "        fg: p.inCoalition ? 'var(--paper)' : 'var(--ink)',\n"
         "        border: p.inCoalition ? p.blocColor : 'var(--rule-strong)',\n"
         "        opacity: p.hasConflictHint ? '0.55' : '1',\n"
+        "        nearThreshold: p.canMissCard,\n"
+        "        borderStyle: p.canMissCard ? 'dashed' : 'solid',\n"
+        "        divider: p.inCoalition ? 'rgba(246,242,233,0.35)' : 'var(--rule)',\n"
+        "        infoFg: p.inCoalition ? 'var(--paper)'\n"
+        "          : (p.canMissCard ? 'var(--clay-deep)' : 'var(--ink-3)'),\n"
+        "        title: p.canMissCard\n"
+        "          ? `${p.name} sits near the 3.25% threshold — open it to test them missing`\n"
+        "          : p.name,\n"
+        "        infoAria: `More about ${p.name}` +\n"
+        "          (p.canMissCard ? ', which is near the threshold' : ''),\n"
+        "        info: (e) => { if (e) e.stopPropagation(); this.openInfo(p.id, e); },\n"
         "        aria: `${p.name}, ${p.seats} seats` +\n"
         "          (p.inCoalition ? ', in your coalition' : '') +\n"
         "          '. Press to ' + (p.inCoalition ? 'remove' : 'add') + '.',\n"
