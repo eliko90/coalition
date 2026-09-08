@@ -336,7 +336,7 @@
     </div>
   </div>
 
-  <div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
     <div style="max-width:960px;margin:0 auto;padding:14px 20px 16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
         <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
@@ -595,7 +595,7 @@
         <div class="ek-h3" style="margin:0 0 2px;padding-right:24px;">{{ infoView.name }}</div>
         <div class="ek-small" style="margin:0 0 4px;color:var(--ink-2);">Led by {{ infoView.leader }} · {{ infoView.seats }} projected seats</div>
         <div class="ek-caption" style="margin:0 0 6px;color:var(--ink-3);">Pollster range: {{ infoView.spread }}</div><sc-if value="{{ infoView.hasTrendText }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin:0 0 12px;color:var(--ink-3);display:flex;align-items:center;gap:8px;"><span>Trend: {{ infoView.trendText }}</span>{{ infoView.trendSvgBig }}</div></sc-if>
-        <p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>
+        <sc-if value="{{ infoView.canMiss }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ infoView.toggleMiss }}" style="margin:0 0 16px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:transparent;color:var(--clay-deep);border:1.5px dashed var(--clay);border-radius:var(--r-sm);cursor:pointer;">{{ infoView.missLabel }}</button></sc-if><p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>
         <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--rule);padding-top:14px;">
           <div>
             <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-3);margin-bottom:2px;">Annexation</div>
@@ -763,6 +763,10 @@ const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
    changes into the design when convenient and empty the file. */
 let PARTIES_EXTRA = [];
 let PARTIES_RAW = PARTIES_BASE;
+/* PARTIES_RAW is the polling as reported; PARTIES_VIEW is the board as the
+   reader has it — the same thing until a party is pushed under the threshold.
+   Set once per render, read by byId and everything downstream. */
+let PARTIES_VIEW = PARTIES_BASE;
 
 function allBase() {
   const retired = new Set(PARTIES_EXTRA.filter(p => p.retired).map(p => p.id));
@@ -790,6 +794,7 @@ function applyLive(base, live) {
       pct: d.pct || undefined,
       nearThreshold: d.seats === 0 ||
         (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+      spreadMinLive: d.spreadMin,
       trend: d.trend || null,
       trendDays: live.trendDays
     });
@@ -928,6 +933,50 @@ function robustness(history, ids, governsNow) {
   return '';   // never close; "short by N" already says enough
 }
 
+/* "What if they miss the threshold?"
+
+   Israel wastes every vote cast for a list under 3.25%, and the seats those
+   votes would have bought are shared out among the lists that did clear it.
+   That is why a party polling at four seats is not a small story: whether it
+   survives moves seats to everyone else, usually across blocs.
+
+   Seats here stand in for votes, which is an approximation. The real
+   allocation is Bader-Ofer with surplus-vote agreements between named
+   parties, and those agreements can pull a seat one way or the other. Good
+   enough to show the shape of the change, not a projection. */
+function applyThreshold(parties, dropped) {
+  if (!dropped || !dropped.length) return parties;
+  const drop = new Set(dropped);
+  const freed = parties.reduce((s, p) => s + (drop.has(p.id) ? p.seats : 0), 0);
+  const rest = parties.filter(p => !drop.has(p.id) && p.seats > 0);
+  if (!freed || !rest.length) {
+    return parties.map(p => drop.has(p.id) ? Object.assign({}, p, { seats: 0 }) : p);
+  }
+  const total = rest.reduce((s, p) => s + p.seats, 0);
+  // Largest remainder, so the freed seats land whole and the house still sums
+  // to 120 rather than drifting by a seat or two.
+  const share = rest.map(p => {
+    const exact = freed * p.seats / total;
+    return { id: p.id, n: Math.floor(exact), rem: exact - Math.floor(exact) };
+  });
+  let left = freed - share.reduce((s, r) => s + r.n, 0);
+  share.slice().sort((a, b) => b.rem - a.rem).forEach(r => {
+    if (left > 0) { r.n++; left--; }
+  });
+  const add = {};
+  share.forEach(r => { add[r.id] = r.n; });
+  return parties.map(p => drop.has(p.id)
+    ? Object.assign({}, p, { seats: 0, missedThreshold: true })
+    : Object.assign({}, p, { seats: p.seats + (add[p.id] || 0) }));
+}
+
+/* Offer the toggle only where a pollster has actually shown the party missing,
+   so it never invites a hypothetical the data does not support. */
+function couldMiss(p) {
+  return !!p && p.seats > 0 &&
+         ((p.spreadMinLive != null && p.spreadMinLive === 0) || p.seats <= 5);
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -939,9 +988,9 @@ function daysSince(iso) {
    computed once per distinct set of seat counts rather than on every render. */
 let __kmCache = null;
 function kingmakerNow() {
-  const sig = PARTIES_RAW.map(p => p.id + ':' + p.seats).join(',');
+  const sig = PARTIES_VIEW.map(p => p.id + ':' + p.seats).join(',');
   if (!__kmCache || __kmCache.sig !== sig) {
-    __kmCache = { sig: sig, val: computeKingmaker(PARTIES_RAW) };
+    __kmCache = { sig: sig, val: computeKingmaker(PARTIES_VIEW) };
   }
   return __kmCache.val;
 }
@@ -1061,7 +1110,7 @@ class Component extends DCLogic {
                        `Check whether they are still running.` });
     }
 
-    const total = PARTIES_RAW.reduce((s, p) => s + p.seats, 0);
+    const total = PARTIES_VIEW.reduce((s, p) => s + p.seats, 0);
     if (total !== 120) {
       out.push({ text: `The board adds up to ${total} seats, not 120 — ` +
                        `a party in the poll is missing from the board.` });
@@ -1243,7 +1292,19 @@ class Component extends DCLogic {
   openInfo(id, e) { if (e) e.stopPropagation(); this.setState({ infoId: id }); }
   closeInfo() { this.setState({ infoId: null }); }
 
-  byId(id) { return PARTIES_RAW.find(p => p.id === id); }
+  toggleThreshold(id) {
+    this.setState(st => {
+      const dropped = (st.dropped || []).includes(id)
+        ? st.dropped.filter(x => x !== id)
+        : [...(st.dropped || []), id];
+      // A party that misses the threshold cannot also be in the coalition.
+      return { dropped, coalition: st.coalition.filter(x => !dropped.includes(x)) };
+    });
+  }
+
+  clearThreshold() { this.setState({ dropped: [] }); }
+
+  byId(id) { return PARTIES_VIEW.find(p => p.id === id); }
 
   toggleAdd(id) {
     if (this.state.coalition.includes(id)) {
@@ -1278,6 +1339,8 @@ class Component extends DCLogic {
   renderVals() {
     const live = this.state.live;
     const commentary = this.state.commentary;
+    const dropped = this.state.dropped || [];
+    PARTIES_VIEW = applyThreshold(PARTIES_RAW, dropped);
     const countdown = electionCountdown(commentary && commentary.electionDate);
     const warnings = this.dataWarnings(live);
     const age = live ? daysSince(live.source.fieldworkDate) : null;
@@ -1343,7 +1406,7 @@ class Component extends DCLogic {
       closestHint = this._hintCache.value;
       blockedHint = this._hintCache.blocked;
     } else if (!governs && coalition.length > 0) {
-      const available = PARTIES_RAW.filter(p => !coalitionSet.has(p.id) && p.seats > 0);
+      const available = PARTIES_VIEW.filter(p => !coalitionSet.has(p.id) && p.seats > 0);
       const compatible = available.filter(p => {
         const pConflicts = (p.refusals || []).some(r => coalitionSet.has(r.id));
         const existingConflicts = coalitionPartiesRaw.some(ep => (ep.refusals || []).some(r => r.id === p.id));
@@ -1380,7 +1443,7 @@ class Component extends DCLogic {
       }
     }
     if (!governs && coalition.length > 0 && !closestHint) {
-      const available = PARTIES_RAW
+      const available = PARTIES_VIEW
         .filter(p => !coalitionSet.has(p.id) && p.seats > 0)
         .slice(0, 14);
       const deficit = 61 - totalSeats;
@@ -1429,7 +1492,7 @@ class Component extends DCLogic {
     }
     this._hintCache = { key: hintKey, value: closestHint, blocked: blockedHint };
 
-    const parties = PARTIES_RAW.map(p => {
+    const parties = PARTIES_VIEW.map(p => {
       const meta = BLOC_META[p.bloc];
       const inCoalition = coalitionSet.has(p.id);
       return {
@@ -1506,7 +1569,7 @@ class Component extends DCLogic {
 
     const blocOrder = ['arab', 'change', 'unaligned', 'netanyahu'];
     const blocs = blocOrder.map(key => {
-      const blocParties = parties.filter(p => PARTIES_RAW.find(rp => rp.id === p.id).bloc === key).sort((a, b) => b.seats - a.seats);
+      const blocParties = parties.filter(p => PARTIES_VIEW.find(rp => rp.id === p.id).bloc === key).sort((a, b) => b.seats - a.seats);
       return {
         key,
         label: BLOC_META[key].label,
@@ -1515,7 +1578,7 @@ class Component extends DCLogic {
       };
     }).filter(b => b.parties.length > 0);
 
-    const infoParty = this.state.infoId ? PARTIES_RAW.find(p => p.id === this.state.infoId) : null;
+    const infoParty = this.state.infoId ? PARTIES_VIEW.find(p => p.id === this.state.infoId) : null;
     const infoView = infoParty ? {
       name: infoParty.name,
       leader: infoParty.leader,
@@ -1528,6 +1591,12 @@ class Component extends DCLogic {
       twoState: infoParty.positions.twoState,
       draft: infoParty.positions.draft,
       spread: infoParty.spread,
+      canMiss: couldMiss(infoParty) || dropped.includes(infoParty.id),
+      isMissing: dropped.includes(infoParty.id),
+      missLabel: dropped.includes(infoParty.id)
+        ? 'Put them back above the threshold'
+        : 'What if they miss the threshold?',
+      toggleMiss: () => this.toggleThreshold(infoParty.id),
       trendText: trendSentence(infoParty.trend, infoParty.trendDays),
       hasTrendText: !!trendSentence(infoParty.trend, infoParty.trendDays),
       trendSvgBig: sparkline(infoParty.trend, infoParty.color)
@@ -1589,6 +1658,16 @@ class Component extends DCLogic {
       pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
       dataNote,
       hasDataNote: !!dataNote,
+      hasDropped: dropped.length > 0,
+      droppedNames: dropped.map(id => {
+        const p = PARTIES_RAW.find(x => x.id === id);
+        return p ? p.name : id;
+      }).join(' and '),
+      droppedSeats: dropped.reduce((s, id) => {
+        const p = PARTIES_RAW.find(x => x.id === id);
+        return s + (p ? p.seats : 0);
+      }, 0),
+      clearDropped: () => this.clearThreshold(),
       wildCardNote: (commentary && commentary.wildCardNote) || WILD_CARD_DEFAULT,
       countdown,
       hasCountdown: !!countdown,

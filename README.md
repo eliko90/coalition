@@ -117,6 +117,17 @@ Every edit it makes is asserted. If a future export renames something a patch
 depends on, the build fails and names the patch instead of quietly producing a
 page with no live data.
 
+## Pushing a party under the threshold
+
+Open any party whose recent polling has shown it missing 3.25% and the panel
+offers "What if they miss the threshold?". Its seats are shared out among the
+parties that cleared, and the whole board recomputes — bloc totals, the solver,
+the kingmaker. A banner marks the hypothetical until you reset it.
+
+Seats stand in for votes there, which is an approximation: the real allocation
+is Bader-Ofer with surplus-vote agreements between named parties, and those can
+pull a seat either way. It shows the shape of the change, not a projection.
+
 ## Checking your own work
 
 Load the page with `?check` appended — or on localhost, where it is always on —

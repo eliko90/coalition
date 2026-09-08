@@ -156,6 +156,10 @@ const RAAM_NOTE_DEFAULT = "Ra'am's willingness to sit with the Zionist " +
    changes into the design when convenient and empty the file. */
 let PARTIES_EXTRA = [];
 let PARTIES_RAW = PARTIES_BASE;
+/* PARTIES_RAW is the polling as reported; PARTIES_VIEW is the board as the
+   reader has it — the same thing until a party is pushed under the threshold.
+   Set once per render, read by byId and everything downstream. */
+let PARTIES_VIEW = PARTIES_BASE;
 
 function allBase() {
   const retired = new Set(PARTIES_EXTRA.filter(p => p.retired).map(p => p.id));
@@ -319,6 +323,50 @@ function robustness(history, ids, governsNow) {
   return '';   // never close; "short by N" already says enough
 }
 
+/* "What if they miss the threshold?"
+
+   Israel wastes every vote cast for a list under 3.25%, and the seats those
+   votes would have bought are shared out among the lists that did clear it.
+   That is why a party polling at four seats is not a small story: whether it
+   survives moves seats to everyone else, usually across blocs.
+
+   Seats here stand in for votes, which is an approximation. The real
+   allocation is Bader-Ofer with surplus-vote agreements between named
+   parties, and those agreements can pull a seat one way or the other. Good
+   enough to show the shape of the change, not a projection. */
+function applyThreshold(parties, dropped) {
+  if (!dropped || !dropped.length) return parties;
+  const drop = new Set(dropped);
+  const freed = parties.reduce((s, p) => s + (drop.has(p.id) ? p.seats : 0), 0);
+  const rest = parties.filter(p => !drop.has(p.id) && p.seats > 0);
+  if (!freed || !rest.length) {
+    return parties.map(p => drop.has(p.id) ? Object.assign({}, p, { seats: 0 }) : p);
+  }
+  const total = rest.reduce((s, p) => s + p.seats, 0);
+  // Largest remainder, so the freed seats land whole and the house still sums
+  // to 120 rather than drifting by a seat or two.
+  const share = rest.map(p => {
+    const exact = freed * p.seats / total;
+    return { id: p.id, n: Math.floor(exact), rem: exact - Math.floor(exact) };
+  });
+  let left = freed - share.reduce((s, r) => s + r.n, 0);
+  share.slice().sort((a, b) => b.rem - a.rem).forEach(r => {
+    if (left > 0) { r.n++; left--; }
+  });
+  const add = {};
+  share.forEach(r => { add[r.id] = r.n; });
+  return parties.map(p => drop.has(p.id)
+    ? Object.assign({}, p, { seats: 0, missedThreshold: true })
+    : Object.assign({}, p, { seats: p.seats + (add[p.id] || 0) }));
+}
+
+/* Offer the toggle only where a pollster has actually shown the party missing,
+   so it never invites a hypothetical the data does not support. */
+function couldMiss(p) {
+  return !!p && p.seats > 0 &&
+         ((p.spreadMinLive != null && p.spreadMinLive === 0) || p.seats <= 5);
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -423,6 +471,11 @@ NEW_HINT = '<sc-if value="{{ hasBlockedHint }}" hint-placeholder-val="{{ false }
 
 KM_OLD = "There isn't one. Of the {{ totalCombos }} possible party combinations, only <strong>{{ viablePaths }}</strong> are minimal coalitions that clear 61 without crossing a stated refusal — and no small party is welcome in coalitions anchored by <em>both</em> sides. Every path runs through the big parties themselves."
 KM_NEW = '{{ kingmakerNoneText }}'
+
+
+STICKY = '<div style="position:sticky;top:0;z-index:5;background:color-mix('
+MISS_BTN = '<sc-if value="{{ infoView.canMiss }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ infoView.toggleMiss }}" style="margin:0 0 16px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:transparent;color:var(--clay-deep);border:1.5px dashed var(--clay);border-radius:var(--r-sm);cursor:pointer;">{{ infoView.missLabel }}</button></sc-if>'
+MISS_BANNER = '<sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if>'
 
 
 def build(export_path, out_html):
@@ -732,6 +785,7 @@ def build(export_path, out_html):
     });""",
         """      nearThreshold: d.seats === 0 ||
         (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+      spreadMinLive: d.spreadMin,
       trend: d.trend || null,
       trendDays: live.trendDays
     });""",
@@ -1009,6 +1063,100 @@ def build(export_path, out_html):
         "          + `that clears 61 without crossing a stated refusal — and no small party is `\n"
         "          + `welcome in coalitions anchored by both sides.`,",
         "kingmaker-none-view")
+
+    # Route the whole board through PARTIES_VIEW so a dropped party's seats
+    # redistribute everywhere at once — bloc totals, the solver, the kingmaker.
+    html = patch(
+        html,
+        "    const commentary = this.state.commentary;",
+        "    const commentary = this.state.commentary;\n"
+        "    const dropped = this.state.dropped || [];\n"
+        "    PARTIES_VIEW = applyThreshold(PARTIES_RAW, dropped);",
+        "parties-view-set")
+
+    for old, new, name in [
+        ("  byId(id) { return PARTIES_RAW.find(p => p.id === id); }",
+         "  byId(id) { return PARTIES_VIEW.find(p => p.id === id); }", "byid-view"),
+        ("      const available = PARTIES_RAW.filter(p => !coalitionSet.has(p.id) && p.seats > 0);",
+         "      const available = PARTIES_VIEW.filter(p => !coalitionSet.has(p.id) && p.seats > 0);",
+         "available-view"),
+        ("      const available = PARTIES_RAW\n        .filter(p => !coalitionSet.has(p.id) && p.seats > 0)",
+         "      const available = PARTIES_VIEW\n        .filter(p => !coalitionSet.has(p.id) && p.seats > 0)",
+         "available-blocked-view"),
+        ("    const parties = PARTIES_RAW.map(p => {",
+         "    const parties = PARTIES_VIEW.map(p => {", "parties-map-view"),
+        ("      const blocParties = parties.filter(p => PARTIES_RAW.find(rp => rp.id === p.id).bloc === key)",
+         "      const blocParties = parties.filter(p => PARTIES_VIEW.find(rp => rp.id === p.id).bloc === key)",
+         "blocs-view"),
+        ("    const infoParty = this.state.infoId ? PARTIES_RAW.find(p => p.id === this.state.infoId) : null;",
+         "    const infoParty = this.state.infoId ? PARTIES_VIEW.find(p => p.id === this.state.infoId) : null;",
+         "info-view"),
+        ("    const total = PARTIES_RAW.reduce((s, p) => s + p.seats, 0);",
+         "    const total = PARTIES_VIEW.reduce((s, p) => s + p.seats, 0);", "warn-total-view"),
+        ("  const sig = PARTIES_RAW.map(p => p.id + ':' + p.seats).join(',');",
+         "  const sig = PARTIES_VIEW.map(p => p.id + ':' + p.seats).join(',');", "km-sig-view"),
+        ("    __kmCache = { sig: sig, val: computeKingmaker(PARTIES_RAW) };",
+         "    __kmCache = { sig: sig, val: computeKingmaker(PARTIES_VIEW) };", "km-compute-view"),
+    ]:
+        html = patch(html, old, new, name)
+
+    # The toggle lives in the party panel, and a banner makes the hypothetical
+    # impossible to mistake for the polling.
+    html = patch(
+        html,
+        "  closeInfo() { this.setState({ infoId: null }); }",
+        """  closeInfo() { this.setState({ infoId: null }); }
+
+  toggleThreshold(id) {
+    this.setState(st => {
+      const dropped = (st.dropped || []).includes(id)
+        ? st.dropped.filter(x => x !== id)
+        : [...(st.dropped || []), id];
+      // A party that misses the threshold cannot also be in the coalition.
+      return { dropped, coalition: st.coalition.filter(x => !dropped.includes(x)) };
+    });
+  }
+
+  clearThreshold() { this.setState({ dropped: [] }); }""",
+        "threshold-methods")
+
+    html = patch(
+        html,
+        "      spread: infoParty.spread,",
+        "      spread: infoParty.spread,\n"
+        "      canMiss: couldMiss(infoParty) || dropped.includes(infoParty.id),\n"
+        "      isMissing: dropped.includes(infoParty.id),\n"
+        "      missLabel: dropped.includes(infoParty.id)\n"
+        "        ? 'Put them back above the threshold'\n"
+        "        : 'What if they miss the threshold?',\n"
+        "      toggleMiss: () => this.toggleThreshold(infoParty.id),",
+        "info-threshold-view")
+
+    html = patch(
+        html,
+        "      hasDataNote: !!dataNote,",
+        "      hasDataNote: !!dataNote,\n"
+        "      hasDropped: dropped.length > 0,\n"
+        "      droppedNames: dropped.map(id => {\n"
+        "        const p = PARTIES_RAW.find(x => x.id === id);\n"
+        "        return p ? p.name : id;\n"
+        "      }).join(' and '),\n"
+        "      droppedSeats: dropped.reduce((s, id) => {\n"
+        "        const p = PARTIES_RAW.find(x => x.id === id);\n"
+        "        return s + (p ? p.seats : 0);\n"
+        "      }, 0),\n"
+        "      clearDropped: () => this.clearThreshold(),",
+        "banner-view")
+
+    html = patch(
+        html,
+        '<p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>',
+        MISS_BTN + '<p class="ek-body" style="font-size:1rem;margin:0 0 16px;">{{ infoView.desc }}</p>',
+        "miss-button-markup")
+
+    html = patch(
+        html,
+        STICKY, MISS_BANNER + STICKY, "miss-banner-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
