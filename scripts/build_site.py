@@ -176,17 +176,21 @@ function allBase() {
   return kept.concat(Array.from(patches.values()));
 }
 
-function applyLive(base, live) {
+/* `override` is an alternate poll's seat map. The spread and the trend still
+   come from the headline series — they describe the party, not this one poll —
+   but every seat on the board follows whichever poll the reader picked. */
+function applyLive(base, live, override) {
   if (!live || !live.parties) return base;
   return base.map(p => {
     const d = live.parties[p.id];
     if (!d) return p;
+    const seats = (override && override[p.id] != null) ? override[p.id] : d.seats;
     const out = Object.assign({}, p, {
-      seats: d.seats,
-      delta: d.delta == null ? 0 : d.delta,
-      pct: d.pct || undefined,
-      nearThreshold: d.seats === 0 ||
-        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0)
+      seats: seats,
+      delta: override ? 0 : (d.delta == null ? 0 : d.delta),
+      pct: (override ? (seats === 0 ? d.pct : undefined) : d.pct) || undefined,
+      nearThreshold: seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && seats > 0)
     });
     if (d.spreadMin != null && d.spreadMax != null) {
       // Keep the editor's commentary (the clause after the em dash) and let
@@ -404,7 +408,7 @@ LOAD_POLLS = r"""
       .then(([live, extra, commentary]) => {
         if (!live || !live.parties || !live.source) throw new Error('bad shape');
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
-        PARTIES_RAW = applyLive(allBase(), live);
+        PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
         const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
         this.setState(st => ({
@@ -476,6 +480,12 @@ KM_NEW = '{{ kingmakerNoneText }}'
 STICKY = '<div style="position:sticky;top:0;z-index:5;background:color-mix('
 MISS_BTN = '<sc-if value="{{ infoView.canMiss }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ infoView.toggleMiss }}" style="margin:0 0 16px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:8px 14px;min-height:36px;background:transparent;color:var(--clay-deep);border:1.5px dashed var(--clay);border-radius:var(--r-sm);cursor:pointer;">{{ infoView.missLabel }}</button></sc-if>'
 MISS_BANNER = '<sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if>'
+
+
+CARD_MISS_OLD = '<sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">\n                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>'
+CARD_MISS_NEW = '<sc-if value="{{ p.canMissCard }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ p.onMissToggle }}" style="margin-top:8px;font-family:var(--font-sans);font-weight:700;font-size:0.72rem;letter-spacing:0.02em;padding:5px 9px;min-height:30px;background:{{ p.missCardBg }};color:{{ p.missCardFg }};border:1.5px dashed var(--clay);border-radius:var(--r-pill);cursor:pointer;">{{ p.missCardLabel }}</button></sc-if><sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">\n                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>'
+PICKER_ANCHOR = '<div style="position:sticky;top:0;z-index:5;background:color-mix('
+PICKER = '<sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:0 20px 4px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if>'
 
 
 def build(export_path, out_html):
@@ -639,8 +649,8 @@ def build(export_path, out_html):
     html = patch(
         html,
         "      pollingDate: this.props.pollingDate ?? 'Aug 9, 2026',",
-        "      pollingDate: (live && live.source.displayDate) || "
-        "this.props.pollingDate || 'Aug 9, 2026',",
+        "      pollingDate: (chosen && chosen.displayDateLong) || "
+        "(live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',",
         "polling-date")
 
     # The standing-analysis paragraph is the fastest thing on the page to go
@@ -655,8 +665,8 @@ def build(export_path, out_html):
     html = patch(
         html,
         "      pollingSource: this.props.pollingSource ?? 'Kantar/Kan 11',",
-        "      pollingSource: (live && live.source.label) || "
-        "this.props.pollingSource || 'Kantar/Kan 11',\n"
+        "      pollingSource: chosen ? `${chosen.firm}/${chosen.publisher}` : "
+        "((live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11'),\n"
         "      dataNote,\n"
         "      hasDataNote: !!dataNote,\n"
         "      wildCardNote: (commentary && commentary.wildCardNote) || WILD_CARD_DEFAULT,\n"
@@ -780,11 +790,11 @@ def build(export_path, out_html):
     # beside the change arrow, and spell it out in the detail panel.
     html = patch(
         html,
-        """      nearThreshold: d.seats === 0 ||
-        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0)
+        """      nearThreshold: seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && seats > 0)
     });""",
-        """      nearThreshold: d.seats === 0 ||
-        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+        """      nearThreshold: seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && seats > 0),
       spreadMinLive: d.spreadMin,
       trend: d.trend || null,
       trendDays: live.trendDays
@@ -1157,6 +1167,67 @@ def build(export_path, out_html):
     html = patch(
         html,
         STICKY, MISS_BANNER + STICKY, "miss-banner-markup")
+
+    # Reader-chosen poll. Recomputed each render so it flows through the
+    # threshold hypothetical, the solver and the kingmaker alike.
+    html = patch(
+        html,
+        "    PARTIES_VIEW = applyThreshold(PARTIES_RAW, dropped);",
+        "    const alternates = (live && live.alternates) || [];\n"
+        "    const chosen = alternates.find(a => a.id === this.state.pollId) || null;\n"
+        "    if (live) PARTIES_RAW = applyLive(allBase(), live, chosen && chosen.seats);\n"
+        "    PARTIES_VIEW = applyThreshold(PARTIES_RAW, dropped);",
+        "chosen-poll")
+
+    html = patch(
+        html,
+        "  clearThreshold() { this.setState({ dropped: [] }); }",
+        """  clearThreshold() { this.setState({ dropped: [] }); }
+
+  /* Switching poll clears any threshold hypothetical: the two together would
+     be a guess stacked on a guess, and the banner could only explain one. */
+  pickPoll(id) { this.setState({ pollId: id, dropped: [] }); }""",
+        "pick-poll-method")
+
+    html = patch(
+        html,
+        "      hasDropped: dropped.length > 0,",
+        "      hasPollPicker: alternates.length > 1,\n"
+        "      pollOptions: alternates.map(a => ({\n"
+        "        id: a.id,\n"
+        "        label: a.label,\n"
+        "        title: `${a.firm} for ${a.publisher}, ${a.displayDate}`,\n"
+        "        active: chosen ? a.id === chosen.id : !!a.isHeadline,\n"
+        "        bg: (chosen ? a.id === chosen.id : !!a.isHeadline)\n"
+        "          ? 'var(--ink)' : 'transparent',\n"
+        "        fg: (chosen ? a.id === chosen.id : !!a.isHeadline)\n"
+        "          ? 'var(--paper)' : 'var(--ink-2)',\n"
+        "        pick: () => this.pickPoll(a.isHeadline ? null : a.id)\n"
+        "      })),\n"
+        "      hasDropped: dropped.length > 0,",
+        "poll-picker-view")
+
+    # The threshold hypothetical was buried behind the info button. It belongs
+    # on the card, next to the seat count it changes.
+    html = patch(
+        html,
+        "        trendSvg: sparkline(p.trend, p.color),",
+        "        trendSvg: sparkline(p.trend, p.color),\n"
+        "        canMissCard: couldMiss(p) || dropped.includes(p.id),\n"
+        "        missCardLabel: dropped.includes(p.id)\n"
+        "          ? 'Put them back' : 'What if they miss?',\n"
+        "        missCardBg: dropped.includes(p.id) ? 'var(--clay)' : 'transparent',\n"
+        "        missCardFg: dropped.includes(p.id) ? 'var(--paper)' : 'var(--clay-deep)',\n"
+        "        onMissToggle: (e) => {\n"
+        "          // The card itself adds the party to the coalition; this must not.\n"
+        "          if (e) { e.stopPropagation(); e.preventDefault(); }\n"
+        "          this.toggleThreshold(p.id);\n"
+        "        },",
+        "card-miss-fields")
+
+    html = patch(html, CARD_MISS_OLD, CARD_MISS_NEW, "card-miss-markup")
+
+    html = patch(html, PICKER_ANCHOR, PICKER + PICKER_ANCHOR, "poll-picker-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

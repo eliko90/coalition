@@ -76,5 +76,7 @@
   "history_days": 45,
   "_history_comment": "How far back to read. Bounds ingestion to the tables covering the current party lineup — older tables list parties that no longer exist and would only add noise. Must be comfortably larger than spread_window_days so the previous same-house poll (for the delta arrows) is still in range.",
   "trend_days": 63,
-  "_trend_comment": "How far back the per-party sparkline reaches (9 weeks). Tables older than history_days are read leniently for this — their columns are parties that have since merged or folded, and an unrecognised one simply contributes no trend point rather than failing the run. The trend uses the headline house only, so it is one consistent series."
+  "_trend_comment": "How far back the per-party sparkline reaches (9 weeks). Tables older than history_days are read leniently for this — their columns are parties that have since merged or folded, and an unrecognised one simply contributes no trend point rather than failing the run. The trend uses the headline house only, so it is one consistent series.",
+  "alternate_polls": 6,
+  "_alternates_comment": "How many recent polls to offer in the reader's poll picker. Only polls measuring every party on the board are included, so the totals stay at 120 and no party shows a zero its pollster never tested."
 }

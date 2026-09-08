@@ -462,6 +462,40 @@ def build(cache=None, year=None, verbose=True):
             "trend": trend.get(pid),
         }
 
+    # ---- alternate polls the reader can switch to -------------------------
+    # Only polls that measure every party on the board are offered. One that
+    # does not test a party would show it at zero and leave the house short of
+    # 120, which reads as a collapse rather than as "this house did not ask".
+    board = set(parties)
+    alts = []
+    for p in polls:
+        if not board.issubset(set(p["seats"])):
+            continue
+        alts.append({
+            "id": f"{p['date'].isoformat()}-{re.sub(r'[^a-z0-9]+', '', p['firm'].lower())}",
+            "date": p["date"].isoformat(),
+            "displayDate": p["date"].strftime("%-d %b"),
+            "displayDateLong": p["date"].strftime("%b %-d, %Y"),
+            "firm": p["firm"],
+            "publisher": p["publisher"],
+            "label": f"{p['firm']} · {p['date'].strftime('%-d %b')}",
+            "isHeadline": p is pick,
+            "seats": {k: v for k, v in p["seats"].items() if k in board},
+        })
+        if len(alts) >= int(cfg.get("alternate_polls", 6)):
+            break
+    if pick is not None and not any(a["isHeadline"] for a in alts):
+        alts.insert(0, {
+            "id": f"{pick['date'].isoformat()}-{re.sub(r'[^a-z0-9]+', '', pick['firm'].lower())}",
+            "date": pick["date"].isoformat(),
+            "displayDate": pick["date"].strftime("%-d %b"),
+            "displayDateLong": pick["date"].strftime("%b %-d, %Y"),
+            "firm": pick["firm"], "publisher": pick["publisher"],
+            "label": f"{pick['firm']} · {pick['date'].strftime('%-d %b')}",
+            "isHeadline": True,
+            "seats": {k: v for k, v in pick["seats"].items() if k in board},
+        })
+
     out = {
         "generated": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
         "source": {
@@ -480,6 +514,7 @@ def build(cache=None, year=None, verbose=True):
         # coalition would have governed in each of them rather than only in the
         # latest one. One house, so it is a weekly series, not a mix of methods.
         "history": [{"d": p["date"].isoformat(), "seats": p["seats"]} for p in series],
+        "alternates": alts,
         "spreadPollCount": len(recent),
         "totalSeats": total,
         "parties": parties,

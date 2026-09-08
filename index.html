@@ -336,7 +336,7 @@
     </div>
   </div>
 
-  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:0 20px 4px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
     <div style="max-width:960px;margin:0 auto;padding:14px 20px 16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
         <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
@@ -549,7 +549,7 @@
                     </sc-for>
                   </div>
                 </sc-if>
-                <sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ p.canMissCard }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ p.onMissToggle }}" style="margin-top:8px;font-family:var(--font-sans);font-weight:700;font-size:0.72rem;letter-spacing:0.02em;padding:5px 9px;min-height:30px;background:{{ p.missCardBg }};color:{{ p.missCardFg }};border:1.5px dashed var(--clay);border-radius:var(--r-pill);cursor:pointer;">{{ p.missCardLabel }}</button></sc-if><sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">
                   <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>
                 </sc-if>
                 <sc-if value="{{ p.belowThreshold }}" hint-placeholder-val="{{ false }}">
@@ -783,17 +783,21 @@ function allBase() {
   return kept.concat(Array.from(patches.values()));
 }
 
-function applyLive(base, live) {
+/* `override` is an alternate poll's seat map. The spread and the trend still
+   come from the headline series — they describe the party, not this one poll —
+   but every seat on the board follows whichever poll the reader picked. */
+function applyLive(base, live, override) {
   if (!live || !live.parties) return base;
   return base.map(p => {
     const d = live.parties[p.id];
     if (!d) return p;
+    const seats = (override && override[p.id] != null) ? override[p.id] : d.seats;
     const out = Object.assign({}, p, {
-      seats: d.seats,
-      delta: d.delta == null ? 0 : d.delta,
-      pct: d.pct || undefined,
-      nearThreshold: d.seats === 0 ||
-        (d.spreadMin != null && d.spreadMin === 0 && d.seats > 0),
+      seats: seats,
+      delta: override ? 0 : (d.delta == null ? 0 : d.delta),
+      pct: (override ? (seats === 0 ? d.pct : undefined) : d.pct) || undefined,
+      nearThreshold: seats === 0 ||
+        (d.spreadMin != null && d.spreadMin === 0 && seats > 0),
       spreadMinLive: d.spreadMin,
       trend: d.trend || null,
       trendDays: live.trendDays
@@ -1064,7 +1068,7 @@ class Component extends DCLogic {
       .then(([live, extra, commentary]) => {
         if (!live || !live.parties || !live.source) throw new Error('bad shape');
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
-        PARTIES_RAW = applyLive(allBase(), live);
+        PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
         const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
         this.setState(st => ({
@@ -1304,6 +1308,10 @@ class Component extends DCLogic {
 
   clearThreshold() { this.setState({ dropped: [] }); }
 
+  /* Switching poll clears any threshold hypothetical: the two together would
+     be a guess stacked on a guess, and the banner could only explain one. */
+  pickPoll(id) { this.setState({ pollId: id, dropped: [] }); }
+
   byId(id) { return PARTIES_VIEW.find(p => p.id === id); }
 
   toggleAdd(id) {
@@ -1340,6 +1348,9 @@ class Component extends DCLogic {
     const live = this.state.live;
     const commentary = this.state.commentary;
     const dropped = this.state.dropped || [];
+    const alternates = (live && live.alternates) || [];
+    const chosen = alternates.find(a => a.id === this.state.pollId) || null;
+    if (live) PARTIES_RAW = applyLive(allBase(), live, chosen && chosen.seats);
     PARTIES_VIEW = applyThreshold(PARTIES_RAW, dropped);
     const countdown = electionCountdown(commentary && commentary.electionDate);
     const warnings = this.dataWarnings(live);
@@ -1512,6 +1523,16 @@ class Component extends DCLogic {
         blocColor: p.color,
         seatBlocks: Array.from({ length: p.seats }, (_, i) => ({ key: i, color: p.color })),
         trendSvg: sparkline(p.trend, p.color),
+        canMissCard: couldMiss(p) || dropped.includes(p.id),
+        missCardLabel: dropped.includes(p.id)
+          ? 'Put them back' : 'What if they miss?',
+        missCardBg: dropped.includes(p.id) ? 'var(--clay)' : 'transparent',
+        missCardFg: dropped.includes(p.id) ? 'var(--paper)' : 'var(--clay-deep)',
+        onMissToggle: (e) => {
+          // The card itself adds the party to the coalition; this must not.
+          if (e) { e.stopPropagation(); e.preventDefault(); }
+          this.toggleThreshold(p.id);
+        },
         hasTrend: !!(p.trend && p.trend.length >= 3),
         hasSeatBlocks: p.seats > 0,
         inCoalition: inCoalition,
@@ -1654,10 +1675,22 @@ class Component extends DCLogic {
     });
 
     return {
-      pollingDate: (live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',
-      pollingSource: (live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11',
+      pollingDate: (chosen && chosen.displayDateLong) || (live && live.source.displayDate) || this.props.pollingDate || 'Aug 9, 2026',
+      pollingSource: chosen ? `${chosen.firm}/${chosen.publisher}` : ((live && live.source.label) || this.props.pollingSource || 'Kantar/Kan 11'),
       dataNote,
       hasDataNote: !!dataNote,
+      hasPollPicker: alternates.length > 1,
+      pollOptions: alternates.map(a => ({
+        id: a.id,
+        label: a.label,
+        title: `${a.firm} for ${a.publisher}, ${a.displayDate}`,
+        active: chosen ? a.id === chosen.id : !!a.isHeadline,
+        bg: (chosen ? a.id === chosen.id : !!a.isHeadline)
+          ? 'var(--ink)' : 'transparent',
+        fg: (chosen ? a.id === chosen.id : !!a.isHeadline)
+          ? 'var(--paper)' : 'var(--ink-2)',
+        pick: () => this.pickPoll(a.isHeadline ? null : a.id)
+      })),
       hasDropped: dropped.length > 0,
       droppedNames: dropped.map(id => {
         const p = PARTIES_RAW.find(x => x.id === id);

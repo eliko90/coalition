@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T05:14:49+00:00",
+  "generated": "2026-09-08T12:19:24+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -179,6 +179,83 @@
     },
     {
       "d": "2026-09-06",
+      "seats": {
+        "likud": 20,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 7,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 7,
+        "raam": 6,
+        "hadash_taal": 7,
+        "democrats": 8,
+        "yashar": 23,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    }
+  ],
+  "alternates": [
+    {
+      "id": "2026-09-07-filber",
+      "date": "2026-09-07",
+      "displayDate": "7 Sep",
+      "displayDateLong": "Sep 7, 2026",
+      "firm": "Filber",
+      "publisher": "Channel 14",
+      "label": "Filber · 7 Sep",
+      "isHeadline": false,
+      "seats": {
+        "likud": 30,
+        "together": 6,
+        "rzp": 8,
+        "otzma": 8,
+        "shas": 10,
+        "utj": 7,
+        "beiteinu": 6,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 10,
+        "yashar": 22,
+        "reservists": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
+      "id": "2026-09-07-midgamrc",
+      "date": "2026-09-07",
+      "displayDate": "7 Sep",
+      "displayDateLong": "Sep 7, 2026",
+      "firm": "Midgam R&C",
+      "publisher": "HaHadashot 12",
+      "label": "Midgam R&C · 7 Sep",
+      "isHeadline": false,
+      "seats": {
+        "likud": 21,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 6,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 4,
+        "hadash_taal": 7,
+        "democrats": 11,
+        "yashar": 25,
+        "reservists": 0,
+        "amcha_yisrael": 4
+      }
+    },
+    {
+      "id": "2026-09-06-kantar",
+      "date": "2026-09-06",
+      "displayDate": "6 Sep",
+      "displayDateLong": "Sep 6, 2026",
+      "firm": "Kantar",
+      "publisher": "Kan 11",
+      "label": "Kantar · 6 Sep",
+      "isHeadline": true,
       "seats": {
         "likud": 20,
         "together": 13,
