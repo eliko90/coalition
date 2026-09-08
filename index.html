@@ -1883,11 +1883,11 @@ class Component extends DCLogic {
       issueCols: ((this.state.stances || {})._issues || []),
       issueGridCols: (() => {
         const n = (((this.state.stances || {})._issues) || []).length;
-        return `minmax(150px,1.1fr) repeat(${n}, minmax(118px,1fr))`;
+        return `minmax(126px,0.95fr) repeat(${n}, minmax(96px,1fr))`;
       })(),
       issueMinWidth: (() => {
         const n = (((this.state.stances || {})._issues) || []).length;
-        return (170 + n * 128) + 'px';   // keeps columns legible; the wrapper scrolls
+        return (140 + n * 104) + 'px';   // keeps columns legible; the wrapper scrolls
       })(),
       issueRows: (() => {
         const st = this.state.stances;

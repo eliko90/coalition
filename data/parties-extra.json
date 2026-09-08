@@ -213,5 +213,14 @@
     },
     "refusals": [],
     "cautions": []
+  },
+  {
+    "id": "otzma",
+    "_why": "The design said Otzma 'backs enforcing the draft law on Haredim, unlike its coalition partners Shas and UTJ'. That is the wrong way round: Ben Gvir has said he does not believe coercion will help.",
+    "positions": {
+      "annex": "Supports Israeli sovereignty over the West Bank.",
+      "twoState": "Firmly opposed to a Palestinian state.",
+      "draft": "Ben Gvir has said he does not think coercion will help, and favours encouraging Haredi enlistment — including into the police — over enforcing the draft. That leaves him out of the fight between Shas and UTJ and the parties demanding a universal draft."
+    }
   }
 ]
