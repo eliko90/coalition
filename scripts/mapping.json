@@ -78,5 +78,12 @@
   "trend_days": 63,
   "_trend_comment": "How far back the per-party sparkline reaches (9 weeks). Tables older than history_days are read leniently for this — their columns are parties that have since merged or folded, and an unrecognised one simply contributes no trend point rather than failing the run. The trend uses the headline house only, so it is one consistent series.",
   "alternate_polls": 6,
-  "_alternates_comment": "How many recent polls to offer in the reader's poll picker. Only polls measuring every party on the board are included, so the totals stay at 120 and no party shows a zero its pollster never tested."
+  "_alternates_comment": "How many recent polls to offer in the reader's poll picker. Only polls measuring every party on the board are included, so the totals stay at 120 and no party shows a zero its pollster never tested.",
+  "exclude_pollsters": [],
+  "_exclude_comment": "Pollsters to keep out of the reader's poll picker entirely. Leave empty to show them with a note instead — excluding a house reads as removing the numbers you dislike, whereas disclosing who owns it lets the reader judge. Names must match the 'Polling firm' column.",
+  "pollster_notes": {
+    "Filber": "Channel 14 established and owns this polling firm and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust. Its readings run about nine seats higher for Likud than every other house, and it is the only pollster whose average puts the Netanyahu bloc above 61.",
+    "Direct Polls": "Polls for i24 News and reads consistently to the right of the field — about six seats higher for Likud than the houses outside Channel 14."
+  },
+  "_notes_comment": "Shown under the picker when that pollster's poll is selected. Use it to disclose ownership or a known house effect rather than quietly dropping the poll."
 }

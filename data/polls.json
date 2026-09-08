@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T12:19:24+00:00",
+  "generated": "2026-09-08T12:23:53+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -206,6 +206,7 @@
       "publisher": "Channel 14",
       "label": "Filber · 7 Sep",
       "isHeadline": false,
+      "note": "Channel 14 established and owns this polling firm and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust. Its readings run about nine seats higher for Likud than every other house, and it is the only pollster whose average puts the Netanyahu bloc above 61.",
       "seats": {
         "likud": 30,
         "together": 6,
@@ -231,6 +232,7 @@
       "publisher": "HaHadashot 12",
       "label": "Midgam R&C · 7 Sep",
       "isHeadline": false,
+      "note": "",
       "seats": {
         "likud": 21,
         "together": 13,
@@ -256,6 +258,7 @@
       "publisher": "Kan 11",
       "label": "Kantar · 6 Sep",
       "isHeadline": true,
+      "note": "",
       "seats": {
         "likud": 20,
         "together": 13,

@@ -484,6 +484,7 @@ MISS_BANNER = '<sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}
 
 CARD_MISS_OLD = '<sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">\n                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>'
 CARD_MISS_NEW = '<sc-if value="{{ p.canMissCard }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ p.onMissToggle }}" style="margin-top:8px;font-family:var(--font-sans);font-weight:700;font-size:0.72rem;letter-spacing:0.02em;padding:5px 9px;min-height:30px;background:{{ p.missCardBg }};color:{{ p.missCardFg }};border:1.5px dashed var(--clay);border-radius:var(--r-pill);cursor:pointer;">{{ p.missCardLabel }}</button></sc-if><sc-if value="{{ p.nearThreshold }}" hint-placeholder-val="{{ false }}">\n                  <div class="ek-caption" style="color:var(--clay-deep);margin-top:6px;font-weight:600;">near the threshold</div>'
+POLL_NOTE = '<sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if>'
 PICKER_ANCHOR = '<div style="position:sticky;top:0;z-index:5;background:color-mix('
 PICKER = '<sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:0 20px 4px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if>'
 
@@ -1228,6 +1229,20 @@ def build(export_path, out_html):
     html = patch(html, CARD_MISS_OLD, CARD_MISS_NEW, "card-miss-markup")
 
     html = patch(html, PICKER_ANCHOR, PICKER + PICKER_ANCHOR, "poll-picker-markup")
+
+    # A pollster's ownership or house effect, disclosed when their poll is on
+    # screen rather than left for the reader to discover.
+    html = patch(html, PICKER_ANCHOR, POLL_NOTE + PICKER_ANCHOR, "poll-note-markup")
+
+    html = patch(
+        html,
+        "      hasPollPicker: alternates.length > 1,",
+        "      hasPollPicker: alternates.length > 1,\n"
+        "      pollNote: (chosen && chosen.note) ||\n"
+        "        ((!chosen && alternates.find(a => a.isHeadline) || {}).note) || '',\n"
+        "      hasPollNote: !!((chosen && chosen.note) ||\n"
+        "        ((!chosen && alternates.find(a => a.isHeadline) || {}).note)),",
+        "poll-note-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

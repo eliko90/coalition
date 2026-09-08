@@ -467,9 +467,13 @@ def build(cache=None, year=None, verbose=True):
     # does not test a party would show it at zero and leave the house short of
     # 120, which reads as a collapse rather than as "this house did not ask".
     board = set(parties)
+    excluded = set(cfg.get("exclude_pollsters", []))
+    notes = cfg.get("pollster_notes", {})
     alts = []
     for p in polls:
         if not board.issubset(set(p["seats"])):
+            continue
+        if p["firm"] in excluded:
             continue
         alts.append({
             "id": f"{p['date'].isoformat()}-{re.sub(r'[^a-z0-9]+', '', p['firm'].lower())}",
@@ -480,6 +484,7 @@ def build(cache=None, year=None, verbose=True):
             "publisher": p["publisher"],
             "label": f"{p['firm']} · {p['date'].strftime('%-d %b')}",
             "isHeadline": p is pick,
+            "note": notes.get(p["firm"], ""),
             "seats": {k: v for k, v in p["seats"].items() if k in board},
         })
         if len(alts) >= int(cfg.get("alternate_polls", 6)):
@@ -493,6 +498,7 @@ def build(cache=None, year=None, verbose=True):
             "firm": pick["firm"], "publisher": pick["publisher"],
             "label": f"{pick['firm']} · {pick['date'].strftime('%-d %b')}",
             "isHeadline": True,
+            "note": notes.get(pick["firm"], ""),
             "seats": {k: v for k, v in pick["seats"].items() if k in board},
         })
 
