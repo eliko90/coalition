@@ -65,27 +65,39 @@
       "id": "change",
       "label": "Change bloc",
       "ids": [
+        "yashar",
         "together",
         "democrats",
-        "beiteinu",
-        "yashar"
+        "beiteinu"
       ]
     },
     {
-      "id": "eisenkot_broad",
-      "label": "Change bloc, with Ra'am",
+      "id": "change_hendel",
+      "label": "Change bloc + Hendel",
       "ids": [
         "yashar",
         "together",
         "democrats",
         "beiteinu",
-        "raam",
         "reservists"
-      ]
+      ],
+      "note": "Hendel is the one partner outside the bloc who can join it without crossing anybody's stated red line — and it still leaves them six short."
     },
     {
-      "id": "stalemate",
-      "label": "Netanyahu bloc at full stretch",
+      "id": "change_raam",
+      "label": "Change bloc + Ra'am",
+      "ids": [
+        "yashar",
+        "together",
+        "democrats",
+        "beiteinu",
+        "raam"
+      ],
+      "note": "Still four short, and it crosses two declared refusals: Bennett has ruled out a repeat 'post-October 7', Lieberman has ruled out relying on Ra'am at all. Only Eisenkot and Golan are open to it."
+    },
+    {
+      "id": "current_winter",
+      "label": "Current government + Winter",
       "ids": [
         "likud",
         "rzp",
@@ -94,19 +106,7 @@
         "utj",
         "amcha_yisrael"
       ],
-      "note": "Even with Winter's new party, the bloc tops out in the mid-50s. There is no further seat available to it that is not Arab-majority."
-    },
-    {
-      "id": "unity",
-      "label": "Unity — needs a new Likud leader",
-      "ids": [
-        "likud",
-        "yashar",
-        "together",
-        "beiteinu",
-        "democrats"
-      ],
-      "note": "Comfortably past 61 on the numbers, and irrelevant while Netanyahu leads Likud: Bennett, Lapid and Lieberman have all ruled out serving under him. This is a scenario about Likud's leadership, not about the arithmetic."
+      "note": "The Netanyahu bloc at its ceiling. There is no further seat available to it that is not Arab-majority, which is why Winter's four seats do not solve the problem Netanyahu warned they would create."
     }
   ]
 }
