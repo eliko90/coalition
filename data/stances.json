@@ -18,13 +18,19 @@
       "label": "Haredi draft",
       "a": "Draft them",
       "b": "Exempt them"
+    },
+    {
+      "key": "gaza",
+      "label": "Gaza policy",
+      "a": "Israeli control",
+      "b": "End it by agreement"
     }
   ],
   "stances": {
     "likud": {
       "annex": [
-        "mid",
-        "Settlement, not annexation"
+        "a",
+        "Settlement expansion / partial annexation"
       ],
       "twoState": [
         "b",
@@ -33,6 +39,10 @@
       "draft": [
         "b",
         "Shields yeshiva students"
+      ],
+      "gaza": [
+        "a",
+        "Military control, no PA"
       ]
     },
     "rzp": {
@@ -47,12 +57,16 @@
       "draft": [
         "b",
         "Broad exemptions"
+      ],
+      "gaza": [
+        "a",
+        "Resettlement"
       ]
     },
     "otzma": {
       "annex": [
         "a",
-        "Sovereignty over the West Bank"
+        "Full annexation"
       ],
       "twoState": [
         "b",
@@ -61,6 +75,10 @@
       "draft": [
         "a",
         "Enforce it on Haredim"
+      ],
+      "gaza": [
+        "a",
+        "Resettlement"
       ]
     },
     "shas": {
@@ -75,6 +93,10 @@
       "draft": [
         "b",
         "Opposed — its defining issue"
+      ],
+      "gaza": [
+        "none",
+        "No fixed position"
       ]
     },
     "utj": {
@@ -89,6 +111,10 @@
       "draft": [
         "b",
         "Opposed — its defining issue"
+      ],
+      "gaza": [
+        "none",
+        "No fixed position"
       ]
     },
     "beiteinu": {
@@ -103,6 +129,10 @@
       "draft": [
         "a",
         "Mandatory for Haredim"
+      ],
+      "gaza": [
+        "mid",
+        "No PA, no resettlement"
       ]
     },
     "yashar": {
@@ -117,6 +147,10 @@
       "draft": [
         "a",
         "Broader, more equal"
+      ],
+      "gaza": [
+        "b",
+        "A deal to end it; no resettlement"
       ]
     },
     "together": {
@@ -131,6 +165,10 @@
       "draft": [
         "a",
         "Broader, more equal"
+      ],
+      "gaza": [
+        "b",
+        "A deal to end it; no resettlement"
       ]
     },
     "democrats": {
@@ -145,12 +183,16 @@
       "draft": [
         "a",
         "More equal; no blanket exemption"
+      ],
+      "gaza": [
+        "b",
+        "End the war; regional framework"
       ]
     },
     "reservists": {
       "annex": [
-        "mid",
-        "Settlement, not annexation"
+        "a",
+        "Settlement expansion / partial annexation"
       ],
       "twoState": [
         "b",
@@ -159,6 +201,10 @@
       "draft": [
         "a",
         "Broader — its founding issue"
+      ],
+      "gaza": [
+        "mid",
+        "Security control, no resettlement"
       ]
     },
     "amcha_yisrael": {
@@ -173,6 +219,10 @@
       "draft": [
         "none",
         "No published position"
+      ],
+      "gaza": [
+        "a",
+        "Hard line; no published platform"
       ]
     },
     "haredi_public": {
@@ -187,6 +237,10 @@
       "draft": [
         "mid",
         "Speaks for working Haredim"
+      ],
+      "gaza": [
+        "none",
+        "No published position"
       ]
     },
     "raam": {
@@ -201,12 +255,16 @@
       "draft": [
         "none",
         "Not a focus"
+      ],
+      "gaza": [
+        "b",
+        "End the war; Palestinian governance"
       ]
     },
     "hadash_taal": {
       "annex": [
         "b",
-        "Strongly opposed"
+        "Opposed"
       ],
       "twoState": [
         "a",
@@ -215,6 +273,10 @@
       "draft": [
         "a",
         "Equal obligations"
+      ],
+      "gaza": [
+        "b",
+        "End the war; Palestinian governance"
       ]
     },
     "blue_white": {
@@ -229,6 +291,10 @@
       "draft": [
         "a",
         "Mandatory and equal"
+      ],
+      "gaza": [
+        "mid",
+        "No PA, no resettlement"
       ]
     },
     "balad": {
@@ -243,7 +309,12 @@
       "draft": [
         "none",
         "Not a focus"
+      ],
+      "gaza": [
+        "b",
+        "End the war; Palestinian governance"
       ]
     }
-  }
+  },
+  "_gazaWarning": "The Gaza column is drafted, not sourced. The other three came from the party descriptions you had already written; these are a first pass for you to correct, and no party's panel carries a Gaza sentence yet — so a cell here has no long-form text behind it. Worth going through before this is in front of readers."
 }
