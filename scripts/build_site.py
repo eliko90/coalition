@@ -599,6 +599,48 @@ THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }
 THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }}</button></sc-for></div></div></sc-if>'
 
 
+BLOCS_TAIL = '</div>\n            </sc-for>\n          </div>\n        </div>\n      </sc-for>\n    </div>'
+
+
+def move_analysis(html):
+    """Lift the state-of-play paragraph above the tool.
+
+    It sat at 3,600px on desktop and 6,800px on mobile — eight screens down,
+    past everything, for a piece whose readers arrive from a newsletter. Only
+    that paragraph moves: the outlooks and the kingmaker are conclusions about
+    a board the reader has not seen yet, and moving the whole section put a
+    screen and a half of prose in front of the first thing you can touch.
+    """
+    i = html.index("THE STATE OF PLAY")
+    nav = html.rindex('<div style="background:var(--navy);', 0, i)
+    inner = html.index('<div style="max-width:1140px', nav)
+    start = html.index("<div style=", inner + 40)
+    depth, j = 0, start
+    while True:
+        o, c = html.find("<div", j), html.find("</div>", j)
+        if c == -1:
+            raise BuildError("could not find the end of the analysis section")
+        if o != -1 and o < c:
+            depth += 1
+            j = o + 4
+        else:
+            depth -= 1
+            j = c + 6
+            if depth == 0:
+                break
+    block = html[start:j]
+    if "{{ stateOfPlay }}" not in block:
+        raise BuildError("state-of-play group no longer holds the paragraph")
+    if 'list="{{ outlooks }}"' in block:
+        raise BuildError("state-of-play group unexpectedly swallowed the outlooks")
+    html = html[:start] + html[j:]
+    # It leaves a dark section and lands on paper, so it carries its own band.
+    wrapped = ('<div style="background:var(--navy);margin-bottom:8px;">'
+               '<div style="max-width:1140px;margin:0 auto;padding:34px 20px 10px;">'
+               + block + '</div></div>')
+    return patch(html, STICKY, wrapped + STICKY, "analysis-moved")
+
+
 def move_scenarios(html):
     """Relocate the "Try a scenario" block to just under the party strip.
 
@@ -1463,8 +1505,8 @@ def build(export_path, out_html):
     # back to the total every time.
     html = patch(
         html,
-        '<sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">',
-        QUICK_STRIP + '<sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">',
+        '<sc-if value="{{ pmTiedVisible }}" hint-placeholder-val="{{ false }}">',
+        QUICK_STRIP + '<sc-if value="{{ pmTiedVisible }}" hint-placeholder-val="{{ false }}">',
         "quick-strip-markup")
 
     html = patch(
@@ -1502,6 +1544,7 @@ def build(export_path, out_html):
     # Move the scenario buttons up beside the party strip, so every control
     # sits together above the hemicycle instead of below it.
     html = move_scenarios(html)
+    html = move_analysis(html)
 
     # Pin the modal to the reader's visible slice when embedded.
     html = patch(
@@ -1670,6 +1713,64 @@ def build(export_path, out_html):
         '<div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">'
         '{{ thresholdNote }}</div></sc-if>',
         "threshold-note-markup")
+
+    # The party grid runs 3,600px on a phone — a third of the page — and the
+    # quick strip now covers adding and removing. Collapse it by default on
+    # small screens; on a desktop there is room, so it stays open.
+    html = patch(
+        html,
+        '<div class="kb-blocs" style="display:grid;',
+        '<sc-if value="{{ partiesOpen }}" hint-placeholder-val="{{ true }}">'
+        '<div class="kb-blocs" style="display:grid;',
+        "parties-collapse-open")
+
+    html = patch(
+        html,
+        BLOCS_TAIL,
+        BLOCS_TAIL + '</sc-if>'
+        '<button sc-camel-on-click="{{ togglePartiesOpen }}" aria-expanded="{{ partiesOpen }}" '
+        'style="margin-top:14px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;'
+        'padding:10px 16px;min-height:42px;background:transparent;color:var(--ink-2);'
+        'border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;">'
+        '{{ partiesToggleLabel }}</button>',
+        "parties-collapse-toggle")
+
+    html = patch(
+        html,
+        "  setView(mode) { this.setState({ viewMode: mode }); }",
+        """  togglePartiesOpen() {
+    this.setState(st => ({ partiesOpen: !st.partiesOpen }));
+  }
+
+  setView(mode) { this.setState({ viewMode: mode }); }""",
+        "parties-toggle-method")
+
+    html = patch(
+        html,
+        "    this.loadPolls();\n    if (window.parent",
+        "    this.loadPolls();\n"
+        "    // Room for the full grid on a desktop; on a phone it is four screens.\n"
+        "    if (typeof window !== 'undefined' && window.innerWidth < 760) {\n"
+        "      this.setState({ partiesOpen: false });\n"
+        "    }\n"
+        "    if (window.parent",
+        "parties-collapse-default")
+
+    html = patch(
+        html,
+        "      hasClosestHint: !!closestHint,",
+        "      partiesOpen: this.state.partiesOpen !== false,\n"
+        "      partiesToggleLabel: this.state.partiesOpen !== false\n"
+        "        ? 'Hide the full party list'\n"
+        "        : `Show all ${parties.filter(p => p.seats > 0).length} parties in detail`,\n"
+        "      togglePartiesOpen: () => this.togglePartiesOpen(),\n"
+        "      hasClosestHint: !!closestHint,",
+        "parties-collapse-view")
+
+    # --ink-3 is used for .ek-meta at 13px, which measured 4.38:1 on the paper
+    # background — under the 4.5 WCAG AA needs for normal-size text. This is
+    # the same hue, darkened until it passes.
+    html = patch(html, '--ink-3:        #79705F', '--ink-3:        #6B6252', "ink3-contrast", count=1)
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

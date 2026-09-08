@@ -56,7 +56,7 @@
   --paper-sunken: #EFEADD;  /* wells, code blocks, insets         */
   --ink:          #1C1A16;  /* primary text — warm near-black     */
   --ink-2:        #4A453C;  /* secondary text                     */
-  --ink-3:        #79705F;  /* tertiary / muted captions          */
+  --ink-3:        #6B6252;  /* tertiary / muted captions          */
   --ink-4:        #A89E8B;  /* faint / placeholder                */
   --rule:         #DCD5C5;  /* hairline borders, dividers         */
   --rule-strong:  #C5BBA6;  /* stronger borders                   */
@@ -336,7 +336,13 @@
     </div>
   </div>
 
-  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div><sc-if value="{{ hasThresholdNote }}" hint-placeholder-val="{{ false }}"><div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">{{ thresholdNote }}</div></sc-if></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
+  <sc-if value="{{ hasDropped }}" hint-placeholder-val="{{ false }}"><div style="margin-top:10px;background:var(--clay-tint);border:1px solid var(--clay);border-radius:var(--r-sm);padding:9px 12px;text-transform:none;letter-spacing:0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><div class="ek-caption" style="margin:0 0 2px;color:var(--clay-deep);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Hypothetical</div><div class="ek-small" style="margin:0;color:var(--ink-2);">{{ droppedNames }} misses the 3.25% threshold. Those {{ droppedSeats }} seats are shared out among the parties that cleared it, so every number below has moved.</div><sc-if value="{{ hasThresholdNote }}" hint-placeholder-val="{{ false }}"><div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">{{ thresholdNote }}</div></sc-if></div><button sc-camel-on-click="{{ clearDropped }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.8rem;padding:7px 12px;min-height:34px;background:var(--clay);color:var(--paper);border:none;border-radius:var(--r-sm);cursor:pointer;flex:none;">Back to the polling</button></div></sc-if><sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:14px 20px 8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if><sc-if value="{{ hasPollNote }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 6px;"><div style="background:var(--gold-tint);border-left:3px solid var(--gold);border-radius:var(--r-sm);padding:8px 11px;"><span class="ek-small" style="color:var(--ink-2);"><strong style="color:var(--gold-deep);">About this pollster —</strong> {{ pollNote }}</span></div></div></sc-if><div style="background:var(--navy);margin-bottom:8px;"><div style="max-width:1140px;margin:0 auto;padding:34px 20px 10px;"><div style="padding:0 0 30px;">
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;">
+        <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
+        <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
+      </div>
+      <p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>
+    </div></div></div><div style="position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--paper) 94%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);box-shadow:var(--shadow-sm);">
     <div style="max-width:1140px;margin:0 auto;padding:14px 20px 16px;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;min-height:2.6rem;">
         <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;">
@@ -353,21 +359,7 @@
           </div>
         </div>
       </div>
-      <div style="max-width:1140px;margin:0 auto;padding:16px 20px 6px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;"><span class="ek-meta" style="font-size:0.68rem;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</span><sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;gap:6px;flex:none;"><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ undo }}" aria-label="Undo the last change" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--ink-3);border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">↺ Undo</button></sc-if><button sc-camel-on-click="{{ clearAll }}" aria-label="Clear the coalition" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--clay-deep);border:1px solid var(--clay);border-radius:var(--r-pill);cursor:pointer;">Clear</button></span></sc-if></div><div style="display:flex;flex-wrap:wrap;gap:9px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div><div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">
-    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
-      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
-      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;">
-      <sc-for list="{{ presets }}" as="preset" hint-placeholder-count="5">
-        <button sc-camel-on-click="{{ preset.load }}" class="kb-preset" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;letter-spacing:0.01em;padding:10px 16px;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;">{{ preset.label }} <span style="font-weight:500;opacity:0.55;font-size:0.85rem;">{{ preset.seats }}</span></button>
-      </sc-for>
-      <button sc-camel-on-click="{{ clearAll }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--clay);border:1px solid var(--clay);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--clay-tint);">Clear all</button>
-      <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
-        <button sc-camel-on-click="{{ undo }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--paper-sunken);">↺ Undo</button>
-      </sc-if>
-    </div>
-  </div><sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
         <div style="margin-top:10px;">{{ arcSvg }}</div>
       </sc-if>
       <sc-if value="{{ viewBar }}" hint-placeholder-val="{{ false }}">
@@ -385,7 +377,21 @@
       </div>
       <div style="height:22px;"></div>
       </sc-if>
-      <sc-if value="{{ pmTiedVisible }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1140px;margin:0 auto;padding:16px 20px 6px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;"><span class="ek-meta" style="font-size:0.68rem;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</span><sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;gap:6px;flex:none;"><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ undo }}" aria-label="Undo the last change" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--ink-3);border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">↺ Undo</button></sc-if><button sc-camel-on-click="{{ clearAll }}" aria-label="Clear the coalition" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--clay-deep);border:1px solid var(--clay);border-radius:var(--r-pill);cursor:pointer;">Clear</button></span></sc-if></div><div style="display:flex;flex-wrap:wrap;gap:9px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div><div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
+      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
+      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <sc-for list="{{ presets }}" as="preset" hint-placeholder-count="5">
+        <button sc-camel-on-click="{{ preset.load }}" class="kb-preset" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;letter-spacing:0.01em;padding:10px 16px;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;">{{ preset.label }} <span style="font-weight:500;opacity:0.55;font-size:0.85rem;">{{ preset.seats }}</span></button>
+      </sc-for>
+      <button sc-camel-on-click="{{ clearAll }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--clay);border:1px solid var(--clay);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--clay-tint);">Clear all</button>
+      <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ undo }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--paper-sunken);">↺ Undo</button>
+      </sc-if>
+    </div>
+  </div><sc-if value="{{ pmTiedVisible }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:30px;background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--r-md);padding:10px 12px;">
           <p class="ek-small" style="margin:0;">Prime minister contested — <strong>{{ pmTiedNames }}</strong> tie for the largest party.</p>
         </div>
@@ -515,7 +521,7 @@
       <div style="flex:1;height:2px;background:linear-gradient(to right, #B0492C, #4C6A3D, #A6763D, #6E7B8A, #1E2C36);border-radius:var(--r-pill);"></div>
       <span class="ek-meta" style="color:var(--ink-3);white-space:nowrap;">RIGHT</span>
     </div>
-    <div class="kb-blocs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:24px;align-items:start;">
+    <sc-if value="{{ partiesOpen }}" hint-placeholder-val="{{ true }}"><div class="kb-blocs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:24px;align-items:start;">
       <sc-for list="{{ blocs }}" as="bloc" hint-placeholder-count="4">
         <div>
           <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:12px;">
@@ -569,7 +575,7 @@
           </div>
         </div>
       </sc-for>
-    </div>
+    </div></sc-if><button sc-camel-on-click="{{ togglePartiesOpen }}" aria-expanded="{{ partiesOpen }}" style="margin-top:14px;font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:10px 16px;min-height:42px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;">{{ partiesToggleLabel }}</button>
   </div>
 
   <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ false }}">
@@ -616,13 +622,7 @@
 
   <div style="background:var(--navy);margin-top:48px;">
   <div style="max-width:1140px;margin:0 auto;padding:44px 20px 52px;">
-    <div style="padding:0 0 30px;">
-      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;">
-        <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
-        <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
-      </div>
-      <p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>
-    </div>
+    
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
       <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
       <div class="ek-kicker" style="font-size:0.75rem;color:var(--clay-bright);">THE MIDDLE GROUND'S READ <span style="color:rgba(246,242,233,0.55);font-weight:600;">· MOST LIKELY OUTCOMES</span></div>
@@ -1120,6 +1120,10 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this.loadPolls();
+    // Room for the full grid on a desktop; on a phone it is four screens.
+    if (typeof window !== 'undefined' && window.innerWidth < 760) {
+      this.setState({ partiesOpen: false });
+    }
     if (window.parent && window.parent !== window) {
       this._onMsg = (e) => {
         const d = e.data;
@@ -1212,6 +1216,10 @@ class Component extends DCLogic {
       out.push({ text: `The most recent poll is ${age} days old.` });
     }
     return out;
+  }
+
+  togglePartiesOpen() {
+    this.setState(st => ({ partiesOpen: !st.partiesOpen }));
   }
 
   setView(mode) { this.setState({ viewMode: mode }); }
@@ -1972,6 +1980,11 @@ class Component extends DCLogic {
           };
         });
       })(),
+      partiesOpen: this.state.partiesOpen !== false,
+      partiesToggleLabel: this.state.partiesOpen !== false
+        ? 'Hide the full party list'
+        : `Show all ${parties.filter(p => p.seats > 0).length} parties in detail`,
+      togglePartiesOpen: () => this.togglePartiesOpen(),
       hasClosestHint: !!closestHint,
       closestHintText: closestHint ? `Add ${closestHint.names} to clear 61 (would reach ${closestHint.total})` : '',
       applyClosestHint: closestHint ? (() => this.addMany(closestHint.ids)) : (() => {}),
