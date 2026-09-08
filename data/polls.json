@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T12:30:03+00:00",
+  "generated": "2026-09-08T15:50:58+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -198,6 +198,34 @@
   ],
   "alternates": [
     {
+      "id": "2026-09-08-lazar",
+      "date": "2026-09-08",
+      "displayDate": "8 Sep",
+      "displayDateLong": "Sep 8, 2026",
+      "firm": "Lazar",
+      "publisher": "Maariv",
+      "label": "Lazar · 8 Sep",
+      "isHeadline": false,
+      "note": "",
+      "lean": -3,
+      "leanPolls": 7,
+      "seats": {
+        "likud": 20,
+        "together": 13,
+        "rzp": 5,
+        "otzma": 8,
+        "shas": 7,
+        "utj": 7,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 7,
+        "democrats": 10,
+        "yashar": 25,
+        "reservists": 4,
+        "amcha_yisrael": 0
+      }
+    },
+    {
       "id": "2026-09-07-filber",
       "date": "2026-09-07",
       "displayDate": "7 Sep",
@@ -284,10 +312,10 @@
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "Lazar": -3,
     "Filber": 11,
     "Midgam R&C": -2,
     "Kantar": 0,
-    "Lazar": -3,
     "Yossi Tatika": -2,
     "Maagar Mochot": 0,
     "Midgam Project": -2,
