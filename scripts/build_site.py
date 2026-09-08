@@ -368,8 +368,10 @@ function applyThreshold(parties, dropped) {
 /* Offer the toggle only where a pollster has actually shown the party missing,
    so it never invites a hypothetical the data does not support. */
 function couldMiss(p) {
+  // 3.25% is about four seats, so any party a pollster has put at four or
+  // fewer is one survey away from missing — that includes Ra'am at 4-6.
   return !!p && p.seats > 0 &&
-         ((p.spreadMinLive != null && p.spreadMinLive === 0) || p.seats <= 5);
+         ((p.spreadMinLive != null && p.spreadMinLive <= 4) || p.seats <= 5);
 }
 
 /* A pollster's measured divergence, phrased as a fact about the numbers rather
@@ -591,6 +593,10 @@ METHOD_P1_OLD = '<p class="ek-caption" style="margin:0 0 10px;max-width:44rem;te
 METHOD_P1_NEW = '<p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">{{ methodologyNote }}</p>'
 METHOD_P2_OLD = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">Seat projections from the Kantar/Kan 11 poll, fieldwork Aug 9, 2026, as recorded on Wikipedia\'s polling page for the 2026 Israeli legislative election. Change arrows compare against the previous polling round; pollster ranges span recent published polls. Refusal statements are simplified summaries of parties\' publicly stated coalition positions, for illustration.</p>'
 METHOD_P2_NEW = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>'
+
+
+THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}">'
+THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:2px 20px 22px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 11px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }} <span style="font-weight:600;opacity:0.72;">{{ t.summary }}</span></button></sc-for></div></div></sc-if>'
 
 
 def move_scenarios(html):
@@ -1302,6 +1308,7 @@ def build(export_path, out_html):
         "      hasDataNote: !!dataNote,",
         "      hasDataNote: !!dataNote,\n"
         "      hasDropped: dropped.length > 0,\n"
+        "      droppedVerb: dropped.length === 1 ? 'misses' : 'miss',\n"
         "      droppedNames: dropped.map(id => {\n"
         "        const p = PARTIES_RAW.find(x => x.id === id);\n"
         "        return p ? p.name : id;\n"
@@ -1625,6 +1632,44 @@ def build(export_path, out_html):
         "            + 'legislative election.'),\n"
         "      hasDataNote: !!dataNote,",
         "methodology-view")
+
+    # "If they miss the threshold": the same redistribution the party toggles
+    # use, offered as the scenarios that actually decide the election.
+    html = patch(html, THRESH_ANCHOR, THRESH_BLOCK + THRESH_ANCHOR, "threshold-block-markup")
+
+    html = patch(
+        html,
+        "      hasDropped: dropped.length > 0,",
+        "      hasThresholdScenarios: !!(commentary && commentary.thresholdScenarios),\n"
+        "      thresholdScenarios: ((commentary && commentary.thresholdScenarios) || []).map(t => {\n"
+        "        const drop = t.drop || [];\n"
+        "        const same = drop.length === dropped.length &&\n"
+        "          drop.every(id => dropped.includes(id));\n"
+        "        // Recompute against this scenario, so each button carries its own answer.\n"
+        "        return {\n"
+        "          label: t.label,\n"
+        "          active: same,\n"
+        "          bg: same ? 'var(--clay)' : 'transparent',\n"
+        "          fg: same ? 'var(--paper)' : 'var(--ink)',\n"
+        "          border: same ? 'var(--clay)' : 'var(--rule-strong)',\n"
+        "          borderStyle: drop.length ? 'dashed' : 'solid',\n"
+        "          apply: () => this.setState({ dropped: drop.slice(), thresholdNote: t.note || '' })\n"
+        "        };\n"
+        "      }),\n"
+        "      thresholdNote: this.state.thresholdNote || '',\n"
+        "      hasThresholdNote: !!this.state.thresholdNote && dropped.length > 0,\n"
+        "      hasDropped: dropped.length > 0,",
+        "threshold-block-view")
+
+    # The hypothetical banner carries the scenario's reading.
+    html = patch(
+        html,
+        'out among the parties that cleared it, so every number below has moved.</div>',
+        'out among the parties that cleared it, so every number below has moved.</div>'
+        '<sc-if value="{{ hasThresholdNote }}" hint-placeholder-val="{{ false }}">'
+        '<div class="ek-small" style="margin:6px 0 0;color:var(--ink);font-weight:600;">'
+        '{{ thresholdNote }}</div></sc-if>',
+        "threshold-note-markup")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

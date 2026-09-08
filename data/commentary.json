@@ -109,5 +109,47 @@
       ],
       "note": "The Netanyahu bloc at its ceiling. There is no further seat available to it that is not Arab-majority, which is why Winter's four seats do not solve the problem Netanyahu warned they would create."
     }
+  ],
+  "_thresholdComment": "The 'if they miss' buttons. `drop` lists the parties that fail to clear 3.25%; their votes are redistributed and the whole board recomputes, so the notes stay qualitative and the numbers come from the live poll.",
+  "thresholdScenarios": [
+    {
+      "id": "all",
+      "label": "Everyone clears",
+      "drop": [],
+      "note": "Deadlock. Neither bloc reaches 61, and the only majority runs through Ra'am — which Bennett and Lieberman have both ruled out. A minority government or another election."
+    },
+    {
+      "id": "winter",
+      "label": "Winter misses",
+      "drop": [
+        "amcha_yisrael"
+      ],
+      "note": "The biggest single swing available on election night: Winter's votes redistribute, the Netanyahu bloc drops three and Eisenkot's side gains three. Netanyahu warned his own camp about exactly this."
+    },
+    {
+      "id": "winter_smotrich",
+      "label": "Winter and Smotrich miss",
+      "drop": [
+        "amcha_yisrael",
+        "rzp"
+      ],
+      "note": "The Netanyahu bloc collapses and a Zionist coalition — no Ra'am needed — comes within one seat of governing. The best case available to Eisenkot."
+    },
+    {
+      "id": "hendel",
+      "label": "Hendel misses",
+      "drop": [
+        "reservists"
+      ],
+      "note": "Barely moves the blocs, and it costs Eisenkot his only majority: the route through Ra'am falls below 61, so even reaching for it leaves him short."
+    },
+    {
+      "id": "raam",
+      "label": "Ra'am misses",
+      "drop": [
+        "raam"
+      ],
+      "note": "Helps Eisenkot's Zionist total and removes his majority at the same time, since the seats that got him to 61 were Ra'am's. Still nobody governs."
+    }
   ]
 }
