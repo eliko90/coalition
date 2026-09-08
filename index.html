@@ -327,7 +327,7 @@
         <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
         <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
       </div>
-      <p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>
+      <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div style="font-family:var(--font-serif);font-weight:600;font-size:1.35rem;line-height:1;color:var(--paper);">{{ k.odds }}%</div><div class="ek-small" style="margin-top:3px;color:rgba(246,242,233,0.86);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst's ranking, not a forecast.</div></div></sc-if></div>
     </div></div></div><div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
       Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}<sc-if value="{{ hasCountdown }}" hint-placeholder-val="{{ false }}"><span> <span style="color:var(--clay);">·</span> <strong style="color:var(--ink-2);">{{ countdown }}</strong></span></sc-if>
       <sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div></sc-if>
@@ -1811,6 +1811,8 @@ class Component extends DCLogic {
             + `refusals are summaries of parties' publicly stated coalition positions.`
           : 'Seat projections as recorded on Wikipedia\'s polling page for the 2026 Israeli '
             + 'legislative election.'),
+      topCalls: outlooks.slice(0, 2).map(o => ({ odds: o.odds, label: o.label })),
+      hasTopCalls: outlooks.length > 1,
       hasDataNote: !!dataNote,
       hasPollPicker: alternates.length > 1,
       pollNote: (() => {

@@ -599,6 +599,8 @@ THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }
 THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;">{{ t.label }}</button></sc-for></div></div></sc-if>'
 
 
+STATE_P_OLD = '<p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>'
+STATE_P_NEW = '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div style="font-family:var(--font-serif);font-weight:600;font-size:1.35rem;line-height:1;color:var(--paper);">{{ k.odds }}%</div><div class="ek-small" style="margin-top:3px;color:rgba(246,242,233,0.86);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst\'s ranking, not a forecast.</div></div></sc-if></div>'
 BYLINE_META = '<div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">'
 BLOCS_TAIL = '</div>\n            </sc-for>\n          </div>\n        </div>\n      </sc-for>\n    </div>'
 
@@ -1784,6 +1786,19 @@ def build(export_path, out_html):
         '<div style="width:40px;height:3px;background:var(--clay);margin-bottom:10px;"></div>',
         '',
         "drop-hero-rule")
+
+    # The state-of-play band ran a single column of prose with the right half
+    # empty. The top of the ranking goes there, read from the same outlooks as
+    # the section below so there is only ever one place to change them.
+    html = patch(html, STATE_P_OLD, STATE_P_NEW, "state-of-play-aside")
+
+    html = patch(
+        html,
+        "      hasDataNote: !!dataNote,",
+        "      topCalls: outlooks.slice(0, 2).map(o => ({ odds: o.odds, label: o.label })),\n"
+        "      hasTopCalls: outlooks.length > 1,\n"
+        "      hasDataNote: !!dataNote,",
+        "state-of-play-aside-view")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
