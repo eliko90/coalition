@@ -602,6 +602,7 @@ METHOD_P2_OLD = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;tex
 METHOD_P2_NEW = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>'
 
 
+SCENARIOS_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">'
 COALITION_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">'
 THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}">'
 THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div></div></sc-if>'
@@ -1699,7 +1700,11 @@ def build(export_path, out_html):
 
     # "If they miss the threshold": the same redistribution the party toggles
     # use, offered as the scenarios that actually decide the election.
-    html = patch(html, COALITION_ANCHOR, THRESH_BLOCK + COALITION_ANCHOR, "threshold-block-markup")
+    # Ahead of the coalition scenarios, because it comes first causally: the
+    # threshold decides who is in the Knesset at all, and only then does it
+    # mean anything to ask who will sit with whom. It is also the argument the
+    # piece is making — the section says so in its own first line.
+    html = patch(html, SCENARIOS_ANCHOR, THRESH_BLOCK + SCENARIOS_ANCHOR, "threshold-block-markup")
 
     html = patch(
         html,
