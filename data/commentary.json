@@ -127,6 +127,14 @@
       "note": "The biggest single swing available on election night: Winter's votes redistribute, the Netanyahu bloc drops three and Eisenkot's side gains three. Netanyahu warned his own camp about exactly this."
     },
     {
+      "id": "smotrich",
+      "label": "Smotrich misses",
+      "drop": [
+        "rzp"
+      ],
+      "note": "Religious Zionism has been shown at zero by several pollsters. Losing it costs the Netanyahu bloc more than Winter does, and hands Eisenkot's side the seats — without needing Winter to fail at all."
+    },
+    {
       "id": "winter_smotrich",
       "label": "Winter and Smotrich miss",
       "drop": [
