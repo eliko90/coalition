@@ -7,22 +7,21 @@
   "outlooks": [
     {
       "rank": "1",
-      "odds": "45",
-      "label": "Eisenkot, with Ra'am and Hendel",
+      "odds": "50",
+      "label": "An Eisenkot government, minority or majority",
       "ids": [
         "yashar",
         "together",
         "democrats",
         "beiteinu",
-        "raam",
         "reservists"
       ],
-      "why": "The only combination that reaches 61 on current numbers, and it does so exactly. Hendel is the realistic partner here — his refusal to sit with Shas and UTJ over the draft leaves him little room on the right — but it asks Beyachad and Hendel to accept a government resting on Ra'am. Segelovich joining Ra'am's list was aimed at precisely that objection."
+      "why": "The core reaches 55 and crosses nobody's red line. From there it goes one of two ways: Ra'am joins and it is 61, or it governs as a minority of 55 to 59 with Arab support from outside, which is what Eisenkot has been preparing for. The second needs no one to break a promise — only for Ra'am to abstain or back it in a confidence vote."
     },
     {
       "rank": "2",
-      "odds": "37",
-      "label": "Another election",
+      "odds": "35",
+      "label": "Another stalemate",
       "ids": [
         "likud",
         "rzp",
@@ -31,20 +30,22 @@
         "utj",
         "amcha_yisrael"
       ],
-      "why": "The Netanyahu bloc tops out at 52 even with Winter's four seats, and there is no ninth seat available to it that isn't Arab-majority. If the change bloc cannot settle on Ra'am, nobody forms a government and Israel votes again."
+      "why": "The Netanyahu bloc tops out at 52 even with Winter, and has no further seat available to it that is not Arab-majority. If the change bloc also cannot settle on Ra'am — inside the coalition or outside it — nobody forms a government and Israel votes again."
     },
     {
       "rank": "3",
-      "odds": "18",
-      "label": "A unity government, without Netanyahu",
+      "odds": "15",
+      "label": "Netanyahu returns",
       "ids": [
         "likud",
-        "yashar",
-        "together",
-        "beiteinu",
-        "democrats"
+        "rzp",
+        "otzma",
+        "shas",
+        "utj",
+        "amcha_yisrael",
+        "reservists"
       ],
-      "why": "Comfortably past 61 and blocked by one man: most of these partners have ruled out serving under Netanyahu, not under Likud. A Likud leadership change would rewrite the arithmetic overnight."
+      "why": "Reaches only 56, and needs Hendel to abandon the draft red line his party was founded on. The likelier route is not this coalition but a different field: Religious Zionism holding its seats, Amcha Yisrael clearing the threshold rather than splitting the right, and a seat or two moving back from Yashar."
     }
   ],
   "wildCardNote": "The wild card is Yoaz Hendel's The Reservists, now clearing the threshold at four seats after merging with Yaron Zelekha's New Economic Party. It sits squarely between the blocs and could join either, but its refusal to sit with the ultra-Orthodox over the draft closes off the most natural path on the right — which is why the change bloc's only route to 61 runs through it.",

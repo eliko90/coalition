@@ -48,6 +48,29 @@
     frame.src = frame.getAttribute('data-app') + '?c=' + encodeURIComponent(q);
   }
 
+  // The app is a full-height frame, so nothing scrolls inside it and
+  // position:fixed pins to the whole 8,000px document rather than the screen.
+  // Only this page knows which slice the reader is looking at, so tell it.
+  function reportViewport() {
+    var r = frame.getBoundingClientRect();
+    var top = Math.max(0, -r.top);
+    var bottom = Math.min(r.height, window.innerHeight - r.top);
+    frame.contentWindow.postMessage({
+      type: 'kcb-viewport',
+      offset: top,
+      height: Math.max(0, bottom - top)
+    }, APP_ORIGIN);
+  }
+  var queued = false;
+  function onScroll() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; reportViewport(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  frame.addEventListener('load', reportViewport);
+
   window.addEventListener('message', function (e) {
     // Only listen to the app. Without this check any page in any other iframe
     // on this post could resize ours.
@@ -67,10 +90,13 @@
       return;
     }
 
+    if (d && d.type === 'kcb-need-viewport') { reportViewport(); return; }
+
     if (!d || d.type !== 'kcb-resize') return;
     var h = parseInt(d.height, 10);
     if (!h || h < 400 || h > 20000) return;
     frame.style.height = h + 'px';
+    reportViewport();          // the frame just moved under the reader
   }, false);
 })();
 </script>

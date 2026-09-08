@@ -400,6 +400,18 @@ function shortName(name) {
   return SHORT_NAMES[name] || (name.length > 14 ? name.split(' ')[0] : name);
 }
 
+/* Where the reader's screen actually is, inside a frame that has no scroll of
+   its own. position:fixed pins to the iframe's viewport, and the iframe is its
+   full 8,000px height — so a "fixed, centred" panel lands in the middle of the
+   whole document, thousands of pixels from whoever opened it. The parent page
+   is the only one that knows, so it reports the visible slice and the overlay
+   is positioned absolutely over that instead. */
+let VIEWPORT = null;   // {offset, height} in this document's coordinates
+function overlayBox() {
+  if (!VIEWPORT || !VIEWPORT.height) return null;
+  return { top: Math.max(0, VIEWPORT.offset), height: VIEWPORT.height };
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -422,6 +434,25 @@ function kingmakerNow() {
 LOAD_POLLS = r"""
   componentDidMount() {
     this.loadPolls();
+    if (window.parent && window.parent !== window) {
+      this._onMsg = (e) => {
+        const d = e.data;
+        if (!d || d.type !== 'kcb-viewport') return;
+        const next = { offset: +d.offset || 0, height: +d.height || 0 };
+        if (!VIEWPORT || Math.abs(VIEWPORT.offset - next.offset) > 2 ||
+            VIEWPORT.height !== next.height) {
+          VIEWPORT = next;
+          // Only a panel that is open needs repositioning.
+          if (this.state.infoId || this.state.showIntro) this.forceUpdate();
+        }
+      };
+      window.addEventListener('message', this._onMsg);
+      window.parent.postMessage({ type: 'kcb-need-viewport' }, '*');
+    }
+  }
+
+  componentWillUnmount() {
+    if (this._onMsg) window.removeEventListener('message', this._onMsg);
   }
 
   loadPolls() {
@@ -524,7 +555,37 @@ PANEL_OLD = 'style="max-width:420px;width:100%;background:var(--paper-raised);bo
 PANEL_NEW = 'style="max-width:min(640px,100%);width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px 28px;position:relative;max-height:calc(100vh - 40px);overflow-y:auto;"'
 
 
-QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div>'
+QUICK_STRIP = '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;"><span class="ek-meta" style="font-size:0.68rem;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</span><sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;gap:6px;flex:none;"><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ undo }}" aria-label="Undo the last change" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--ink-3);border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">↺ Undo</button></sc-if><button sc-camel-on-click="{{ clearAll }}" aria-label="Clear the coalition" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--clay-deep);border:1px solid var(--clay);border-radius:var(--r-pill);cursor:pointer;">Clear</button></span></sc-if></div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div>'
+
+
+def move_scenarios(html):
+    """Relocate the "Try a scenario" block to just under the party strip.
+
+    Cut rather than copied: the block is found by its own container, and the
+    surrounding section keeps its background and rule, so only the position
+    changes.
+    """
+    i = html.index("TRY A SCENARIO")
+    start = html.rindex('<div style="max-width:1140px;margin:0 auto;padding:24px 20px 28px;">', 0, i)
+    depth, j = 0, start
+    while True:
+        o, c = html.find("<div", j), html.find("</div>", j)
+        if c == -1:
+            raise BuildError("could not find the end of the scenarios block")
+        if o != -1 and o < c:
+            depth += 1
+            j = o + 4
+        else:
+            depth -= 1
+            j = c + 6
+            if depth == 0:
+                break
+    block = html[start:j]
+    if 'list="{{ presets }}"' not in block:
+        raise BuildError("the scenarios block no longer holds the preset buttons")
+    html = html[:start] + html[j:]
+    # Sits after the strip and before the hemicycle, which QUICK_STRIP precedes.
+    return patch(html, QUICK_STRIP, QUICK_STRIP + block, "scenarios-moved")
 
 
 def build(export_path, out_html):
@@ -1156,6 +1217,16 @@ def build(export_path, out_html):
         "  closeInfo() { this.setState({ infoId: null }); }",
         """  closeInfo() { this.setState({ infoId: null }); }
 
+  /* The parent reports on scroll, but a panel can open before any scroll has
+     happened. Ask at the moment it matters. */
+  askViewport() {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'kcb-need-viewport' }, '*');
+      }
+    } catch (e) { /* nothing to do */ }
+  }
+
   toggleThreshold(id) {
     this.setState(st => {
       const dropped = (st.dropped || []).includes(id)
@@ -1375,6 +1446,65 @@ def build(export_path, out_html):
         "      })),\n"
         "      hasClosestHint: !!closestHint,",
         "quick-strip-view")
+
+    # Move the scenario buttons up beside the party strip, so every control
+    # sits together above the hemicycle instead of below it.
+    html = move_scenarios(html)
+
+    # Pin the modal to the reader's visible slice when embedded.
+    html = patch(
+        html,
+        OVERLAY_NEW,
+        'style="{{ overlayStyle }}"',
+        "modal-overlay-dynamic")
+
+    html = patch(
+        html,
+        "      hasInfo: !!infoView,",
+        "      overlayStyle: (() => {\n"
+        "        const box = overlayBox();\n"
+        "        const base = 'background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);'\n"
+        "          + 'display:flex;align-items:center;justify-content:center;padding:20px;'\n"
+        "          + 'overflow-y:auto;z-index:50;';\n"
+        "        return box\n"
+        "          ? `position:absolute;left:0;right:0;top:${box.top}px;height:${box.height}px;${base}`\n"
+        "          : `position:fixed;inset:0;${base}`;\n"
+        "      })(),\n"
+        "      hasInfo: !!infoView,",
+        "modal-overlay-view")
+
+    for old, new, name in [
+        ("  openInfo(id, e) { if (e) e.stopPropagation(); this.setState({ infoId: id }); }",
+         "  openInfo(id, e) { if (e) e.stopPropagation(); this.askViewport(); "
+         "this.setState({ infoId: id }); }", "openinfo-viewport"),
+        ("  openIntro() { this.setState({ showIntro: true }); }",
+         "  openIntro() { this.askViewport(); this.setState({ showIntro: true }); }",
+         "openintro-viewport"),
+    ]:
+        html = patch(html, old, new, name)
+
+    # Breathing room: the strip and the scenarios were packed tight against
+    # each other and against the rule above them.
+    html = patch(
+        html,
+        '<div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;">',
+        '<div style="max-width:1140px;margin:0 auto;padding:16px 20px 6px;">',
+        "strip-padding")
+    html = patch(
+        html,
+        '<div style="display:flex;flex-wrap:wrap;gap:6px;">',
+        '<div style="display:flex;flex-wrap:wrap;gap:9px;">',
+        "strip-gap")
+    html = patch(
+        html,
+        'justify-content:space-between;gap:10px;margin-bottom:7px;">',
+        'justify-content:space-between;gap:10px;margin-bottom:11px;">',
+        "strip-label-gap")
+    html = patch(
+        html,
+        '<div style="max-width:1140px;margin:0 auto;padding:24px 20px 28px;">',
+        '<div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">',
+        "scenarios-padding")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(

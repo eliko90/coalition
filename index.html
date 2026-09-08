@@ -353,7 +353,21 @@
           </div>
         </div>
       </div>
-      <div style="max-width:1140px;margin:0 auto;padding:4px 20px 2px;"><div class="ek-meta" style="font-size:0.68rem;margin-bottom:7px;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div><sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
+      <div style="max-width:1140px;margin:0 auto;padding:16px 20px 6px;"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;"><span class="ek-meta" style="font-size:0.68rem;">Tap to add or remove <span style="color:var(--clay);">·</span> dashed = near the threshold</span><sc-if value="{{ hasCoalition }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;gap:6px;flex:none;"><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button sc-camel-on-click="{{ undo }}" aria-label="Undo the last change" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--ink-3);border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">↺ Undo</button></sc-if><button sc-camel-on-click="{{ clearAll }}" aria-label="Clear the coalition" style="font-family:var(--font-sans);font-weight:700;font-size:0.72rem;padding:4px 9px;min-height:28px;background:none;color:var(--clay-deep);border:1px solid var(--clay);border-radius:var(--r-pill);cursor:pointer;">Clear</button></span></sc-if></div><div style="display:flex;flex-wrap:wrap;gap:9px;"><sc-for list="{{ quickParties }}" as="q" hint-placeholder-count="0"><span style="display:inline-flex;align-items:stretch;border:1.5px {{ q.borderStyle }} {{ q.border }};border-radius:var(--r-pill);background:{{ q.bg }};overflow:hidden;opacity:{{ q.opacity }};"><button sc-camel-on-click="{{ q.toggle }}" aria-pressed="{{ q.inCoalition }}" aria-label="{{ q.aria }}" title="{{ q.title }}" style="display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:5px 4px 5px 10px;min-height:32px;background:none;color:{{ q.fg }};border:none;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:{{ q.dot }};flex:none;"></span>{{ q.name }} <span style="font-weight:600;opacity:0.75;">{{ q.seats }}</span></button><button sc-camel-on-click="{{ q.info }}" aria-label="{{ q.infoAria }}" title="{{ q.infoAria }}" style="display:inline-flex;align-items:center;justify-content:center;width:26px;min-height:32px;background:none;border:none;border-left:1px solid {{ q.divider }};color:{{ q.infoFg }};font-family:var(--font-serif);font-style:italic;font-size:0.86rem;cursor:pointer;flex:none;">i</button></span></sc-for></div></div><div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
+      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
+      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <sc-for list="{{ presets }}" as="preset" hint-placeholder-count="5">
+        <button sc-camel-on-click="{{ preset.load }}" class="kb-preset" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;letter-spacing:0.01em;padding:10px 16px;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;">{{ preset.label }} <span style="font-weight:500;opacity:0.55;font-size:0.85rem;">{{ preset.seats }}</span></button>
+      </sc-for>
+      <button sc-camel-on-click="{{ clearAll }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--clay);border:1px solid var(--clay);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--clay-tint);">Clear all</button>
+      <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ undo }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--paper-sunken);">↺ Undo</button>
+      </sc-if>
+    </div>
+  </div><sc-if value="{{ viewArc }}" hint-placeholder-val="{{ true }}">
         <div style="margin-top:10px;">{{ arcSvg }}</div>
       </sc-if>
       <sc-if value="{{ viewBar }}" hint-placeholder-val="{{ false }}">
@@ -444,21 +458,7 @@
   </div>
 
   <div style="background:var(--paper-sunken);border-bottom:1px solid var(--rule);">
-  <div style="max-width:1140px;margin:0 auto;padding:24px 20px 28px;">
-    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
-      <div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div>
-      <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">TRY A SCENARIO</div>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;">
-      <sc-for list="{{ presets }}" as="preset" hint-placeholder-count="5">
-        <button sc-camel-on-click="{{ preset.load }}" class="kb-preset" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;letter-spacing:0.01em;padding:10px 16px;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;">{{ preset.label }} <span style="font-weight:500;opacity:0.55;font-size:0.85rem;">{{ preset.seats }}</span></button>
-      </sc-for>
-      <button sc-camel-on-click="{{ clearAll }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--clay);border:1px solid var(--clay);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--clay-tint);">Clear all</button>
-      <sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}">
-        <button sc-camel-on-click="{{ undo }}" style="font-family:var(--font-sans);font-weight:600;font-size:0.92rem;padding:10px 14px;min-height:44px;background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);cursor:pointer;" style-hover="background:var(--paper-sunken);">↺ Undo</button>
-      </sc-if>
-    </div>
-  </div>
+  
 
   <div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
@@ -585,7 +585,7 @@
   </sc-if>
 
   <sc-if value="{{ hasInfo }}" hint-placeholder-val="{{ false }}">
-    <div sc-camel-on-click="{{ closeInfo }}" style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;z-index:50;">
+    <div sc-camel-on-click="{{ closeInfo }}" style="{{ overlayStyle }}">
       <div sc-camel-on-click="{{ stopClick }}" style="max-width:min(640px,100%);width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px 28px;position:relative;max-height:calc(100vh - 40px);overflow-y:auto;">
         <button sc-camel-on-click="{{ closeInfo }}" aria-label="Close" style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink-2);font-size:1rem;line-height:1;cursor:pointer;">×</button>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
@@ -1010,6 +1010,18 @@ function shortName(name) {
   return SHORT_NAMES[name] || (name.length > 14 ? name.split(' ')[0] : name);
 }
 
+/* Where the reader's screen actually is, inside a frame that has no scroll of
+   its own. position:fixed pins to the iframe's viewport, and the iframe is its
+   full 8,000px height — so a "fixed, centred" panel lands in the middle of the
+   whole document, thousands of pixels from whoever opened it. The parent page
+   is the only one that knows, so it reports the visible slice and the overlay
+   is positioned absolutely over that instead. */
+let VIEWPORT = null;   // {offset, height} in this document's coordinates
+function overlayBox() {
+  if (!VIEWPORT || !VIEWPORT.height) return null;
+  return { top: Math.max(0, VIEWPORT.offset), height: VIEWPORT.height };
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -1082,6 +1094,25 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this.loadPolls();
+    if (window.parent && window.parent !== window) {
+      this._onMsg = (e) => {
+        const d = e.data;
+        if (!d || d.type !== 'kcb-viewport') return;
+        const next = { offset: +d.offset || 0, height: +d.height || 0 };
+        if (!VIEWPORT || Math.abs(VIEWPORT.offset - next.offset) > 2 ||
+            VIEWPORT.height !== next.height) {
+          VIEWPORT = next;
+          // Only a panel that is open needs repositioning.
+          if (this.state.infoId || this.state.showIntro) this.forceUpdate();
+        }
+      };
+      window.addEventListener('message', this._onMsg);
+      window.parent.postMessage({ type: 'kcb-need-viewport' }, '*');
+    }
+  }
+
+  componentWillUnmount() {
+    if (this._onMsg) window.removeEventListener('message', this._onMsg);
   }
 
   loadPolls() {
@@ -1207,7 +1238,7 @@ class Component extends DCLogic {
     }
   }
 
-  openIntro() { this.setState({ showIntro: true }); }
+  openIntro() { this.askViewport(); this.setState({ showIntro: true }); }
   closeIntro() { this.setState({ showIntro: false }); }
 
   setHover(id) { this.setState({ hoverId: id }); }
@@ -1322,8 +1353,18 @@ class Component extends DCLogic {
     const names = coalitionPartiesRaw.map(p => p.name).join(', ');
     return `Road to 61: I built a ${totalSeats}-seat Knesset coalition (${governs ? 'it governs' : 'it falls short of 61'}): ${names}. Build your own —`;
   }
-  openInfo(id, e) { if (e) e.stopPropagation(); this.setState({ infoId: id }); }
+  openInfo(id, e) { if (e) e.stopPropagation(); this.askViewport(); this.setState({ infoId: id }); }
   closeInfo() { this.setState({ infoId: null }); }
+
+  /* The parent reports on scroll, but a panel can open before any scroll has
+     happened. Ask at the moment it matters. */
+  askViewport() {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'kcb-need-viewport' }, '*');
+      }
+    } catch (e) { /* nothing to do */ }
+  }
 
   toggleThreshold(id) {
     this.setState(st => {
@@ -1865,6 +1906,15 @@ class Component extends DCLogic {
       pmParty: (pmView && !pmView.tied) ? pmView.party : '',
       pmColor: (pmView && !pmView.tied) ? pmView.color : 'var(--ink-3)',
       pmInitials: (pmView && !pmView.tied) ? pmView.initials : '',
+      overlayStyle: (() => {
+        const box = overlayBox();
+        const base = 'background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);'
+          + 'display:flex;align-items:center;justify-content:center;padding:20px;'
+          + 'overflow-y:auto;z-index:50;';
+        return box
+          ? `position:absolute;left:0;right:0;top:${box.top}px;height:${box.height}px;${base}`
+          : `position:fixed;inset:0;${base}`;
+      })(),
       hasInfo: !!infoView,
       infoView,
       closeInfo: () => this.closeInfo(),
