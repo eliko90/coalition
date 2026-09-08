@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T12:23:53+00:00",
+  "generated": "2026-09-08T12:30:03+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -206,7 +206,9 @@
       "publisher": "Channel 14",
       "label": "Filber · 7 Sep",
       "isHeadline": false,
-      "note": "Channel 14 established and owns this polling firm and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust. Its readings run about nine seats higher for Likud than every other house, and it is the only pollster whose average puts the Netanyahu bloc above 61.",
+      "note": "Channel 14 established and owns this polling firm, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "lean": 11,
+      "leanPolls": 7,
       "seats": {
         "likud": 30,
         "together": 6,
@@ -233,6 +235,8 @@
       "label": "Midgam R&C · 7 Sep",
       "isHeadline": false,
       "note": "",
+      "lean": -2,
+      "leanPolls": 5,
       "seats": {
         "likud": 21,
         "together": 13,
@@ -259,6 +263,8 @@
       "label": "Kantar · 6 Sep",
       "isHeadline": true,
       "note": "",
+      "lean": 0,
+      "leanPolls": 8,
       "seats": {
         "likud": 20,
         "together": 13,
@@ -276,6 +282,17 @@
       }
     }
   ],
+  "leanBlocLabel": "the Netanyahu bloc",
+  "leans": {
+    "Filber": 11,
+    "Midgam R&C": -2,
+    "Kantar": 0,
+    "Lazar": -3,
+    "Yossi Tatika": -2,
+    "Maagar Mochot": 0,
+    "Midgam Project": -2,
+    "Direct Polls": 7
+  },
   "spreadPollCount": 32,
   "totalSeats": 120,
   "parties": {

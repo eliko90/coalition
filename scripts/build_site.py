@@ -371,6 +371,19 @@ function couldMiss(p) {
          ((p.spreadMinLive != null && p.spreadMinLive === 0) || p.seats <= 5);
 }
 
+/* A pollster's measured divergence, phrased as a fact about the numbers rather
+   than a label about the pollster. Only shown once it is big enough to matter,
+   so the default view is not nagging the reader about a house that tracks the
+   field. */
+function leanSentence(a, live) {
+  if (!a || a.lean == null || Math.abs(a.lean) < 2) return '';
+  const dir = a.lean > 0 ? 'above' : 'below';
+  const n = Math.abs(a.lean);
+  return `${a.firm} has run ${n} ${n === 1 ? 'seat' : 'seats'} ${dir} the field ` +
+         `median for ${live.leanBlocLabel || 'the largest bloc'}, across ` +
+         `${a.leanPolls} polls in the last 30 days.`;
+}
+
 function daysSince(iso) {
   if (!iso) return null;
   const then = new Date(iso + 'T00:00:00Z');
@@ -1238,10 +1251,15 @@ def build(export_path, out_html):
         html,
         "      hasPollPicker: alternates.length > 1,",
         "      hasPollPicker: alternates.length > 1,\n"
-        "      pollNote: (chosen && chosen.note) ||\n"
-        "        ((!chosen && alternates.find(a => a.isHeadline) || {}).note) || '',\n"
-        "      hasPollNote: !!((chosen && chosen.note) ||\n"
-        "        ((!chosen && alternates.find(a => a.isHeadline) || {}).note)),",
+        "      pollNote: (() => {\n"
+        "        const a = chosen || alternates.find(x => x.isHeadline);\n"
+        "        if (!a) return '';\n"
+        "        return [leanSentence(a, live), a.note].filter(Boolean).join(' ');\n"
+        "      })(),\n"
+        "      hasPollNote: (() => {\n"
+        "        const a = chosen || alternates.find(x => x.isHeadline);\n"
+        "        return !!a && !!(leanSentence(a, live) || a.note);\n"
+        "      })(),",
         "poll-note-view")
 
     # ---- byline markup ----------------------------------------------------

@@ -466,6 +466,23 @@ def build(cache=None, year=None, verbose=True):
     # Only polls that measure every party on the board are offered. One that
     # does not test a party would show it at zero and leave the house short of
     # 120, which reads as a collapse rather than as "this house did not ask".
+    # ---- measured house effect -------------------------------------------
+    # Each house's average against the field median, in seats. This says what a
+    # label like "Netanyahu-aligned" would say, but as arithmetic a reader can
+    # check — and it corrects itself if a house converges, which a label never
+    # would.
+    lean_ids = [i for i in cfg.get("lean_bloc", []) if i in parties]
+    lean_window = [p for p in polls if (pick["date"] - p["date"]).days <= 30]
+    def bloc_of(p):
+        return sum(p["seats"].get(i, 0) for i in lean_ids)
+    field = sorted(bloc_of(p) for p in lean_window)
+    field_med = field[len(field) // 2] if field else 0
+    by_firm = {}
+    for p in lean_window:
+        by_firm.setdefault(p["firm"], []).append(bloc_of(p))
+    leans = {f: round(sum(v) / len(v) - field_med) for f, v in by_firm.items() if v}
+    lean_n = {f: len(v) for f, v in by_firm.items()}
+
     board = set(parties)
     excluded = set(cfg.get("exclude_pollsters", []))
     notes = cfg.get("pollster_notes", {})
@@ -485,6 +502,8 @@ def build(cache=None, year=None, verbose=True):
             "label": f"{p['firm']} · {p['date'].strftime('%-d %b')}",
             "isHeadline": p is pick,
             "note": notes.get(p["firm"], ""),
+            "lean": leans.get(p["firm"]),
+            "leanPolls": lean_n.get(p["firm"]),
             "seats": {k: v for k, v in p["seats"].items() if k in board},
         })
         if len(alts) >= int(cfg.get("alternate_polls", 6)):
@@ -499,6 +518,8 @@ def build(cache=None, year=None, verbose=True):
             "label": f"{pick['firm']} · {pick['date'].strftime('%-d %b')}",
             "isHeadline": True,
             "note": notes.get(pick["firm"], ""),
+            "lean": leans.get(pick["firm"]),
+            "leanPolls": lean_n.get(pick["firm"]),
             "seats": {k: v for k, v in pick["seats"].items() if k in board},
         })
 
@@ -521,6 +542,8 @@ def build(cache=None, year=None, verbose=True):
         # latest one. One house, so it is a weekly series, not a mix of methods.
         "history": [{"d": p["date"].isoformat(), "seats": p["seats"]} for p in series],
         "alternates": alts,
+        "leanBlocLabel": cfg.get("lean_bloc_label", "the Netanyahu bloc"),
+        "leans": leans,
         "spreadPollCount": len(recent),
         "totalSeats": total,
         "parties": parties,

@@ -82,8 +82,18 @@
   "exclude_pollsters": [],
   "_exclude_comment": "Pollsters to keep out of the reader's poll picker entirely. Leave empty to show them with a note instead — excluding a house reads as removing the numbers you dislike, whereas disclosing who owns it lets the reader judge. Names must match the 'Polling firm' column.",
   "pollster_notes": {
-    "Filber": "Channel 14 established and owns this polling firm and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust. Its readings run about nine seats higher for Likud than every other house, and it is the only pollster whose average puts the Netanyahu bloc above 61.",
-    "Direct Polls": "Polls for i24 News and reads consistently to the right of the field — about six seats higher for Likud than the houses outside Channel 14."
+    "Filber": "Channel 14 established and owns this polling firm, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+    "Direct Polls": "Polls for i24 News."
   },
-  "_notes_comment": "Shown under the picker when that pollster's poll is selected. Use it to disclose ownership or a known house effect rather than quietly dropping the poll."
+  "_notes_comment": "Shown under the picker when that pollster's poll is selected, after the measured house effect. Keep it to what arithmetic cannot say — who owns the firm, who commissions it — and let the lean figure carry the numbers. Avoid labels like 'aligned' or 'mainstream': they are contestable in a way an ownership fact and a seat count are not.",
+  "lean_bloc": [
+    "likud",
+    "rzp",
+    "otzma",
+    "shas",
+    "utj",
+    "amcha_yisrael"
+  ],
+  "lean_bloc_label": "the Netanyahu bloc",
+  "_lean_comment": "House effect is measured on this bloc's seat total: each pollster's 30-day average minus the median across every poll, in seats. Keep it in step with the blocs on the board."
 }
