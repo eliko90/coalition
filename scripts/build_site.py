@@ -1899,6 +1899,29 @@ def build(export_path, out_html):
         "          + (61 - totalSeats === 1 ? 'seat' : 'seats');",
         "short-by-plural")
 
+    # Tag the subscribe links so Substack can attribute signups to the tool.
+    # Without this there is no way to answer whether it is working.
+    for old, new, name, cnt in [
+        ("https://kowaz.substack.com/subscribe\"",
+         "https://kowaz.substack.com/subscribe?utm_source=coalitionbuilder"
+         "&amp;utm_medium=interactive&amp;utm_campaign=road-to-61\"",
+         "utm-subscribe", 3),
+        ("https://kowaz.substack.com\"",
+         "https://kowaz.substack.com?utm_source=coalitionbuilder"
+         "&amp;utm_medium=interactive&amp;utm_campaign=road-to-61\"",
+         "utm-home", 1),
+    ]:
+        html = patch(html, old, new, name, cnt)
+
+    # The nudge fired on a third party added. The moment a board actually
+    # governs is the better one — it is the point the tool has just paid off.
+    html = patch(
+        html,
+        "      showSubscribeNudge: coalition.length >= 3 && !this.state.nudgeDismissed,",
+        "      showSubscribeNudge: (coalition.length >= 3 || governs)\n"
+        "        && !this.state.nudgeDismissed,",
+        "nudge-on-governs")
+
     # ---- byline markup ----------------------------------------------------
     html = patch(
         html,

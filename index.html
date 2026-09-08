@@ -320,7 +320,7 @@
     <p style="font-family:var(--font-serif);font-style:italic;font-size:1.15rem;line-height:1.5;color:var(--ink-2);margin:0 0 18px;max-width:38rem;text-wrap:pretty;">Build Israel's next coalition. Tap a party to add it — the arithmetic updates instantly. But some combinations that add up to 61 seats on paper have already been ruled out by the parties themselves.</p>
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
       <p class="ek-small" style="margin:0;white-space:nowrap;">By <strong>Eli Kowaz</strong>, for <em>The Middle Ground</em></p>
-      <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.95rem;">Subscribe to The Middle Ground →</a>
+      <a href="https://kowaz.substack.com/subscribe?utm_source=coalitionbuilder&amp;utm_medium=interactive&amp;utm_campaign=road-to-61" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.95rem;">Subscribe to The Middle Ground →</a>
     </div>
     <div style="background:var(--navy);margin:6px -20px 22px;border-radius:var(--r-md);"><div style="padding:30px 26px 8px;"><div style="padding:0 0 30px;">
       <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:8px;">
@@ -503,7 +503,7 @@
       <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 2px;">
         <p style="font-family:var(--font-serif);font-style:italic;font-size:1rem;color:var(--ink-2);margin:0;">Enjoying this? Analysis like it lands in your inbox every week.</p>
         <div style="display:flex;align-items:center;gap:14px;">
-          <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.9rem;white-space:nowrap;">Subscribe to The Middle Ground →</a>
+          <a href="https://kowaz.substack.com/subscribe?utm_source=coalitionbuilder&amp;utm_medium=interactive&amp;utm_campaign=road-to-61" target="_blank" rel="noopener" class="ek-link" style="font-family:var(--font-sans);font-weight:700;font-size:0.9rem;white-space:nowrap;">Subscribe to The Middle Ground →</a>
           <button sc-camel-on-click="{{ dismissNudge }}" aria-label="Dismiss" style="background:none;border:none;padding:4px;color:var(--ink-3);font-size:1rem;line-height:1;cursor:pointer;">×</button>
         </div>
       </div>
@@ -659,8 +659,8 @@
       <div class="ek-caption" style="text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ink-2);margin-bottom:6px;">Why these numbers</div>
       <p class="ek-caption" style="margin:0 0 10px;max-width:44rem;text-wrap:pretty;">{{ methodologyNote }}</p>
       <p class="ek-caption" style="margin:0 0 8px;max-width:44rem;text-wrap:pretty;">{{ sourceNote }}</p>
-      <p class="ek-caption" style="margin:0 0 4px;">A tool by Eli Kowaz — <a href="https://kowaz.substack.com/subscribe" target="_blank" rel="noopener" class="ek-link">subscribe to The Middle Ground</a>.</p>
-      <p class="ek-caption" style="margin:0;">Read more Israeli election analysis at <a href="https://kowaz.substack.com" target="_blank" rel="noopener" class="ek-link">The Middle Ground</a>.</p>
+      <p class="ek-caption" style="margin:0 0 4px;">A tool by Eli Kowaz — <a href="https://kowaz.substack.com/subscribe?utm_source=coalitionbuilder&amp;utm_medium=interactive&amp;utm_campaign=road-to-61" target="_blank" rel="noopener" class="ek-link">subscribe to The Middle Ground</a>.</p>
+      <p class="ek-caption" style="margin:0;">Read more Israeli election analysis at <a href="https://kowaz.substack.com?utm_source=coalitionbuilder&amp;utm_medium=interactive&amp;utm_campaign=road-to-61" target="_blank" rel="noopener" class="ek-link">The Middle Ground</a>.</p>
     </div>
   </div>
 
@@ -1953,7 +1953,8 @@ class Component extends DCLogic {
       hasPresetNote: !!this.state.presetNote,
       presetNote: fillNote(this.state.presetNote, PARTIES_VIEW),
       hasRaamNote: coalitionSet.has('raam') && coalitionPartiesRaw.some(p => p.bloc !== 'arab'),
-      showSubscribeNudge: coalition.length >= 3 && !this.state.nudgeDismissed,
+      showSubscribeNudge: (coalition.length >= 3 || governs)
+        && !this.state.nudgeDismissed,
       dismissNudge: () => this.setState({ nudgeDismissed: true }),
       hasBlockedHint: !!(blockedHint && !blockedHint.impossible),
       hasImpossible: !!(blockedHint && blockedHint.impossible),
