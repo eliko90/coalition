@@ -502,6 +502,12 @@ PICKER_ANCHOR = '<div style="position:sticky;top:0;z-index:5;background:color-mi
 PICKER = '<sc-if value="{{ hasPollPicker }}" hint-placeholder-val="{{ false }}"><div style="max-width:960px;margin:0 auto;padding:0 20px 4px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="ek-meta" style="font-size:0.68rem;">Showing</span><sc-for list="{{ pollOptions }}" as="o" hint-placeholder-count="0"><button sc-camel-on-click="{{ o.pick }}" title="{{ o.title }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;padding:6px 11px;min-height:32px;background:{{ o.bg }};color:{{ o.fg }};border:1px solid var(--rule-strong);border-radius:var(--r-pill);cursor:pointer;">{{ o.label }}</button></sc-for></div></div></sc-if>'
 
 
+OVERLAY_OLD = 'style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:min(8vh,60px);z-index:50;"'
+OVERLAY_NEW = 'style="position:fixed;inset:0;background:rgba(28,26,22,0.78);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;z-index:50;"'
+PANEL_OLD = 'style="max-width:420px;width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:22px;position:relative;"'
+PANEL_NEW = 'style="max-width:min(640px,100%);width:100%;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:var(--shadow-lg);padding:26px 28px;position:relative;max-height:calc(100vh - 40px);overflow-y:auto;"'
+
+
 def build(export_path, out_html):
     assets, page, ext = unpack(export_path)
     os.makedirs(ASSETS, exist_ok=True)
@@ -1261,6 +1267,28 @@ def build(export_path, out_html):
         "        return !!a && !!(leanSentence(a, live) || a.note);\n"
         "      })(),",
         "poll-note-view")
+
+    # The panel was pinned to the top with no scrolling, so anything taller than
+    # the viewport was clipped and unreachable — which is where the threshold
+    # button lives. Centre it, let it scroll, and let it use the width it has.
+    html = patch(html, OVERLAY_OLD, OVERLAY_NEW, "modal-centre")
+    html = patch(html, PANEL_OLD, PANEL_NEW, "modal-width")
+
+    # The picker sat flush against the rule above it.
+    html = patch(
+        html,
+        '<div style="max-width:960px;margin:0 auto;padding:0 20px 4px;">',
+        '<div style="max-width:960px;margin:0 auto;padding:14px 20px 8px;">',
+        "picker-spacing")
+
+    # The card toggle was easy to miss at 0.72rem in a dashed outline.
+    html = patch(
+        html,
+        "font-weight:700;font-size:0.72rem;"
+        "letter-spacing:0.02em;padding:5px 9px;min-height:30px;",
+        "font-weight:700;font-size:0.78rem;"
+        "letter-spacing:0.02em;padding:6px 11px;min-height:32px;",
+        "card-miss-size")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
