@@ -83,9 +83,14 @@
       var ids = Array.isArray(d.ids) ? d.ids.filter(function (x) {
         return typeof x === 'string' && /^[a-z0-9_]+$/i.test(x);
       }) : [];
+      var drop = Array.isArray(d.drop) ? d.drop.filter(function (x) {
+        return typeof x === 'string' && /^[a-z0-9_]+$/i.test(x);
+      }) : [];
+      var v = ids.join('.');
+      if (drop.length) v += (v ? '._x_.' : '_x_.') + drop.join('.');
       try {
         history.replaceState(null, '',
-          window.location.pathname + (ids.length ? '?c=' + ids.join('.') : ''));
+          window.location.pathname + (v ? '?c=' + v : ''));
       } catch (err) { /* not fatal */ }
       return;
     }

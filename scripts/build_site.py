@@ -285,14 +285,33 @@ var URL_COALITION = (function () {
   catch (e) { return ''; }
 })();
 
+/* A shared board can include a threshold hypothetical, so the parameter holds
+   both: coalition ids, then "_x_", then the parties pushed under the line.
+   "_x_" is not a party id and passes the character check the embedding page
+   applies, so this needed no change to the WordPress block. Without it a link
+   saying "I built a 61-seat coalition" opened at 55 for the recipient. */
+function splitUrlParam(raw) {
+  var parts = String(raw || '').split('._x_.');
+  return { ids: (parts[0] || '').split('.').filter(Boolean),
+           drop: (parts[1] || '').split('.').filter(Boolean) };
+}
+
 function coalitionFromUrl(known) {
   if (!URL_COALITION) return null;
-  var ids = URL_COALITION.split('.').filter(function (id) { return known.has(id); });
+  var ids = splitUrlParam(URL_COALITION).ids.filter(function (id) { return known.has(id); });
   return ids.length ? ids : null;
 }
 
-function coalitionUrl(base, ids) {
-  return ids && ids.length ? base + '?c=' + ids.join('.') : base;
+function droppedFromUrl(known) {
+  if (!URL_COALITION) return null;
+  var d = splitUrlParam(URL_COALITION).drop.filter(function (id) { return known.has(id); });
+  return d.length ? d : null;
+}
+
+function coalitionUrl(base, ids, drop) {
+  var v = (ids || []).join('.');
+  if (drop && drop.length) v += (v ? '._x_.' : '_x_.') + drop.join('.');
+  return v ? base + '?c=' + v : base;
 }
 
 /* Would this coalition have governed in each of the headline house's recent
@@ -522,7 +541,9 @@ LOAD_POLLS = r"""
         PARTIES_EXTRA = Array.isArray(extra) ? extra : [];
         PARTIES_RAW = applyLive(allBase(), live);   // headline, until one is picked
         // Only now is the board known, so only now can a shared link be trusted.
-        const shared = coalitionFromUrl(new Set(PARTIES_RAW.map(p => p.id)));
+        const allIds = new Set(PARTIES_RAW.map(p => p.id));
+        const shared = coalitionFromUrl(allIds);
+        const sharedDrop = droppedFromUrl(allIds);
         // With nothing shared and nothing built, open on the likeliest outcome
         // rather than an empty board — the hemicycle should say something the
         // moment it appears.
@@ -531,6 +552,7 @@ LOAD_POLLS = r"""
         const opening = top ? (top.ids || []).filter(id => known.has(id)) : [];
         this.setState(st => ({
           live: live, commentary: commentary, stances: stances, liveError: '',
+          dropped: (sharedDrop && !(st.dropped || []).length) ? sharedDrop : st.dropped,
           coalition: shared && !st.coalition.length ? shared
             : (!st.coalition.length && !st.touched ? opening : st.coalition)
         }));
@@ -1100,7 +1122,7 @@ def build(export_path, out_html):
   /* The canonical page is the WordPress one, so that is what gets shared —
      never this iframe's github.io address. */
   shareUrl() {
-    return coalitionUrl(CANONICAL_URL, this.state.coalition);
+    return coalitionUrl(CANONICAL_URL, this.state.coalition, this.state.dropped);
   }
 
   /* Reflect the coalition in the address bar. Inside an iframe the visible URL
@@ -1111,9 +1133,11 @@ def build(export_path, out_html):
     const ids = this.state.coalition;
     try {
       if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'kcb-coalition', ids: ids }, '*');
+        window.parent.postMessage({ type: 'kcb-coalition', ids: ids,
+                                    drop: this.state.dropped || [] }, '*');
       } else {
-        history.replaceState(null, '', coalitionUrl(window.location.pathname, ids));
+        history.replaceState(null, '',
+          coalitionUrl(window.location.pathname, ids, this.state.dropped));
       }
     } catch (e) { /* a sandboxed frame may refuse; the board still works */ }
   }
@@ -1925,6 +1949,26 @@ def build(export_path, out_html):
         "      showSubscribeNudge: (coalition.length >= 3 || governs)\n"
         "        && !this.state.nudgeDismissed,",
         "nudge-on-governs")
+
+    # The outlook reasoning describes the current board, so it takes live
+    # numbers too — otherwise it drifts the moment a poll moves.
+    html = patch(
+        html,
+        "      return { rank: o.rank, odds: o.odds, label: o.label, why: o.why, seats,",
+        "      return { rank: o.rank, odds: o.odds, label: o.label,\n"
+        "        why: fillNote(o.why, PARTIES_VIEW), seats,",
+        "outlook-why-fill")
+
+    # 17x24 on a phone. WCAG 2.2 asks 24x24 as a floor and a thumb wants more.
+    html = patch(
+        html,
+        'aria-label="Dismiss" style="background:none;border:none;padding:4px;'
+        'color:var(--ink-3);font-size:1rem;line-height:1;cursor:pointer;"',
+        'aria-label="Dismiss" style="background:none;border:none;padding:4px;'
+        'min-width:32px;min-height:32px;display:inline-flex;align-items:center;'
+        'justify-content:center;color:var(--ink-3);font-size:1rem;line-height:1;'
+        'cursor:pointer;"',
+        "dismiss-target-size")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
