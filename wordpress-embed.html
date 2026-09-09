@@ -86,8 +86,11 @@
       var drop = Array.isArray(d.drop) ? d.drop.filter(function (x) {
         return typeof x === 'string' && /^[a-z0-9_]+$/i.test(x);
       }) : [];
+      var poll = typeof d.poll === 'string' && /^[a-z0-9_-]*$/i.test(d.poll)
+        ? d.poll.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
       var v = ids.join('.');
       if (drop.length) v += (v ? '._x_.' : '_x_.') + drop.join('.');
+      if (poll) v += '._p_.' + poll;
       try {
         history.replaceState(null, '',
           window.location.pathname + (v ? '?c=' + v : ''));

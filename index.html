@@ -900,9 +900,29 @@ var URL_COALITION = (function () {
    applies, so this needed no change to the WordPress block. Without it a link
    saying "I built a 61-seat coalition" opened at 55 for the recipient. */
 function splitUrlParam(raw) {
-  var parts = String(raw || '').split('._x_.');
+  var s = String(raw || '');
+  var poll = '';
+  var pi = s.indexOf('._p_.');
+  if (pi >= 0) { poll = s.slice(pi + 5); s = s.slice(0, pi); }
+  var parts = s.split('._x_.');
   return { ids: (parts[0] || '').split('.').filter(Boolean),
-           drop: (parts[1] || '').split('.').filter(Boolean) };
+           drop: (parts[1] || '').split('.').filter(Boolean),
+           poll: poll };
+}
+
+/* Poll ids carry hyphens, which the embedding page's character check rejects,
+   so they travel stripped to letters and digits and are matched back the same
+   way. Without the poll in the link, "this one governs: 61 of 120" opened at
+   55 for the recipient — the board was right, the poll behind it was not. */
+function pollKey(id) {
+  return String(id || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function pollFromUrl(alternates) {
+  var want = splitUrlParam(URL_COALITION).poll;
+  if (!want || !alternates) return null;
+  var hit = alternates.find(function (a) { return pollKey(a.id) === want; });
+  return hit && !hit.isHeadline ? hit.id : null;
 }
 
 function coalitionFromUrl(known) {
@@ -917,9 +937,10 @@ function droppedFromUrl(known) {
   return d.length ? d : null;
 }
 
-function coalitionUrl(base, ids, drop) {
+function coalitionUrl(base, ids, drop, pollId) {
   var v = (ids || []).join('.');
   if (drop && drop.length) v += (v ? '._x_.' : '_x_.') + drop.join('.');
+  if (pollId) v += '._p_.' + pollKey(pollId);
   return v ? base + '?c=' + v : base;
 }
 
@@ -1207,6 +1228,7 @@ class Component extends DCLogic {
         const allIds = new Set(PARTIES_RAW.map(p => p.id));
         const shared = coalitionFromUrl(allIds);
         const sharedDrop = droppedFromUrl(allIds);
+        const sharedPoll = pollFromUrl(live.alternates || []);
         // With nothing shared and nothing built, open on the likeliest outcome
         // rather than an empty board — the hemicycle should say something the
         // moment it appears.
@@ -1216,6 +1238,7 @@ class Component extends DCLogic {
         this.setState(st => ({
           live: live, commentary: commentary, stances: stances, liveError: '',
           dropped: (sharedDrop && !(st.dropped || []).length) ? sharedDrop : st.dropped,
+          pollId: (sharedPoll && !st.pollId) ? sharedPoll : st.pollId,
           coalition: shared && !st.coalition.length ? shared
             : (!st.coalition.length && !st.touched ? opening : st.coalition)
         }));
@@ -1280,7 +1303,8 @@ class Component extends DCLogic {
   /* The canonical page is the WordPress one, so that is what gets shared —
      never this iframe's github.io address. */
   shareUrl() {
-    return coalitionUrl(CANONICAL_URL, this.state.coalition, this.state.dropped);
+    return coalitionUrl(CANONICAL_URL, this.state.coalition, this.state.dropped,
+                        this.state.pollId);
   }
 
   /* Reflect the coalition in the address bar. Inside an iframe the visible URL
@@ -1292,10 +1316,12 @@ class Component extends DCLogic {
     try {
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'kcb-coalition', ids: ids,
-                                    drop: this.state.dropped || [] }, '*');
+                                    drop: this.state.dropped || [],
+                                    poll: this.state.pollId || '' }, '*');
       } else {
         history.replaceState(null, '',
-          coalitionUrl(window.location.pathname, ids, this.state.dropped));
+          coalitionUrl(window.location.pathname, ids, this.state.dropped,
+                       this.state.pollId));
       }
     } catch (e) { /* a sandboxed frame may refuse; the board still works */ }
   }
@@ -1440,8 +1466,18 @@ class Component extends DCLogic {
   }
 
   shareText(coalitionPartiesRaw, totalSeats, governs) {
-    const names = coalitionPartiesRaw.map(p => p.name).join(', ');
-    return `Road to 61: I built a ${totalSeats}-seat Knesset coalition (${governs ? 'it governs' : 'it falls short of 61'}): ${names}. Build your own —`;
+    // Leads with what the thing is, not with what the sharer did. "I built a
+    // 55-seat coalition" reads like a quiz result and buries the resource; the
+    // party list also ran past what X shows before truncating.
+    const what = 'Road to 61 — Israel\'s coalition arithmetic, from the latest Knesset polling.';
+    if (!coalitionPartiesRaw.length) {
+      return `${what} Every party, every seat, every stated red line —`;
+    }
+    const short = 61 - totalSeats;
+    const state = governs
+      ? `This one governs: ${totalSeats} of 120.`
+      : `This one reaches ${totalSeats} of 120 — ${short} short of a majority.`;
+    return `${what} ${state}`;
   }
   openInfo(id, e) { if (e) e.stopPropagation(); this.askViewport(); this.setState({ infoId: id, anchorY: this.anchorFrom(e) }); }
   closeInfo() { this.setState({ infoId: null }); }

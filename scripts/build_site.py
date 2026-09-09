@@ -291,9 +291,29 @@ var URL_COALITION = (function () {
    applies, so this needed no change to the WordPress block. Without it a link
    saying "I built a 61-seat coalition" opened at 55 for the recipient. */
 function splitUrlParam(raw) {
-  var parts = String(raw || '').split('._x_.');
+  var s = String(raw || '');
+  var poll = '';
+  var pi = s.indexOf('._p_.');
+  if (pi >= 0) { poll = s.slice(pi + 5); s = s.slice(0, pi); }
+  var parts = s.split('._x_.');
   return { ids: (parts[0] || '').split('.').filter(Boolean),
-           drop: (parts[1] || '').split('.').filter(Boolean) };
+           drop: (parts[1] || '').split('.').filter(Boolean),
+           poll: poll };
+}
+
+/* Poll ids carry hyphens, which the embedding page's character check rejects,
+   so they travel stripped to letters and digits and are matched back the same
+   way. Without the poll in the link, "this one governs: 61 of 120" opened at
+   55 for the recipient — the board was right, the poll behind it was not. */
+function pollKey(id) {
+  return String(id || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function pollFromUrl(alternates) {
+  var want = splitUrlParam(URL_COALITION).poll;
+  if (!want || !alternates) return null;
+  var hit = alternates.find(function (a) { return pollKey(a.id) === want; });
+  return hit && !hit.isHeadline ? hit.id : null;
 }
 
 function coalitionFromUrl(known) {
@@ -308,9 +328,10 @@ function droppedFromUrl(known) {
   return d.length ? d : null;
 }
 
-function coalitionUrl(base, ids, drop) {
+function coalitionUrl(base, ids, drop, pollId) {
   var v = (ids || []).join('.');
   if (drop && drop.length) v += (v ? '._x_.' : '_x_.') + drop.join('.');
+  if (pollId) v += '._p_.' + pollKey(pollId);
   return v ? base + '?c=' + v : base;
 }
 
@@ -544,6 +565,7 @@ LOAD_POLLS = r"""
         const allIds = new Set(PARTIES_RAW.map(p => p.id));
         const shared = coalitionFromUrl(allIds);
         const sharedDrop = droppedFromUrl(allIds);
+        const sharedPoll = pollFromUrl(live.alternates || []);
         // With nothing shared and nothing built, open on the likeliest outcome
         // rather than an empty board — the hemicycle should say something the
         // moment it appears.
@@ -553,6 +575,7 @@ LOAD_POLLS = r"""
         this.setState(st => ({
           live: live, commentary: commentary, stances: stances, liveError: '',
           dropped: (sharedDrop && !(st.dropped || []).length) ? sharedDrop : st.dropped,
+          pollId: (sharedPoll && !st.pollId) ? sharedPoll : st.pollId,
           coalition: shared && !st.coalition.length ? shared
             : (!st.coalition.length && !st.touched ? opening : st.coalition)
         }));
@@ -655,6 +678,8 @@ THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }
 THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div></div></sc-if>'
 
 
+SHARE_TEXT_OLD = "    const names = coalitionPartiesRaw.map(p => p.name).join(', ');\n    return `Road to 61: I built a ${totalSeats}-seat Knesset coalition (${governs ? 'it governs' : 'it falls short of 61'}): ${names}. Build your own —`;"
+SHARE_TEXT_NEW = '    // Leads with what the thing is, not with what the sharer did. "I built a\n    // 55-seat coalition" reads like a quiz result and buries the resource; the\n    // party list also ran past what X shows before truncating.\n    const what = \'Road to 61 — Israel\\\'s coalition arithmetic, from the latest Knesset polling.\';\n    if (!coalitionPartiesRaw.length) {\n      return `${what} Every party, every seat, every stated red line —`;\n    }\n    const short = 61 - totalSeats;\n    const state = governs\n      ? `This one governs: ${totalSeats} of 120.`\n      : `This one reaches ${totalSeats} of 120 — ${short} short of a majority.`;\n    return `${what} ${state}`;'
 ODDS_OLD = '<span style="font-family:var(--font-serif);font-weight:600;font-size:2.2rem;line-height:1;color:var(--clay);">{{ o.odds }}<span style="font-size:1.1rem;">%</span></span>'
 ODDS_NEW = '<span style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--clay);">{{ o.standing }}</span>'
 STATE_P_OLD = '<p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>'
@@ -1122,7 +1147,8 @@ def build(export_path, out_html):
   /* The canonical page is the WordPress one, so that is what gets shared —
      never this iframe's github.io address. */
   shareUrl() {
-    return coalitionUrl(CANONICAL_URL, this.state.coalition, this.state.dropped);
+    return coalitionUrl(CANONICAL_URL, this.state.coalition, this.state.dropped,
+                        this.state.pollId);
   }
 
   /* Reflect the coalition in the address bar. Inside an iframe the visible URL
@@ -1134,10 +1160,12 @@ def build(export_path, out_html):
     try {
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'kcb-coalition', ids: ids,
-                                    drop: this.state.dropped || [] }, '*');
+                                    drop: this.state.dropped || [],
+                                    poll: this.state.pollId || '' }, '*');
       } else {
         history.replaceState(null, '',
-          coalitionUrl(window.location.pathname, ids, this.state.dropped));
+          coalitionUrl(window.location.pathname, ids, this.state.dropped,
+                       this.state.pollId));
       }
     } catch (e) { /* a sandboxed frame may refuse; the board still works */ }
   }
@@ -1969,6 +1997,9 @@ def build(export_path, out_html):
         'justify-content:center;color:var(--ink-3);font-size:1rem;line-height:1;'
         'cursor:pointer;"',
         "dismiss-target-size")
+
+    # Share text: the resource first, the board second.
+    html = patch(html, SHARE_TEXT_OLD, SHARE_TEXT_NEW, "share-text-resource-first")
 
     # ---- byline markup ----------------------------------------------------
     html = patch(
