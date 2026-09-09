@@ -25,6 +25,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "assets", "social")
 W, H = 1080, 1350
+# X renders summary_large_image at 2:1 and small in a timeline, so this card
+# carries fewer words and larger type than the 1200x630 Facebook one.
+XW, XH = 1200, 628
 
 NETANYAHU = ["likud", "rzp", "otzma", "shas", "utj", "amcha_yisrael"]
 CHANGE = ["yashar", "together", "democrats", "beiteinu"]
@@ -204,6 +207,47 @@ def render_html(n):
     return "\n".join(out)
 
 
+X_CSS = f"""
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600&family=Libre+Franklin:wght@600;700;800&display=swap');
+* {{ margin:0; padding:0; box-sizing:border-box; }}
+body {{ width:{XW}px; height:{XH}px; overflow:hidden; background:{PAPER}; color:{INK};
+  font-family:'Libre Franklin',sans-serif; padding:56px 64px 48px;
+  display:flex; flex-direction:column; justify-content:space-between; }}
+.rule {{ width:64px; height:6px; background:{CLAY}; }}
+.kick {{ font-size:22px; font-weight:800; letter-spacing:.15em; text-transform:uppercase;
+  color:{CLAY}; margin-top:18px; }}
+h1 {{ font-family:Newsreader,Georgia,serif; font-weight:600; font-size:80px; line-height:1.04;
+  letter-spacing:-.015em; margin-top:14px; }}
+.blocs {{ display:flex; gap:18px; margin-top:26px; }}
+.b {{ flex:1; border:2px solid #DCD5C5; border-radius:16px; padding:18px 20px; }}
+.b.line {{ border-color:{CLAY}; background:rgba(176,73,44,.07); }}
+.b .n {{ font-family:Newsreader,Georgia,serif; font-weight:600; font-size:56px; line-height:1; }}
+.b.line .n {{ color:{CLAY}; }}
+.b .t {{ font-size:20px; font-weight:600; color:{INK2}; margin-top:6px; }}
+.foot {{ display:flex; justify-content:space-between; align-items:baseline;
+  border-top:2px solid #DCD5C5; padding-top:18px; font-size:22px; font-weight:700; }}
+.foot .m {{ color:#8A8275; font-weight:600; }}
+"""
+
+
+def x_card_html(n):
+    return f"""<!doctype html><meta charset='utf-8'><style>{X_CSS}</style>
+<div>
+  <div class='rule'></div>
+  <div class='kick'>Road to 61 · The Middle Ground</div>
+  <h1>Nobody can form a government.</h1>
+  <div class='blocs'>
+    <div class='b'><div class='n'>{n['net']}</div><div class='t'>Netanyahu bloc</div></div>
+    <div class='b'><div class='n'>{n['chg_hendel']}</div><div class='t'>Eisenkot + Hendel</div></div>
+    <div class='b line'><div class='n'>61</div><div class='t'>Needed to govern</div></div>
+  </div>
+</div>
+<div class='foot'>
+  <span>kowaz.com/coalitionbuilder</span>
+  <span class='m'>{n['source']}, {n['date']}</span>
+</div>"""
+
+
 def chrome():
     c = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(c):
@@ -244,6 +288,16 @@ def main():
                        capture_output=True)
         size = os.path.getsize(dst) // 1024 if os.path.exists(dst) else 0
         print(f"  slide-{i}.png  {size} KB", file=sys.stderr)
+    # The X card, rendered from the same numbers.
+    xsrc = os.path.join(OUT, "twitter-card.html")
+    with open(xsrc, "w", encoding="utf-8") as f:
+        f.write(x_card_html(n))
+    xdst = os.path.join(ROOT, "assets", "twitter-card.png")
+    subprocess.run([exe, "--headless", "--disable-gpu", "--hide-scrollbars",
+                    "--force-device-scale-factor=1",
+                    f"--window-size={XW},{XH}", "--virtual-time-budget=9000",
+                    f"--screenshot={xdst}", f"file://{xsrc}"], capture_output=True)
+    print(f"  twitter-card.png  {os.path.getsize(xdst)//1024} KB", file=sys.stderr)
     print(f"\n{total} slides in {OUT}", file=sys.stderr)
     return 0
 

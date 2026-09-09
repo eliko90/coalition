@@ -45,6 +45,8 @@ PHOTO_PX = 256
 # Where readers actually land, and where scrapers fetch the share card from.
 CANONICAL_URL = "https://kowaz.com/coalition"
 OG_IMAGE_URL = "https://eliko90.github.io/coalition/assets/og-image.png"
+# X renders its card smaller and at 2:1, so it gets a punchier variant.
+X_IMAGE_URL = "https://eliko90.github.io/coalition/assets/twitter-card.png"
 
 
 class BuildError(Exception):
@@ -805,7 +807,9 @@ def build(export_path, out_html):
         '<meta name="twitter:card" content="summary_large_image">\n'
         '<meta name="twitter:title" content="Road to 61 — build Israel\'s next coalition">\n'
         f'<meta name="twitter:description" content="{desc}">\n'
-        f'<meta name="twitter:image" content="{OG_IMAGE_URL}">',
+        f'<meta name="twitter:image" content="{X_IMAGE_URL}">\n'
+        '<meta name="twitter:image:alt" content="Road to 61 — the Netanyahu bloc '
+        'and the change bloc against the 61 seats needed to govern">',
         "head-title")
 
     # ---- live data: rename the base list, add the runtime ----------------
