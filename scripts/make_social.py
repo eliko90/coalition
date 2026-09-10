@@ -54,15 +54,40 @@ def numbers():
         1 for v in d["parties"].values()
         if v["seats"] > 0 and ((v.get("spreadMin") is not None and v["spreadMin"] <= 4)
                                or v["seats"] <= 5))
-    # The friendliest recent poll for the change bloc, if it is in the picker.
-    alt = next((a for a in d.get("alternates", []) if a["firm"] == "Lazar"), None)
-    if alt:
-        a = alt["seats"]
-        n["alt_label"] = f"{alt['firm']}/{alt['publisher']}, {alt['displayDate']}"
-        n["alt_net"] = sum(a.get(i, 0) for i in NETANYAHU)
-        n["alt_chg_hendel"] = sum(a.get(i, 0) for i in CHANGE) + a.get("reservists", 0)
-        n["alt_winter"] = a.get("amcha_yisrael")
+    # How many of the polls in the picker put Hendel out. He is the partner the
+    # change bloc's only majority runs through, so this is the live question.
+    alts = d.get("alternates", [])
+    n["alt_total"] = len(alts)
+    n["hendel_out"] = sum(1 for a in alts if not a["seats"].get("reservists"))
+    # And what his absence costs, using the board's own redistribution.
+    no_hendel = apply_threshold({k: v["seats"] for k, v in d["parties"].items()},
+                                ["reservists"])
+    n["nh_net"] = sum(no_hendel.get(i, 0) for i in NETANYAHU)
+    n["nh_chg"] = sum(no_hendel.get(i, 0) for i in CHANGE)
     return n
+
+
+def apply_threshold(seats, dropped):
+    """Largest-remainder redistribution — the same arithmetic applyThreshold()
+    runs in the browser, so a slide can never claim a total the board denies."""
+    drop = set(dropped)
+    freed = sum(v for k, v in seats.items() if k in drop)
+    rest = {k: v for k, v in seats.items() if k not in drop and v > 0}
+    out = {k: (0 if k in drop else v) for k, v in seats.items()}
+    if not freed or not rest:
+        return out
+    total = sum(rest.values())
+    share = {k: (freed * v / total) for k, v in rest.items()}
+    add = {k: int(v // 1) for k, v in share.items()}
+    left = freed - sum(add.values())
+    for k in sorted(share, key=lambda k: share[k] % 1, reverse=True):
+        if left <= 0:
+            break
+        add[k] += 1
+        left -= 1
+    for k in add:
+        out[k] += add[k]
+    return out
 
 
 def slides(n):
@@ -100,14 +125,15 @@ def slides(n):
                   "small party survives moves seats across the whole map.",
              foot="Swipe →"),
         # 5 — the concrete illustration, from a real poll.
-        dict(kind="split", kicker="ONE POLL, TWO OUTCOMES",
-             left=("Everyone clears", f"{n['net']}", "Netanyahu bloc",
+        dict(kind="split", kicker="ONE MAN, TWO OUTCOMES",
+             left=("Hendel clears", f"{n['net']}", "Netanyahu bloc",
                    f"{n['chg_hendel']}", "Eisenkot + Hendel"),
-             right=("Winter misses", f"{n.get('alt_net', '—')}", "Netanyahu bloc",
-                    f"{n.get('alt_chg_hendel', '—')}", "Eisenkot + Hendel"),
-             note=f"Left: {n['source']}. Right: {n.get('alt_label', 'a later poll')}, "
-                  "the first to put Ofer Winter's party below the threshold — and "
-                  "the first in which anyone can govern.",
+             right=("Hendel misses", f"{n['nh_net']}", "Netanyahu bloc",
+                    f"{n['nh_chg']}", "Eisenkot alone"),
+             note=f"{n['hendel_out']} of the {n['alt_total']} newest polls put Yoaz "
+                  "Hendel's Reservists under the threshold. He is the one partner "
+                  "the change bloc can add without breaking a promise — so his four "
+                  "seats are the whole margin, and they may not exist.",
              foot="Swipe →"),
         # 6 — the ask.
         dict(kind="cta", kicker="BUILD IT YOURSELF",
