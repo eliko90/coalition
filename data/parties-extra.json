@@ -45,7 +45,7 @@
     "bloc": "unaligned",
     "color": "#3D6B6B",
     "tag": "Centre-right, reservist-focused",
-    "leader": "Yoaz Hendel & Yaron Zelekha",
+    "leader": "Yoaz Hendel",
     "note": "Refuses Shas and UTJ over the draft — which points him away from the right",
     "nearThreshold": true,
     "desc": "Yoaz Hendel's party, founded in 2025 out of a post-October 7 movement for reserve soldiers and their families. Ran as Zionist Home with Chili Tropper until the two split in September 2026 — Tropper joined Yashar, Hendel kept the party and merged with Yaron Zelekha's New Economic Party, adding an economic platform to a security one. His refusal to sit with the ultra-Orthodox over the draft makes a Netanyahu-led coalition hard to join, which leaves the change bloc as his likelier home.",
@@ -70,7 +70,8 @@
       }
     ],
     "cautions": [],
-    "_why": "Hendel has ruled out relying on Ra'am. Soft, like Bennett's and Lieberman's — a declared position in a campaign, not a constitutional bar."
+    "_why": "Hendel has ruled out relying on Ra'am. Soft, like Bennett's and Lieberman's — a declared position in a campaign, not a constitutional bar.",
+    "_leaderWhy": "Hendel alone heads the list. Zelekha came in with the New Economic Party merger and sits behind him, so naming both as leaders overstated his position."
   },
   {
     "id": "zionist_home",
@@ -230,11 +231,11 @@
   },
   {
     "id": "hadash_taal",
-    "_why": "Hadash, Ta'al and Balad now run as a single list. The scraper already reads Wikipedia's 'Joint List' column into this id, so only the editorial layer needed changing.",
+    "_why": "Hadash, Ta'al and Balad now run as a single list. The scraper already reads Wikipedia's 'Joint List' column into this id, so only the editorial layer needed changing. Leader corrected to Jabareen: Odeh lost the Hadash chairmanship in May 2026.",
     "name": "The Joint List",
-    "leader": "Ayman Odeh",
+    "leader": "Yousef Jabareen",
     "tag": "Arab-Israeli, leftist",
     "note": "Hadash, Ta'al and Balad now run as one list",
-    "desc": "Hadash, Ta'al and Balad running as a single slate, reviving the Joint List that fractured before the 2022 election. It puts a communist-rooted Jewish-Arab party, Ahmad Tibi's secular nationalists and Balad's Arab nationalists on one ticket — a response to the electoral threshold, which Balad fell below on its own and which the parties together clear comfortably. Its component parties have consistently declined to join an Israeli government."
+    "desc": "Hadash, Ta'al and Balad running as a single slate, reviving the Joint List that fractured before the 2022 election. Yousef Jabareen, who unseated Ayman Odeh as Hadash chairman in the party's May 2026 primary, heads the slate, followed by Ta'al's Ahmad Tibi and Balad's Sami Abu Shehadeh. The merger is a response to the electoral threshold, which Balad fell below on its own and which the three clear comfortably together. Its component parties have consistently declined to join an Israeli government."
   }
 ]
