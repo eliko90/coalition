@@ -110,7 +110,7 @@
       "note": "The Netanyahu bloc at its ceiling, {net}. There is no further seat available to it that is not Arab-majority, which is why Winter's seats do not solve the problem Netanyahu warned they would create."
     }
   ],
-  "_thresholdComment": "The 'if they miss' buttons. `drop` lists the parties that fail to clear 3.25%; their votes are redistributed and the whole board recomputes, so the notes stay qualitative and the numbers come from the live poll.",
+  "_thresholdComment": "The 'if they miss' buttons. `drop` lists the parties that fail to clear 3.25%; their votes are redistributed and the whole board recomputes, so the notes stay qualitative and the numbers come from the live poll. Labels name the list rather than its leader, so a button matches the chip that disappears when you press it.",
   "thresholdScenarios": [
     {
       "id": "all",
@@ -120,7 +120,7 @@
     },
     {
       "id": "winter",
-      "label": "Winter misses",
+      "label": "Amcha Yisrael misses",
       "drop": [
         "amcha_yisrael"
       ],
@@ -128,7 +128,7 @@
     },
     {
       "id": "smotrich",
-      "label": "Smotrich misses",
+      "label": "Religious Zionism misses",
       "drop": [
         "rzp"
       ],
@@ -136,7 +136,7 @@
     },
     {
       "id": "winter_smotrich",
-      "label": "Winter and Smotrich miss",
+      "label": "Amcha Yisrael and Religious Zionism miss",
       "drop": [
         "amcha_yisrael",
         "rzp"
@@ -145,7 +145,7 @@
     },
     {
       "id": "hendel",
-      "label": "Hendel misses",
+      "label": "The Reservists miss",
       "drop": [
         "reservists"
       ],

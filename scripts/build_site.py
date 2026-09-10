@@ -680,7 +680,7 @@ METHOD_P2_NEW = '<p class="ek-caption" style="margin:0 0 8px;max-width:44rem;tex
 SCENARIOS_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:20px 20px 26px;">'
 COALITION_ANCHOR = '<div style="max-width:1140px;margin:0 auto;padding:22px 20px 0;">'
 THRESH_ANCHOR = '<sc-if value="{{ hasIssues }}" hint-placeholder-val="{{ false }}">'
-THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div></div></sc-if>'
+THRESH_BLOCK = '<sc-if value="{{ hasThresholdScenarios }}" hint-placeholder-val="{{ false }}"><div style="max-width:1140px;margin:0 auto;padding:26px 20px 30px;"><div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;"><div style="width:28px;height:2px;background:var(--clay);flex:none;transform:translateY(-4px);"></div><div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;">IF THEY MISS THE THRESHOLD</div></div><p class="ek-caption" style="margin:0 0 14px;max-width:46rem;">Israel wastes every vote for a list under 3.25%, and shares those seats among the lists that clear it. This is where the election is actually decided.</p><div style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ thresholdScenarios }}" as="t" hint-placeholder-count="0"><button sc-camel-on-click="{{ t.apply }}" aria-pressed="{{ t.active }}" style="font-family:var(--font-sans);font-weight:700;font-size:0.85rem;padding:9px 14px;min-height:40px;background:{{ t.bg }};color:{{ t.fg }};border:1.5px {{ t.borderStyle }} {{ t.border }};border-radius:var(--r-sm);cursor:pointer;opacity:{{ t.opacity }};" title="{{ t.title }}" aria-disabled="{{ t.moot }}">{{ t.label }}</button></sc-for></div><sc-if value="{{ hasBelowThreshold }}" hint-placeholder-val="{{ false }}"><p class="ek-caption" style="margin:14px 0 0;max-width:46rem;"><strong style="color:var(--ink-2);">Already below it:</strong> <sc-for list="{{ belowThreshold }}" as="b" hint-placeholder-count="0"><span>{{ b.text }}</span></sc-for> None of them wins a seat on current polling, so none is in the arithmetic above — but their votes are part of what gets redistributed.</p></sc-if></div></sc-if>'
 
 
 SHARE_TEXT_OLD = "    const names = coalitionPartiesRaw.map(p => p.name).join(', ');\n    return `Road to 61: I built a ${totalSeats}-seat Knesset coalition (${governs ? 'it governs' : 'it falls short of 61'}): ${names}. Build your own —`;"
@@ -1793,6 +1793,17 @@ def build(export_path, out_html):
     html = patch(
         html,
         "      hasDropped: dropped.length > 0,",
+        "      /* A list polling under the threshold never appears as a chip, because\n"
+        "         a party on zero seats has nothing to add to a coalition. Naming\n"
+        "         them here is the only place a reader learns they are running. */\n"
+        "      belowThreshold: (() => {\n"
+        "        const out = PARTIES_VIEW.filter(p => !p.seats && !p.missedThreshold);\n"
+        "        return out.map((p, i) => ({\n"
+        "          text: p.name + (p.pct ? ' (' + p.pct + ')' : '')\n"
+        "            + (i < out.length - 2 ? ', ' : i === out.length - 2 ? ' and ' : '. ')\n"
+        "        }));\n"
+        "      })(),\n"
+        "      hasBelowThreshold: PARTIES_VIEW.some(p => !p.seats && !p.missedThreshold),\n"
         "      hasThresholdScenarios: !!(commentary && commentary.thresholdScenarios),\n"
         "      thresholdScenarios: ((commentary && commentary.thresholdScenarios) || []).map(t => {\n"
         "        const drop = t.drop || [];\n"

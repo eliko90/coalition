@@ -237,5 +237,28 @@
     "tag": "Arab-Israeli, leftist",
     "note": "Hadash, Ta'al and Balad now run as one list",
     "desc": "Hadash, Ta'al and Balad running as a single slate, reviving the Joint List that fractured before the 2022 election. Yousef Jabareen, who unseated Ayman Odeh as Hadash chairman in the party's May 2026 primary, heads the slate, followed by Ta'al's Ahmad Tibi and Balad's Sami Abu Shehadeh. The merger is a response to the electoral threshold, which Balad fell below on its own and which the three clear comfortably together. Its component parties have consistently declined to join an Israeli government."
+  },
+  {
+    "id": "noam",
+    "name": "Noam",
+    "seats": 0,
+    "pct": "under 1%",
+    "delta": 0,
+    "spread": "below the threshold in every poll — reported inside 'Others', so no pollster gives it a column",
+    "bloc": "netanyahu",
+    "color": "#8A6A4F",
+    "tag": "Far-right, religious conservative",
+    "leader": "Avi Maoz",
+    "note": "Below the threshold — ran on the Religious Zionism list in 2022",
+    "nearThreshold": true,
+    "_why": "Polls inside the 'Others' column, so fetch_polls.py cannot see it and the percentage is set by hand. Deliberately not given a number pollsters do not publish: it has not cleared the threshold in any poll of this cycle.",
+    "desc": "Avi Maoz's party, running independently as Noam for Israel after entering the Knesset in 2022 on the Religious Zionism list. Its platform is a religious-conservative campaign against LGBTQ rights and what it calls foreign influence on Israeli education. Maoz is its sole MK. It has not cleared the threshold in any poll of this cycle, and its problem is the same one the merger solved for Balad: alone it is too small, and the right has not offered it a slot.",
+    "positions": {
+      "annex": "Supports Israeli sovereignty over the West Bank.",
+      "twoState": "Firmly opposed to a Palestinian state.",
+      "draft": "Sides with the ultra-Orthodox parties against a universal draft."
+    },
+    "refusals": [],
+    "cautions": []
   }
 ]
