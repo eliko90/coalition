@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-10T05:14:24+00:00",
+  "generated": "2026-09-10T10:09:02+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -333,6 +333,35 @@
       }
     },
     {
+      "id": "2026-09-09-filber",
+      "date": "2026-09-09",
+      "displayDate": "9 Sep",
+      "displayDateLong": "Sep 9, 2026",
+      "firm": "Filber",
+      "publisher": "Channel 14",
+      "label": "Filber · 9 Sep",
+      "isHeadline": false,
+      "note": "Channel 14 established and owns this polling firm, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "lean": 11,
+      "leanPolls": 7,
+      "seats": {
+        "likud": 31,
+        "together": 7,
+        "rzp": 8,
+        "otzma": 8,
+        "blue_white": 0,
+        "shas": 10,
+        "utj": 7,
+        "beiteinu": 7,
+        "raam": 6,
+        "hadash_taal": 6,
+        "democrats": 8,
+        "yashar": 22,
+        "reservists": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
       "id": "2026-09-09-lazar",
       "date": "2026-09-09",
       "displayDate": "9 Sep",
@@ -360,35 +389,6 @@
         "reservists": 0,
         "amcha_yisrael": 4
       }
-    },
-    {
-      "id": "2026-09-08-lazar",
-      "date": "2026-09-08",
-      "displayDate": "8 Sep",
-      "displayDateLong": "Sep 8, 2026",
-      "firm": "Lazar",
-      "publisher": "Maariv",
-      "label": "Lazar · 8 Sep",
-      "isHeadline": false,
-      "note": "",
-      "lean": -3,
-      "leanPolls": 8,
-      "seats": {
-        "likud": 20,
-        "together": 13,
-        "rzp": 5,
-        "otzma": 8,
-        "blue_white": 0,
-        "shas": 7,
-        "utj": 7,
-        "beiteinu": 9,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 10,
-        "yashar": 25,
-        "reservists": 4,
-        "amcha_yisrael": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
@@ -397,12 +397,12 @@
     "Midgam Project": -1,
     "Kantar": 0,
     "Midgam R&C": -1,
-    "Lazar": -3,
     "Filber": 11,
+    "Lazar": -3,
     "Yossi Tatika": -2,
     "Maagar Mochot": 0
   },
-  "spreadPollCount": 36,
+  "spreadPollCount": 37,
   "totalSeats": 120,
   "parties": {
     "amcha_yisrael": {
@@ -411,7 +411,7 @@
       "delta": 0,
       "spreadMin": 0,
       "spreadMax": 8,
-      "spreadPolls": 30,
+      "spreadPolls": 31,
       "trend": [
         {
           "d": "2026-08-23",
@@ -437,7 +437,7 @@
       "delta": 0,
       "spreadMin": 6,
       "spreadMax": 11,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -491,7 +491,7 @@
       "delta": null,
       "spreadMin": 0,
       "spreadMax": 0,
-      "spreadPolls": 34,
+      "spreadPolls": 35,
       "trend": [
         {
           "d": "2026-07-12",
@@ -541,7 +541,7 @@
       "delta": 1,
       "spreadMin": 8,
       "spreadMax": 11,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -595,7 +595,7 @@
       "delta": 0,
       "spreadMin": 5,
       "spreadMax": 10,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -649,7 +649,7 @@
       "delta": 1,
       "spreadMin": 19,
       "spreadMax": 32,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -703,7 +703,7 @@
       "delta": 0,
       "spreadMin": 6,
       "spreadMax": 9,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -757,7 +757,7 @@
       "delta": -1,
       "spreadMin": 4,
       "spreadMax": 6,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -811,7 +811,7 @@
       "delta": 0,
       "spreadMin": 0,
       "spreadMax": 4,
-      "spreadPolls": 9,
+      "spreadPolls": 10,
       "trend": null
     },
     "rzp": {
@@ -820,7 +820,7 @@
       "delta": -1,
       "spreadMin": 0,
       "spreadMax": 8,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -874,7 +874,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 10,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -928,7 +928,7 @@
       "delta": -1,
       "spreadMin": 6,
       "spreadMax": 18,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -982,7 +982,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 8,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
@@ -1036,7 +1036,7 @@
       "delta": 1,
       "spreadMin": 20,
       "spreadMax": 26,
-      "spreadPolls": 36,
+      "spreadPolls": 37,
       "trend": [
         {
           "d": "2026-07-12",
