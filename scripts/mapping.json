@@ -95,5 +95,11 @@
     "amcha_yisrael"
   ],
   "lean_bloc_label": "the Netanyahu bloc",
-  "_lean_comment": "House effect is measured on this bloc's seat total: each pollster's 30-day average minus the median across every poll, in seats. Keep it in step with the blocs on the board."
+  "_lean_comment": "House effect is measured on this bloc's seat total: each pollster's 30-day average minus the median across every poll, in seats. Keep it in step with the blocs on the board.",
+  "_publisher_names_comment": "Display names for the poll picker. Wikipedia uses the Hebrew outlet names; these are what an English-reading audience recognises. Anything not listed is shown exactly as Wikipedia writes it.",
+  "publisher_names": {
+    "HaHadashot 12": "Channel 12",
+    "Kan 11": "Kan 11",
+    "i24 News": "i24"
+  }
 }

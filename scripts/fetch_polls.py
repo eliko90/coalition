@@ -499,7 +499,11 @@ def build(cache=None, year=None, verbose=True):
             "displayDateLong": p["date"].strftime("%b %-d, %Y"),
             "firm": p["firm"],
             "publisher": p["publisher"],
-            "label": f"{p['firm']} · {p['date'].strftime('%-d %b')}",
+            # Readers know the outlet, not the polling house, and two different
+            # firms both trade as "Midgam" — so "Midgam Project" and
+            # "Midgam R&C" read as one poll listed twice. The publisher
+            # disambiguates them and is the more recognisable name.
+            "label": f"{pub_name(p['publisher'], cfg) or p['firm']} · {p['date'].strftime('%-d %b')}",
             "isHeadline": p is pick,
             "note": notes.get(p["firm"], ""),
             "lean": leans.get(p["firm"]),
@@ -515,7 +519,7 @@ def build(cache=None, year=None, verbose=True):
             "displayDate": pick["date"].strftime("%-d %b"),
             "displayDateLong": pick["date"].strftime("%b %-d, %Y"),
             "firm": pick["firm"], "publisher": pick["publisher"],
-            "label": f"{pick['firm']} · {pick['date'].strftime('%-d %b')}",
+            "label": f"{pub_name(pick['publisher'], cfg) or pick['firm']} · {pick['date'].strftime('%-d %b')}",
             "isHeadline": True,
             "note": notes.get(pick["firm"], ""),
             "lean": leans.get(pick["firm"]),
@@ -590,6 +594,14 @@ def summarise():
         print("\n**Not in the latest poll:** "
               + ", ".join(d["unmappedAppParties"]))
     return 0
+
+
+def pub_name(publisher, cfg):
+    """Wikipedia writes the Hebrew outlet names; the picker shows what an
+    English-reading audience recognises. Unlisted publishers pass through."""
+    if not publisher:
+        return publisher
+    return cfg.get("publisher_names", {}).get(publisher, publisher)
 
 
 def main():
