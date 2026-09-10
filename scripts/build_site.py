@@ -135,6 +135,11 @@ LIVE_RUNTIME = r"""
    ------------------------------------------------------------------ */
 
 const CANONICAL_URL = '__CANONICAL__';
+/* The data warnings are notes to whoever edits the board — "Not in the
+   latest poll: Balad" is for Eli, and it was rendering on the public page.
+   Behind ?editor=1 it stays useful without leaking into the piece. */
+const EDITOR_MODE = /[?&]editor=1(&|$)/.test(
+  (typeof location !== 'undefined' && location.search) || '');
 const POLLS_URL = 'data/polls.json';
 const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
@@ -683,7 +688,7 @@ SHARE_TEXT_NEW = '    // Leads with what the thing is, not with what the sharer 
 ODDS_OLD = '<span style="font-family:var(--font-serif);font-weight:600;font-size:2.2rem;line-height:1;color:var(--clay);">{{ o.odds }}<span style="font-size:1.1rem;">%</span></span>'
 ODDS_NEW = '<span style="font-family:var(--font-sans);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--clay);">{{ o.standing }}</span>'
 STATE_P_OLD = '<p class="ek-body" style="font-size:1rem;margin:0 0 0 40px;max-width:44rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p>'
-STATE_P_NEW = '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst\'s ranking, not a forecast.</div></div></sc-if></div>'
+STATE_P_NEW = '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">The Middle Ground&#8217;s read</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst\'s ranking, not a forecast.</div></div></sc-if></div>'
 BYLINE_META = '<div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">'
 BLOCS_TAIL = '</div>\n            </sc-for>\n          </div>\n        </div>\n      </sc-for>\n    </div>'
 
@@ -949,7 +954,7 @@ def build(export_path, out_html):
         "      countdown,\n"
         "      hasCountdown: !!countdown,\n"
         "      raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,\n"
-        "      hasDataWarning: warnings.length > 0,\n"
+        "      hasDataWarning: warnings.length > 0 && EDITOR_MODE,\n"
         "      dataWarnings: warnings,",
         "polling-source")
 
@@ -2020,6 +2025,49 @@ def build(export_path, out_html):
         '        </div>\n'
         '      </sc-if>',
         "byline-markup")
+
+    # Capture mode. make_social.py screenshots the real board for the carousel,
+    # and the board's vertical position moves whenever the analysis paragraph
+    # changes length — so the crop cannot be a fixed pixel offset. With
+    # ?shot=board the page scrolls the live board under the viewport and hides
+    # the chrome around it, which makes the capture identical every time the
+    # polls refresh. It costs nothing to anyone who never passes the parameter.
+    html = patch(
+        html,
+        "</body>",
+        "<script>\n"
+        "(function () {\n"
+        "  if (new URLSearchParams(location.search).get('shot') !== 'board') return;\n"
+        "  document.documentElement.style.setProperty('--kcb-minh', '0');\n"
+        "  var tries = 0;\n"
+        "  var t = setInterval(function () {\n"
+        "    // The board is the block holding the poll picker; find it by its\n"
+        "    // own label rather than a class the design is free to rename.\n"
+        "    var all = document.querySelectorAll('div, section');\n"
+        "    var hit = null;\n"
+        "    for (var i = 0; i < all.length; i++) {\n"
+        "      var el = all[i];\n"
+        "      if (/^\\s*SHOWING/i.test(el.textContent || '') && el.offsetHeight) { hit = el; break; }\n"
+        "    }\n"
+        "    if (hit) {\n"
+        "      clearInterval(t);\n"
+        "      // Scrolling does not survive a headless screenshot, so lift the\n"
+        "      // board to the top of the frame by hiding what precedes it.\n"
+        "      var top = hit;\n"
+        "      while (top.parentNode && top.parentNode !== document.body) top = top.parentNode;\n"
+        "      for (var q = hit; q && q !== top.parentNode; q = q.parentNode) {\n"
+        "        var sib = q.previousElementSibling;\n"
+        "        while (sib) { sib.style.display = 'none'; sib = sib.previousElementSibling; }\n"
+        "      }\n"
+        "      window.scrollTo(0, 0);\n"
+        "      document.body.setAttribute('data-shot-ready', '1');\n"
+        "    } else if (++tries > 80) {\n"
+        "      clearInterval(t);\n"
+        "    }\n"
+        "  }, 50);\n"
+        "})();\n"
+        "</script>\n</body>",
+        "shot-mode")
 
     with open(out_html, "w", encoding="utf-8") as f:
         f.write(html)

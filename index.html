@@ -328,7 +328,7 @@
         <div style="width:28px;height:2px;background:var(--clay-bright);flex:none;transform:translateY(-4px);"></div>
         <div class="ek-kicker" style="font-size:0.75rem;white-space:nowrap;color:var(--clay-bright);">THE STATE OF PLAY <span style="color:rgba(246,242,233,0.55);font-weight:600;">· {{ pollingDate }}</span></div>
       </div>
-      <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">Most likely</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst's ranking, not a forecast.</div></div></sc-if></div>
+      <div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;margin-left:40px;"><p class="ek-body" style="font-size:1rem;margin:0;max-width:42rem;flex:1 1 24rem;text-wrap:pretty;color:rgba(246,242,233,0.92);">{{ stateOfPlay }}</p><sc-if value="{{ hasTopCalls }}" hint-placeholder-val="{{ false }}"><div style="flex:0 1 15rem;min-width:13rem;border-left:1px solid rgba(246,242,233,0.22);padding-left:20px;"><div class="ek-kicker" style="font-size:0.68rem;color:var(--clay-light,#D98A6A);margin-bottom:10px;">The Middle Ground&#8217;s read</div><sc-for list="{{ topCalls }}" as="k" hint-placeholder-count="0"><div style="margin-bottom:12px;"><div class="ek-meta" style="font-size:0.64rem;color:#D98A6A;">{{ k.standing }}</div><div style="font-family:var(--font-serif);font-weight:600;font-size:1.02rem;line-height:1.3;margin-top:3px;color:var(--paper);">{{ k.label }}</div></div></sc-for><div class="ek-caption" style="margin:0;color:rgba(246,242,233,0.55);">One analyst's ranking, not a forecast.</div></div></sc-if></div>
     </div></div></div><div class="ek-meta" style="border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule);padding:10px 0 12px;">
       Polling as of {{ pollingDate }} <span style="color:var(--clay);">·</span> {{ pollingSource }}<sc-if value="{{ hasCountdown }}" hint-placeholder-val="{{ false }}"><span> <span style="color:var(--clay);">·</span> <strong style="color:var(--ink-2);">{{ countdown }}</strong></span></sc-if>
       <sc-if value="{{ hasDataNote }}" hint-placeholder-val="{{ false }}"><div class="ek-caption" style="margin-top:4px;color:var(--ink-3);">{{ dataNote }}</div></sc-if>
@@ -741,6 +741,11 @@ const PARTIES_BASE = [
    ------------------------------------------------------------------ */
 
 const CANONICAL_URL = 'https://kowaz.com/coalition';
+/* The data warnings are notes to whoever edits the board — "Not in the
+   latest poll: Balad" is for Eli, and it was rendering on the public page.
+   Behind ?editor=1 it stays useful without leaking into the piece. */
+const EDITOR_MODE = /[?&]editor=1(&|$)/.test(
+  (typeof location !== 'undefined' && location.search) || '');
 const POLLS_URL = 'data/polls.json';
 const EXTRA_URL = 'data/parties-extra.json';
 const COMMENTARY_URL = 'data/commentary.json';
@@ -1977,7 +1982,7 @@ class Component extends DCLogic {
       countdown,
       hasCountdown: !!countdown,
       raamNote: (commentary && commentary.raamNote) || RAAM_NOTE_DEFAULT,
-      hasDataWarning: warnings.length > 0,
+      hasDataWarning: warnings.length > 0 && EDITOR_MODE,
       dataWarnings: warnings,
       stateOfPlay: (commentary && commentary.stateOfPlay) || this.props.stateOfPlay || "Likud now polls one seat ahead of Eisenkot's Yashar — but neither bloc reaches 61 without crossing a line someone has drawn. The Netanyahu bloc is stuck in the low to mid-50s while the change bloc clears 61 only if it adds Ra'am — which looks more likely should the rumors be true and former Yesh Atid MK Yoav Segelovich join the party, a move he has conditioned on Ra'am accepting Israel as a Jewish state.",
       totalSeats,
@@ -2165,4 +2170,36 @@ class Component extends DCLogic {
 </script>
 
 
+<script>
+(function () {
+  if (new URLSearchParams(location.search).get('shot') !== 'board') return;
+  document.documentElement.style.setProperty('--kcb-minh', '0');
+  var tries = 0;
+  var t = setInterval(function () {
+    // The board is the block holding the poll picker; find it by its
+    // own label rather than a class the design is free to rename.
+    var all = document.querySelectorAll('div, section');
+    var hit = null;
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (/^\s*SHOWING/i.test(el.textContent || '') && el.offsetHeight) { hit = el; break; }
+    }
+    if (hit) {
+      clearInterval(t);
+      // Scrolling does not survive a headless screenshot, so lift the
+      // board to the top of the frame by hiding what precedes it.
+      var top = hit;
+      while (top.parentNode && top.parentNode !== document.body) top = top.parentNode;
+      for (var q = hit; q && q !== top.parentNode; q = q.parentNode) {
+        var sib = q.previousElementSibling;
+        while (sib) { sib.style.display = 'none'; sib = sib.previousElementSibling; }
+      }
+      window.scrollTo(0, 0);
+      document.body.setAttribute('data-shot-ready', '1');
+    } else if (++tries > 80) {
+      clearInterval(t);
+    }
+  }, 50);
+})();
+</script>
 </body></html>

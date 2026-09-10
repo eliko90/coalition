@@ -135,7 +135,14 @@ def slides(n):
                   "the change bloc can add without breaking a promise — so his four "
                   "seats are the whole margin, and they may not exist.",
              foot="Swipe →"),
-        # 6 — the ask.
+        # 6 — the product, arriving at the number slide 5 just claimed.
+        dict(kind="shot", kicker="THE TOOL", img="board.png",
+             sub="Push Hendel under the threshold and the board answers.",
+             note=f"Eisenkot lands on {n['nh_chg']} — short by "
+                  f"{61 - n['nh_chg']}. Six pollsters, every stated red line, "
+                  "seats redistributed the way Israeli law does.",
+             foot="Swipe →"),
+        # 7 — the ask.
         dict(kind="cta", kicker="BUILD IT YOURSELF",
              big="Road to 61",
              sub="Every party, every seat, every stated red line. Pick a pollster, "
@@ -167,6 +174,9 @@ body {{ width:{W}px; height:{H}px; overflow:hidden; background:{PAPER}; color:{I
   margin-top:34px; }}
 .slide.dark .sub {{ color:rgba(246,242,233,.86); }}
 .note {{ font-size:28px; line-height:1.5; color:{INK2}; margin-top:36px; }}
+.shot {{ margin-top:30px; border:2px solid #DCD5C5; border-radius:18px;
+  overflow:hidden; background:{PAPER}; }}
+.shot img {{ display:block; width:100%; }}
 .foot {{ font-size:26px; font-weight:700; color:{CLAY}; }}
 .rows {{ margin-top:60px; }}
 .row {{ display:flex; align-items:baseline; justify-content:space-between; gap:24px;
@@ -212,6 +222,10 @@ def render_html(n):
                            f"<span class='val'>{val}</span></div>")
             out.append("</div>")
             out.append(f"<div class='note'>{s['note']}</div>")
+        elif s["kind"] == "shot":
+            out.append(f"<div class='sub' style='margin-top:14px'>{s['sub']}</div>")
+            out.append(f"<div class='shot'><img src='{s['img']}'></div>")
+            out.append(f"<div class='note' style='margin-top:26px'>{s['note']}</div>")
         elif s["kind"] == "split":
             out.append("<div class='cols'>")
             for col, cls in ((s["left"], ""), (s["right"], "win")):
@@ -274,6 +288,35 @@ def x_card_html(n):
 </div>"""
 
 
+BOARD_STATE = ("yashar.together.democrats.beiteinu.reservists"
+               "._x_.reservists")
+
+
+def capture_board(exe):
+    """Screenshot the live board with Hendel pushed under the threshold.
+
+    The carousel's claim and the tool's answer then come from one place: this
+    is the product, arriving at the number the slides quote. ?shot=board lifts
+    the board to the top of the frame, so the crop does not drift when the
+    analysis paragraph changes length.
+    """
+    page = os.path.join(ROOT, "index.html")
+    dst = os.path.join(OUT, "board.png")
+    subprocess.run([exe, "--headless", "--disable-gpu", "--hide-scrollbars",
+                    "--allow-file-access-from-files",
+                    "--force-device-scale-factor=2",
+                    # A narrower frame makes the board's own type larger inside the slide,
+                    # which is what decides whether this reads on a phone.
+                    "--window-size=880,752", "--virtual-time-budget=9000",
+                    f"--screenshot={dst}",
+                    f"file://{page}?shot=board&c={BOARD_STATE}"],
+                   capture_output=True)
+    ok = os.path.exists(dst)
+    print(f"  board.png  {(os.path.getsize(dst)//1024) if ok else 0} KB",
+          file=sys.stderr)
+    return ok
+
+
 def chrome():
     c = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(c):
@@ -304,6 +347,7 @@ def main():
         print("Chrome not found — open carousel.html and screenshot manually.",
               file=sys.stderr)
         return 1
+    capture_board(exe)
     total = len(slides(n))
     for i in range(1, total + 1):
         dst = os.path.join(OUT, f"slide-{i}.png")
