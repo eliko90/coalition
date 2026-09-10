@@ -296,25 +296,8 @@
         "mid",
         "No PA, no resettlement"
       ]
-    },
-    "balad": {
-      "annex": [
-        "b",
-        "Strongly opposed"
-      ],
-      "twoState": [
-        "mid",
-        "One state of all its citizens"
-      ],
-      "draft": [
-        "none",
-        "Not a focus"
-      ],
-      "gaza": [
-        "b",
-        "End the war; Palestinian governance"
-      ]
     }
   },
-  "_gazaWarning": "The Gaza column is drafted, not sourced. The other three came from the party descriptions you had already written; these are a first pass for you to correct, and no party's panel carries a Gaza sentence yet — so a cell here has no long-form text behind it. Worth going through before this is in front of readers."
+  "_gazaWarning": "The Gaza column is drafted, not sourced. The other three came from the party descriptions you had already written; these are a first pass for you to correct, and no party's panel carries a Gaza sentence yet — so a cell here has no long-form text behind it. Worth going through before this is in front of readers.",
+  "_baladNote": "Balad's row was removed when it merged into the Joint List. The list's two-state cell is Hadash-Ta'al's position; Balad has historically rejected a two-state framework built on a Jewish state, so that cell is worth an editor's eye."
 }

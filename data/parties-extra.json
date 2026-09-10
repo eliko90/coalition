@@ -222,5 +222,19 @@
       "twoState": "Firmly opposed to a Palestinian state.",
       "draft": "Ben Gvir has said he does not think coercion will help, and favours encouraging Haredi enlistment — including into the police — over enforcing the draft. That leaves him out of the fight between Shas and UTJ and the parties demanding a universal draft."
     }
+  },
+  {
+    "id": "balad",
+    "retired": true,
+    "_why": "Balad joined Hadash and Ta'al to run as the Joint List. It no longer has a column of its own in Wikipedia's polling table, which is why the board kept flagging it as missing from the latest poll."
+  },
+  {
+    "id": "hadash_taal",
+    "_why": "Hadash, Ta'al and Balad now run as a single list. The scraper already reads Wikipedia's 'Joint List' column into this id, so only the editorial layer needed changing.",
+    "name": "The Joint List",
+    "leader": "Ayman Odeh",
+    "tag": "Arab-Israeli, leftist",
+    "note": "Hadash, Ta'al and Balad now run as one list",
+    "desc": "Hadash, Ta'al and Balad running as a single slate, reviving the Joint List that fractured before the 2022 election. It puts a communist-rooted Jewish-Arab party, Ahmad Tibi's secular nationalists and Balad's Arab nationalists on one ticket — a response to the electoral threshold, which Balad fell below on its own and which the parties together clear comfortably. Its component parties have consistently declined to join an Israeli government."
   }
 ]
