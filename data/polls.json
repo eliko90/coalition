@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-10T15:21:46+00:00",
+  "generated": "2026-09-11T05:14:21+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -399,10 +399,11 @@
     "Midgam R&C": -1,
     "Filber": 11,
     "Lazar": -3,
+    "S.M.L.T.": 7,
     "Yossi Tatika": -2,
     "Maagar Mochot": 0
   },
-  "spreadPollCount": 37,
+  "spreadPollCount": 38,
   "totalSeats": 120,
   "parties": {
     "amcha_yisrael": {
@@ -411,7 +412,7 @@
       "delta": 0,
       "spreadMin": 0,
       "spreadMax": 8,
-      "spreadPolls": 31,
+      "spreadPolls": 32,
       "trend": [
         {
           "d": "2026-08-23",
@@ -437,7 +438,7 @@
       "delta": 0,
       "spreadMin": 6,
       "spreadMax": 11,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -490,8 +491,8 @@
       "pct": "0.8%",
       "delta": null,
       "spreadMin": 0,
-      "spreadMax": 0,
-      "spreadPolls": 35,
+      "spreadMax": 4,
+      "spreadPolls": 36,
       "trend": [
         {
           "d": "2026-07-12",
@@ -541,7 +542,7 @@
       "delta": 1,
       "spreadMin": 8,
       "spreadMax": 11,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -595,7 +596,7 @@
       "delta": 0,
       "spreadMin": 5,
       "spreadMax": 10,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -649,7 +650,7 @@
       "delta": 1,
       "spreadMin": 19,
       "spreadMax": 32,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -703,7 +704,7 @@
       "delta": 0,
       "spreadMin": 6,
       "spreadMax": 9,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -757,7 +758,7 @@
       "delta": -1,
       "spreadMin": 4,
       "spreadMax": 6,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -811,7 +812,7 @@
       "delta": 0,
       "spreadMin": 0,
       "spreadMax": 4,
-      "spreadPolls": 10,
+      "spreadPolls": 11,
       "trend": null
     },
     "rzp": {
@@ -820,7 +821,7 @@
       "delta": -1,
       "spreadMin": 0,
       "spreadMax": 8,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -874,7 +875,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 10,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -928,7 +929,7 @@
       "delta": -1,
       "spreadMin": 6,
       "spreadMax": 18,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -982,7 +983,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 8,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
@@ -1036,7 +1037,7 @@
       "delta": 1,
       "spreadMin": 20,
       "spreadMax": 26,
-      "spreadPolls": 37,
+      "spreadPolls": 38,
       "trend": [
         {
           "d": "2026-07-12",
