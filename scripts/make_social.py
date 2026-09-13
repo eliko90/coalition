@@ -58,6 +58,13 @@ def numbers():
     # change bloc's only majority runs through, so this is the live question.
     alts = d.get("alternates", [])
     n["alt_total"] = len(alts)
+    # Assert nothing about 61 that the picker itself contradicts: Channel 14
+    # has had the Netanyahu bloc well past it. Count the polls instead.
+    n["net61"] = sum(1 for a in alts
+                     if sum(a["seats"].get(i, 0) for i in NETANYAHU) >= 61)
+    n["chg61"] = sum(1 for a in alts
+                     if sum(a["seats"].get(i, 0) for i in CHANGE)
+                     + a["seats"].get("reservists", 0) >= 61)
     n["hendel_out"] = sum(1 for a in alts if not a["seats"].get("reservists"))
     # And what his absence costs, using the board's own redistribution.
     no_hendel = apply_threshold({k: v["seats"] for k, v in d["parties"].items()},
@@ -104,8 +111,11 @@ def slides(n):
         dict(kind="stat", kicker="THE DEADLOCK",
              rows=[("Netanyahu bloc", n["net"]), ("Change bloc", n["chg"]),
                    ("Needed to govern", 61)],
-             note=f"{n['source']}, {n['date']}. Across two dozen polls from six "
-                  f"houses in three weeks, neither bloc reaches 61 — not once.",
+             note=f"{n['source']}, {n['date']}. Of the {n['alt_total']} polls on "
+                  f"the board, {n['chg61']} put Eisenkot's side at 61 and "
+                  f"{n['net61']} put Netanyahu's there — and the one that does is "
+                  "Channel 14, whose owner is a Netanyahu ally. Everywhere else, "
+                  "neither side can govern alone.",
              foot="Swipe →"),
         # 3 — the mechanism the piece is built on.
         dict(kind="quote", kicker="THE REAL CONSTRAINT",

@@ -51,7 +51,8 @@
     "NEP": {
       "merged_into": "reservists",
       "note": "New Economic Party, merged into The Reservists 6 Sep 2026"
-    }
+    },
+    "Haredi Public": "haredi_public"
   },
   "ignore_columns": [
     "Fieldworkdate",
