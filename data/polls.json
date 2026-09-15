@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-14T05:14:48+00:00",
+  "generated": "2026-09-15T05:15:16+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -248,11 +248,11 @@
       }
     },
     {
-      "id": "2026-09-10-lazar",
+      "id": "2026-09-10-lrip4a",
       "date": "2026-09-10",
       "displayDate": "10 Sep",
       "displayDateLong": "Sep 10, 2026",
-      "firm": "Lazar",
+      "firm": "LRI+P4A",
       "publisher": "Maariv",
       "label": "Maariv · 10 Sep",
       "isHeadline": false,
@@ -308,17 +308,17 @@
       }
     },
     {
-      "id": "2026-09-09-midgamproject",
+      "id": "2026-09-09-mptmsna",
       "date": "2026-09-09",
       "displayDate": "9 Sep",
       "displayDateLong": "Sep 9, 2026",
-      "firm": "Midgam Project",
+      "firm": "MP+TM+SN+A",
       "publisher": "Channel 13",
       "label": "Channel 13 · 9 Sep",
       "isHeadline": false,
       "note": "",
       "lean": -1,
-      "leanPolls": 5,
+      "leanPolls": 4,
       "seats": {
         "likud": 19,
         "together": 13,
@@ -368,15 +368,15 @@
       }
     },
     {
-      "id": "2026-09-09-filber",
+      "id": "2026-09-09-sfnd",
       "date": "2026-09-09",
       "displayDate": "9 Sep",
       "displayDateLong": "Sep 9, 2026",
-      "firm": "Filber",
+      "firm": "SF+ND",
       "publisher": "Channel 14",
       "label": "Channel 14 · 9 Sep",
       "isHeadline": false,
-      "note": "Channel 14 established and owns this polling firm, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "note": "",
       "lean": 11,
       "leanPolls": 7,
       "seats": {
@@ -398,11 +398,11 @@
       }
     },
     {
-      "id": "2026-09-09-lazar",
+      "id": "2026-09-09-lrip4a",
       "date": "2026-09-09",
       "displayDate": "9 Sep",
       "displayDateLong": "Sep 9, 2026",
-      "firm": "Lazar",
+      "firm": "LRI+P4A",
       "publisher": "Walla",
       "label": "Walla · 9 Sep",
       "isHeadline": false,
@@ -430,15 +430,16 @@
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "Lazar": -3,
+    "LRI+P4A": -3,
     "Yossi Tatika": -1,
     "Maagar Mochot": 1,
-    "Midgam Project": -1,
+    "MP+TM+SN+A": -1,
     "Direct Polls": 7,
-    "Filber": 11,
+    "SF+ND": 11,
     "Kantar": 0,
     "Midgam R&C": -1,
-    "S.M.L.T.": 7
+    "S.M.L.T.": 7,
+    "Midgam Project": -1
   },
   "spreadPollCount": 39,
   "totalSeats": 120,
