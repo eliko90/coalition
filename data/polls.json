@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T05:13:45+00:00",
+  "generated": "2026-09-19T05:13:57+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -302,6 +302,34 @@
       }
     },
     {
+      "id": "2026-09-17-lrip4a",
+      "date": "2026-09-17",
+      "displayDate": "17 Sep",
+      "displayDateLong": "Sep 17, 2026",
+      "firm": "LRI+P4A",
+      "publisher": "Maariv",
+      "label": "Maariv · 17 Sep",
+      "isHeadline": false,
+      "note": "",
+      "lean": -3,
+      "leanPolls": 9,
+      "seats": {
+        "likud": 18,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 8,
+        "shas": 7,
+        "utj": 7,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 7,
+        "democrats": 9,
+        "yashar": 23,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    },
+    {
       "id": "2026-09-17-kantar",
       "date": "2026-09-17",
       "displayDate": "17 Sep",
@@ -324,7 +352,7 @@
         "raam": 5,
         "hadash_taal": 7,
         "democrats": 9,
-        "yashar": 24,
+        "yashar": 22,
         "reservists": 4,
         "amcha_yisrael": 4
       }
@@ -384,45 +412,17 @@
         "reservists": 0,
         "amcha_yisrael": 6
       }
-    },
-    {
-      "id": "2026-09-15-sfnd",
-      "date": "2026-09-15",
-      "displayDate": "15 Sep",
-      "displayDateLong": "Sep 15, 2026",
-      "firm": "SF+ND",
-      "publisher": "Channel 14",
-      "label": "Channel 14 · 15 Sep",
-      "isHeadline": false,
-      "note": "",
-      "lean": 11,
-      "leanPolls": 9,
-      "seats": {
-        "likud": 30,
-        "together": 8,
-        "rzp": 8,
-        "otzma": 8,
-        "shas": 10,
-        "utj": 8,
-        "beiteinu": 6,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 9,
-        "yashar": 21,
-        "reservists": 0,
-        "amcha_yisrael": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
     "SF+ND": 11,
     "Direct Polls": 7,
+    "LRI+P4A": -3,
     "Kantar": 0,
     "Yossi Tatika": -1,
     "MP+TM+SN+A": 0,
     "Midgam R&C": -1,
-    "LRI+P4A": -3,
     "Maagar Mochot": 1,
     "S.M.L.T.": 7,
     "Midgam Project": -1
