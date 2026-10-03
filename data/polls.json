@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-02T05:15:40+00:00",
+  "generated": "2026-10-03T05:14:13+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -202,6 +202,36 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-01-lrip4a",
+      "date": "2026-10-01",
+      "displayDate": "1 Oct",
+      "displayDateLong": "Oct 1, 2026",
+      "firm": "LRI+P4A",
+      "publisher": "Maariv",
+      "label": "Maariv · 1 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -2,
+      "leanPolls": 8,
+      "seats": {
+        "likud": 19,
+        "together": 13,
+        "rzp": 5,
+        "otzma": 9,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 7,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 7,
+        "democrats": 10,
+        "yashar": 21,
+        "reservists": 4,
+        "amcha_yisrael": 4,
+        "haredi_public": 0
+      }
+    },
+    {
       "id": "2026-09-30-mptmsna",
       "date": "2026-09-30",
       "displayDate": "30 Sep",
@@ -350,47 +380,17 @@
         "amcha_yisrael": 4,
         "haredi_public": 0
       }
-    },
-    {
-      "id": "2026-09-24-directpolls",
-      "date": "2026-09-24",
-      "displayDate": "24 Sep",
-      "displayDateLong": "Sep 24, 2026",
-      "firm": "Direct Polls",
-      "publisher": "i24 News",
-      "label": "i24 · 24 Sep",
-      "isHeadline": false,
-      "note": "Polls for i24 News.",
-      "lean": 8,
-      "leanPolls": 4,
-      "seats": {
-        "likud": 27,
-        "together": 9,
-        "rzp": 6,
-        "otzma": 8,
-        "blue_white": 0,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 7,
-        "raam": 6,
-        "hadash_taal": 7,
-        "democrats": 9,
-        "yashar": 22,
-        "reservists": 0,
-        "amcha_yisrael": 4,
-        "haredi_public": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
     "Yossi Tatika": -1,
+    "LRI+P4A": -2,
     "MP+TM+SN+A": 1,
     "Maagar Mochot": 1,
     "SF+ND": 11,
     "Kantar": 0,
     "Direct Polls": 8,
-    "LRI+P4A": -2,
     "Midgam R&C": -1,
     "S.M.L.T.": 7
   },
