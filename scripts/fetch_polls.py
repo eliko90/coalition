@@ -486,6 +486,7 @@ def build(cache=None, year=None, verbose=True):
     board = set(parties)
     excluded = set(cfg.get("exclude_pollsters", []))
     notes = cfg.get("pollster_notes", {})
+    notes_used = set()
     alts = []
     for p in polls:
         if not board.issubset(set(p["seats"])):
@@ -505,7 +506,7 @@ def build(cache=None, year=None, verbose=True):
             # disambiguates them and is the more recognisable name.
             "label": f"{pub_name(p['publisher'], cfg) or p['firm']} · {p['date'].strftime('%-d %b')}",
             "isHeadline": p is pick,
-            "note": notes.get(p["firm"], ""),
+            "note": note_for(p, notes, notes_used),
             "lean": leans.get(p["firm"]),
             "leanPolls": lean_n.get(p["firm"]),
             "seats": {k: v for k, v in p["seats"].items() if k in board},
@@ -521,11 +522,27 @@ def build(cache=None, year=None, verbose=True):
             "firm": pick["firm"], "publisher": pick["publisher"],
             "label": f"{pub_name(pick['publisher'], cfg) or pick['firm']} · {pick['date'].strftime('%-d %b')}",
             "isHeadline": True,
-            "note": notes.get(pick["firm"], ""),
+            "note": note_for(pick, notes, notes_used),
             "lean": leans.get(pick["firm"]),
             "leanPolls": lean_n.get(pick["firm"]),
             "seats": {k: v for k, v in pick["seats"].items() if k in board},
         })
+
+    # The invariant that matters is not "every note is used" — a pollster can
+    # simply leave the window — but "a poll that requires a disclosure carries
+    # one". Wikipedia renamed Channel 14's firm from "Filber" to "SF+ND"
+    # mid-campaign and the ownership note vanished from the one poll on the
+    # board most in need of it, with nothing in the output to say so.
+    required = set(cfg.get("required_disclosures", []))
+    naked = [a["label"] for a in alts
+             if not a["note"] and required & {a["firm"], a["publisher"]}]
+    if naked:
+        raise RuntimeError(
+            "poll(s) on the board need a disclosure and have none: "
+            + ", ".join(repr(k) for k in naked)
+            + ".\nAdd a pollster_notes entry in scripts/mapping.json keyed on the "
+            + "publisher (stabler than the firm name, which Wikipedia renames "
+            + "mid-campaign), or drop the name from required_disclosures.")
 
     out = {
         "generated": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
@@ -594,6 +611,18 @@ def summarise():
         print("\n**Not in the latest poll:** "
               + ", ".join(d["unmappedAppParties"]))
     return 0
+
+
+def note_for(poll, notes, used):
+    """Disclosures match on publisher as well as polling house. Wikipedia
+    renamed Channel 14's firm from "Filber" to "SF+ND" and the ownership
+    disclosure silently stopped appearing on the one poll that most needs
+    it — publishers are stable where firm names churn."""
+    for key in (poll["firm"], poll["publisher"]):
+        if key in notes:
+            used.add(key)
+            return notes[key]
+    return ""
 
 
 def pub_name(publisher, cfg):

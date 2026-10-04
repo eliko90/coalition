@@ -83,8 +83,7 @@
   "exclude_pollsters": [],
   "_exclude_comment": "Pollsters to keep out of the reader's poll picker entirely. Leave empty to show them with a note instead — excluding a house reads as removing the numbers you dislike, whereas disclosing who owns it lets the reader judge. Names must match the 'Polling firm' column.",
   "pollster_notes": {
-    "Filber": "Channel 14 established and owns this polling firm, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-    "Direct Polls": "Polls for i24 News."
+    "Channel 14": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust."
   },
   "_notes_comment": "Shown under the picker when that pollster's poll is selected, after the measured house effect. Keep it to what arithmetic cannot say — who owns the firm, who commissions it — and let the lean figure carry the numbers. Avoid labels like 'aligned' or 'mainstream': they are contestable in a way an ownership fact and a seat count are not.",
   "lean_bloc": [
@@ -102,5 +101,10 @@
     "HaHadashot 12": "Channel 12",
     "Kan 11": "Kan 11",
     "i24 News": "i24"
-  }
+  },
+  "_pollster_notes_comment": "Disclosures shown beside a poll. Keys match the publisher OR the polling firm; prefer the publisher, because Wikipedia renames firms mid-campaign and a note keyed to a stale firm name silently stops appearing. fetch_polls.py now errors if a key here matches no poll on the board.",
+  "_required_disclosures_comment": "Publishers whose polls must never appear without a note. If one shows up on the board with no matching pollster_notes entry, fetch_polls.py refuses to write rather than publishing the poll bare.",
+  "required_disclosures": [
+    "Channel 14"
+  ]
 }

@@ -32,6 +32,18 @@ XW, XH = 1200, 628
 NETANYAHU = ["likud", "rzp", "otzma", "shas", "utj", "amcha_yisrael"]
 CHANGE = ["yashar", "together", "democrats", "beiteinu"]
 
+# Short forms for slide copy. A party not listed falls back to its id, which
+# is ugly enough to notice — the point is never to print a wrong name.
+PARTY_NAMES = {
+    "amcha_yisrael": "Amcha Yisrael", "rzp": "Religious Zionism",
+    "reservists": "The Reservists", "raam": "Ra'am", "otzma": "Otzma Yehudit",
+    "shas": "Shas", "utj": "United Torah Judaism", "likud": "Likud",
+    "yashar": "Yashar", "together": "Beyachad", "democrats": "The Democrats",
+    "beiteinu": "Yisrael Beiteinu", "hadash_taal": "The Joint List",
+    "blue_white": "Blue & White", "haredi_public": "The Haredi Public",
+    "noam": "Noam",
+}
+
 PAPER, INK, INK2, CLAY, NAVY = "#F6F2E9", "#1C1A16", "#4A453C", "#B0492C", "#1C2C36"
 
 
@@ -60,17 +72,44 @@ def numbers():
     n["alt_total"] = len(alts)
     # Assert nothing about 61 that the picker itself contradicts: Channel 14
     # has had the Netanyahu bloc well past it. Count the polls instead.
-    n["net61"] = sum(1 for a in alts
-                     if sum(a["seats"].get(i, 0) for i in NETANYAHU) >= 61)
-    n["chg61"] = sum(1 for a in alts
-                     if sum(a["seats"].get(i, 0) for i in CHANGE)
-                     + a["seats"].get("reservists", 0) >= 61)
+    net61 = [a for a in alts
+             if sum(a["seats"].get(i, 0) for i in NETANYAHU) >= 61]
+    chg61 = [a for a in alts
+             if sum(a["seats"].get(i, 0) for i in CHANGE)
+             + a["seats"].get("reservists", 0) >= 61]
+    n["net61"], n["chg61"] = len(net61), len(chg61)
+    # Where every poll showing a majority comes from one outlet, that is the
+    # fact worth printing — not the count.
+    houses = {a["publisher"] for a in net61}
+    n["net61_who"] = (f", all of them {houses.pop()}" if len(houses) == 1
+                      else "" if not houses else ", across " + str(len(houses)) + " outlets")
     n["hendel_out"] = sum(1 for a in alts if not a["seats"].get("reservists"))
-    # And what his absence costs, using the board's own redistribution.
-    no_hendel = apply_threshold({k: v["seats"] for k, v in d["parties"].items()},
-                                ["reservists"])
-    n["nh_net"] = sum(no_hendel.get(i, 0) for i in NETANYAHU)
-    n["nh_chg"] = sum(no_hendel.get(i, 0) for i in CHANGE)
+    # Which borderline party actually decides the board is a question for the
+    # data, not for last month's story. Score each on how far its failure moves
+    # the two blocs apart, and feature the largest.
+    head = {k: v["seats"] for k, v in d["parties"].items()}
+    base_net = sum(head.get(i, 0) for i in NETANYAHU)
+    base_chg = sum(head.get(i, 0) for i in CHANGE) + head.get("reservists", 0)
+    best = None
+    for pid, pv in d["parties"].items():
+        if not pv["seats"] or pv.get("spreadMin", 9) > 4:
+            continue                      # only lists a pollster has put at risk
+        t = apply_threshold(head, [pid])
+        net = sum(t.get(i, 0) for i in NETANYAHU)
+        chg = sum(t.get(i, 0) for i in CHANGE) + t.get("reservists", 0)
+        swing = abs((net - chg) - (base_net - base_chg))
+        # A list that clears in every poll on the board has the largest
+        # arithmetic swing and no live uncertainty — Religious Zionism moves
+        # eight seats on paper and has not actually missed once. Rank only
+        # lists that pollsters currently disagree about.
+        out = sum(1 for a in alts if not a["seats"].get(pid))
+        if best is None or swing > best["swing"]:
+            best = dict(id=pid, net=net, chg=chg, swing=swing, out=out,
+                        low=pv.get("spreadMin"))
+    n["pivot"] = best or dict(id="reservists", net=base_net, chg=base_chg,
+                              swing=0, out=0)
+    n["pivot_name"] = PARTY_NAMES.get(n["pivot"]["id"], n["pivot"]["id"])
+    n["base_net"], n["base_chg"] = base_net, base_chg
     return n
 
 
@@ -113,9 +152,9 @@ def slides(n):
                    ("Needed to govern", 61)],
              note=f"{n['source']}, {n['date']}. Of the {n['alt_total']} polls on "
                   f"the board, {n['chg61']} put Eisenkot's side at 61 and "
-                  f"{n['net61']} put Netanyahu's there — and the one that does is "
-                  "Channel 14, whose owner is a Netanyahu ally. Everywhere else, "
-                  "neither side can govern alone.",
+                  f"{n['net61']} put Netanyahu's there{n['net61_who']} — an outlet "
+                  "that owns the firm polling for it. Everywhere else, neither "
+                  "side can govern alone.",
              foot="Swipe →"),
         # 3 — the mechanism the piece is built on.
         dict(kind="quote", kicker="THE REAL CONSTRAINT",
@@ -135,22 +174,31 @@ def slides(n):
                   "small party survives moves seats across the whole map.",
              foot="Swipe →"),
         # 5 — the concrete illustration, from a real poll.
-        dict(kind="split", kicker="ONE MAN, TWO OUTCOMES",
-             left=("Hendel clears", f"{n['net']}", "Netanyahu bloc",
-                   f"{n['chg_hendel']}", "Eisenkot + Hendel"),
-             right=("Hendel misses", f"{n['nh_net']}", "Netanyahu bloc",
-                    f"{n['nh_chg']}", "Eisenkot alone"),
-             note=f"{n['hendel_out']} of the {n['alt_total']} newest polls put Yoaz "
-                  "Hendel's Reservists under the threshold. He is the one partner "
-                  "the change bloc can add without breaking a promise — so his four "
-                  "seats are the whole margin, and they may not exist.",
+        dict(kind="split", kicker="ONE LIST, TWO OUTCOMES",
+             left=(f"{n['pivot_name']} clears", f"{n['base_net']}", "Netanyahu bloc",
+                   f"{n['base_chg']}", "Eisenkot + Hendel"),
+             right=(f"{n['pivot_name']} misses", f"{n['pivot']['net']}", "Netanyahu bloc",
+                    f"{n['pivot']['chg']}", "Eisenkot + Hendel"),
+             note=(f"{n['pivot_name']} is under the threshold in {n['pivot']['out']} of "
+                   f"the {n['alt_total']} polls on the board."
+                   if n["pivot"]["out"] else
+                   f"{n['pivot_name']} has cleared in every poll on the board — but "
+                   f"pollsters have had it as low as {n['pivot']['low']} seats, and "
+                   "four is roughly where the threshold bites.")
+                  + " Israel shares out the votes of every list that misses, so whether "
+                  "one small party survives moves seats across the whole map — and no "
+                  "list moves more than this one.",
              foot="Swipe →"),
         # 6 — the product, arriving at the number slide 5 just claimed.
         dict(kind="shot", kicker="THE TOOL", img="board.png",
-             sub="Push Hendel under the threshold and the board answers.",
-             note=f"Eisenkot lands on {n['nh_chg']} — short by "
-                  f"{61 - n['nh_chg']}. Six pollsters, every stated red line, "
-                  "seats redistributed the way Israeli law does.",
+             sub=f"Push {n['pivot_name']} under the threshold and the board answers.",
+             note=(f"Eisenkot lands on {n['pivot']['chg']} — a majority, and the "
+                   "first one on this board that needs nobody to break a promise."
+                   if n["pivot"]["chg"] >= 61 else
+                   f"Eisenkot lands on {n['pivot']['chg']} — short by "
+                   f"{61 - n['pivot']['chg']}.")
+                  + " Every poll on the board, every stated red line, seats "
+                  "redistributed the way Israeli law does.",
              foot="Swipe →"),
         # 7 — the ask.
         dict(kind="cta", kicker="BUILD IT YOURSELF",
@@ -298,19 +346,21 @@ def x_card_html(n):
 </div>"""
 
 
-BOARD_STATE = ("yashar.together.democrats.beiteinu.reservists"
-               "._x_.reservists")
+BOARD_COALITION = "yashar.together.democrats.beiteinu.reservists"
 
 
-def capture_board(exe):
-    """Screenshot the live board with Hendel pushed under the threshold.
+def capture_board(exe, pivot):
+    """Screenshot the live board with the pivot list pushed under the threshold.
 
     The carousel's claim and the tool's answer then come from one place: this
-    is the product, arriving at the number the slides quote. ?shot=board lifts
-    the board to the top of the frame, so the crop does not drift when the
-    analysis paragraph changes length.
+    is the product, arriving at the number the slides quote. The dropped party
+    follows whichever list the data says decides the board, so the screenshot
+    cannot end up illustrating last month's story. ?shot=board lifts the board
+    to the top of the frame, so the crop does not drift when the analysis
+    paragraph changes length.
     """
     page = os.path.join(ROOT, "index.html")
+    state = BOARD_COALITION + "._x_." + pivot
     dst = os.path.join(OUT, "board.png")
     subprocess.run([exe, "--headless", "--disable-gpu", "--hide-scrollbars",
                     "--allow-file-access-from-files",
@@ -319,7 +369,7 @@ def capture_board(exe):
                     # which is what decides whether this reads on a phone.
                     "--window-size=880,752", "--virtual-time-budget=9000",
                     f"--screenshot={dst}",
-                    f"file://{page}?shot=board&c={BOARD_STATE}"],
+                    f"file://{page}?shot=board&c={state}"],
                    capture_output=True)
     ok = os.path.exists(dst)
     print(f"  board.png  {(os.path.getsize(dst)//1024) if ok else 0} KB",
@@ -357,7 +407,7 @@ def main():
         print("Chrome not found — open carousel.html and screenshot manually.",
               file=sys.stderr)
         return 1
-    capture_board(exe)
+    capture_board(exe, n["pivot"]["id"])
     total = len(slides(n))
     for i in range(1, total + 1):
         dst = os.path.join(OUT, f"slide-{i}.png")
