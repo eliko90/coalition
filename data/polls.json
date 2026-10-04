@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-03T05:14:13+00:00",
+  "generated": "2026-10-04T11:02:47+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -384,13 +384,13 @@
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "Direct Polls": 8,
     "Yossi Tatika": -1,
     "LRI+P4A": -2,
     "MP+TM+SN+A": 1,
     "Maagar Mochot": 1,
     "SF+ND": 11,
     "Kantar": 0,
-    "Direct Polls": 8,
     "Midgam R&C": -1,
     "S.M.L.T.": 7
   },
