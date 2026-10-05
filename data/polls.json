@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T21:19:55+00:00",
+  "generated": "2026-10-05T05:23:30+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -210,9 +210,9 @@
         "shas": 8,
         "utj": 8,
         "beiteinu": 9,
-        "raam": 8,
-        "hadash_taal": 7,
-        "democrats": 9,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 8,
         "yashar": 23,
         "reservists": 4,
         "amcha_yisrael": 0,
@@ -242,9 +242,9 @@
         "shas": 8,
         "utj": 8,
         "beiteinu": 9,
-        "raam": 8,
-        "hadash_taal": 7,
-        "democrats": 9,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 8,
         "yashar": 23,
         "reservists": 4,
         "amcha_yisrael": 0,
@@ -415,7 +415,7 @@
     "S.M.L.T.": 7
   },
   "spreadPollCount": 26,
-  "totalSeats": 123,
+  "totalSeats": 120,
   "parties": {
     "amcha_yisrael": {
       "seats": 0,
@@ -556,9 +556,9 @@
       ]
     },
     "democrats": {
-      "seats": 9,
+      "seats": 8,
       "pct": null,
-      "delta": 0,
+      "delta": -1,
       "spreadMin": 8,
       "spreadMax": 11,
       "spreadPolls": 26,
@@ -605,14 +605,14 @@
         },
         {
           "d": "2026-10-04",
-          "s": 9
+          "s": 8
         }
       ]
     },
     "hadash_taal": {
-      "seats": 7,
+      "seats": 8,
       "pct": null,
-      "delta": 0,
+      "delta": 1,
       "spreadMin": 6,
       "spreadMax": 9,
       "spreadPolls": 26,
@@ -659,7 +659,7 @@
         },
         {
           "d": "2026-10-04",
-          "s": 7
+          "s": 8
         }
       ]
     },
@@ -794,11 +794,11 @@
       ]
     },
     "raam": {
-      "seats": 8,
+      "seats": 5,
       "pct": null,
-      "delta": 3,
+      "delta": 0,
       "spreadMin": 4,
-      "spreadMax": 8,
+      "spreadMax": 6,
       "spreadPolls": 26,
       "trend": [
         {
@@ -843,7 +843,7 @@
         },
         {
           "d": "2026-10-04",
-          "s": 8
+          "s": 5
         }
       ]
     },
