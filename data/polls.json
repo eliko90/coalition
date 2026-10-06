@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-05T05:23:30+00:00",
+  "generated": "2026-10-06T05:15:35+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -11,26 +11,8 @@
   },
   "spreadWindowDays": 21,
   "trendDays": 63,
-  "trendPolls": 11,
+  "trendPolls": 10,
   "history": [
-    {
-      "d": "2026-08-02",
-      "seats": {
-        "likud": 23,
-        "together": 13,
-        "rzp": 4,
-        "otzma": 9,
-        "blue_white": 0,
-        "shas": 8,
-        "utj": 8,
-        "beiteinu": 9,
-        "raam": 5,
-        "hadash_taal": 6,
-        "democrats": 8,
-        "yashar": 23,
-        "zionist_home": 4
-      }
-    },
     {
       "d": "2026-08-09",
       "seats": {
@@ -222,6 +204,36 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-05-midgamrc",
+      "date": "2026-10-05",
+      "displayDate": "5 Oct",
+      "displayDateLong": "Oct 5, 2026",
+      "firm": "Midgam R&C",
+      "publisher": "HaHadashot 12",
+      "label": "Channel 12 · 5 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -1,
+      "leanPolls": 5,
+      "seats": {
+        "likud": 21,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 7,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 9,
+        "yashar": 23,
+        "reservists": 4,
+        "amcha_yisrael": 0,
+        "haredi_public": 0
+      }
+    },
+    {
       "id": "2026-10-04-kantar",
       "date": "2026-10-04",
       "displayDate": "4 Oct",
@@ -370,40 +382,11 @@
         "amcha_yisrael": 5,
         "haredi_public": 0
       }
-    },
-    {
-      "id": "2026-09-28-sfnd",
-      "date": "2026-09-28",
-      "displayDate": "28 Sep",
-      "displayDateLong": "Sep 28, 2026",
-      "firm": "SF+ND",
-      "publisher": "Channel 14",
-      "label": "Channel 14 · 28 Sep",
-      "isHeadline": false,
-      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-      "lean": 12,
-      "leanPolls": 7,
-      "seats": {
-        "likud": 31,
-        "together": 9,
-        "rzp": 7,
-        "otzma": 7,
-        "blue_white": 0,
-        "shas": 10,
-        "utj": 8,
-        "beiteinu": 6,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 9,
-        "yashar": 21,
-        "reservists": 0,
-        "amcha_yisrael": 0,
-        "haredi_public": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "Midgam R&C": -1,
     "Kantar": 0,
     "Direct Polls": 8,
     "SF+ND": 12,
@@ -411,7 +394,6 @@
     "LRI+P4A": -2,
     "MP+TM+SN+A": 1,
     "Maagar Mochot": 0,
-    "Midgam R&C": -1,
     "S.M.L.T.": 7
   },
   "spreadPollCount": 26,
@@ -464,10 +446,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 9
-        },
-        {
           "d": "2026-08-09",
           "s": 10
         },
@@ -518,10 +496,6 @@
       "spreadPolls": 22,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 0
-        },
-        {
           "d": "2026-08-09",
           "s": 0
         },
@@ -563,10 +537,6 @@
       "spreadMax": 11,
       "spreadPolls": 26,
       "trend": [
-        {
-          "d": "2026-08-02",
-          "s": 8
-        },
         {
           "d": "2026-08-09",
           "s": 10
@@ -617,10 +587,6 @@
       "spreadMax": 9,
       "spreadPolls": 26,
       "trend": [
-        {
-          "d": "2026-08-02",
-          "s": 6
-        },
         {
           "d": "2026-08-09",
           "s": 5
@@ -694,10 +660,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 23
-        },
-        {
           "d": "2026-08-09",
           "s": 24
         },
@@ -748,10 +710,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 9
-        },
-        {
           "d": "2026-08-09",
           "s": 8
         },
@@ -801,10 +759,6 @@
       "spreadMax": 6,
       "spreadPolls": 26,
       "trend": [
-        {
-          "d": "2026-08-02",
-          "s": 5
-        },
         {
           "d": "2026-08-09",
           "s": 6
@@ -886,10 +840,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 4
-        },
-        {
           "d": "2026-08-09",
           "s": 5
         },
@@ -939,10 +889,6 @@
       "spreadMax": 11,
       "spreadPolls": 26,
       "trend": [
-        {
-          "d": "2026-08-02",
-          "s": 8
-        },
         {
           "d": "2026-08-09",
           "s": 8
@@ -994,10 +940,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 13
-        },
-        {
           "d": "2026-08-09",
           "s": 13
         },
@@ -1048,10 +990,6 @@
       "spreadPolls": 26,
       "trend": [
         {
-          "d": "2026-08-02",
-          "s": 8
-        },
-        {
           "d": "2026-08-09",
           "s": 8
         },
@@ -1101,10 +1039,6 @@
       "spreadMax": 24,
       "spreadPolls": 26,
       "trend": [
-        {
-          "d": "2026-08-02",
-          "s": 23
-        },
         {
           "d": "2026-08-09",
           "s": 23
