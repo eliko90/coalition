@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T05:16:34+00:00",
+  "generated": "2026-10-09T11:44:25+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -168,7 +168,6 @@
         "together": 11,
         "rzp": 6,
         "otzma": 7,
-        "blue_white": 0,
         "shas": 7,
         "utj": 7,
         "beiteinu": 9,
@@ -177,8 +176,7 @@
         "democrats": 9,
         "yashar": 23,
         "reservists": 4,
-        "amcha_yisrael": 4,
-        "haredi_public": 0
+        "amcha_yisrael": 4
       }
     },
     {
@@ -203,6 +201,66 @@
     }
   ],
   "alternates": [
+    {
+      "id": "2026-10-07-sfnd",
+      "date": "2026-10-07",
+      "displayDate": "7 Oct",
+      "displayDateLong": "Oct 7, 2026",
+      "firm": "SF+ND",
+      "publisher": "Channel 14",
+      "label": "Channel 14 · 7 Oct",
+      "isHeadline": false,
+      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "lean": 12,
+      "leanPolls": 8,
+      "seats": {
+        "likud": 31,
+        "together": 8,
+        "rzp": 6,
+        "otzma": 8,
+        "blue_white": 0,
+        "shas": 10,
+        "utj": 8,
+        "beiteinu": 5,
+        "raam": 5,
+        "hadash_taal": 7,
+        "democrats": 9,
+        "yashar": 23,
+        "reservists": 0,
+        "amcha_yisrael": 0,
+        "haredi_public": 0
+      }
+    },
+    {
+      "id": "2026-10-07-mptmsna",
+      "date": "2026-10-07",
+      "displayDate": "7 Oct",
+      "displayDateLong": "Oct 7, 2026",
+      "firm": "MP+TM+SN+A",
+      "publisher": "Channel 13",
+      "label": "Channel 13 · 7 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": 1,
+      "leanPolls": 5,
+      "seats": {
+        "likud": 20,
+        "together": 12,
+        "rzp": 7,
+        "otzma": 8,
+        "blue_white": 0,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 6,
+        "hadash_taal": 9,
+        "democrats": 10,
+        "yashar": 20,
+        "reservists": 0,
+        "amcha_yisrael": 5,
+        "haredi_public": 0
+      }
+    },
     {
       "id": "2026-10-05-midgamrc",
       "date": "2026-10-05",
@@ -244,7 +302,7 @@
       "isHeadline": true,
       "note": "",
       "lean": 0,
-      "leanPolls": 6,
+      "leanPolls": 7,
       "seats": {
         "likud": 21,
         "together": 12,
@@ -274,7 +332,7 @@
       "isHeadline": false,
       "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
       "lean": 12,
-      "leanPolls": 7,
+      "leanPolls": 8,
       "seats": {
         "likud": 32,
         "together": 8,
@@ -322,77 +380,17 @@
         "amcha_yisrael": 4,
         "haredi_public": 0
       }
-    },
-    {
-      "id": "2026-09-30-mptmsna",
-      "date": "2026-09-30",
-      "displayDate": "30 Sep",
-      "displayDateLong": "Sep 30, 2026",
-      "firm": "MP+TM+SN+A",
-      "publisher": "Channel 13",
-      "label": "Channel 13 · 30 Sep",
-      "isHeadline": false,
-      "note": "",
-      "lean": 1,
-      "leanPolls": 4,
-      "seats": {
-        "likud": 19,
-        "together": 11,
-        "rzp": 7,
-        "otzma": 8,
-        "blue_white": 0,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 9,
-        "raam": 5,
-        "hadash_taal": 9,
-        "democrats": 11,
-        "yashar": 21,
-        "reservists": 0,
-        "amcha_yisrael": 5,
-        "haredi_public": 0
-      }
-    },
-    {
-      "id": "2026-09-29-maagarmochot",
-      "date": "2026-09-29",
-      "displayDate": "29 Sep",
-      "displayDateLong": "Sep 29, 2026",
-      "firm": "Maagar Mochot",
-      "publisher": "Channel 16",
-      "label": "Channel 16 · 29 Sep",
-      "isHeadline": false,
-      "note": "",
-      "lean": 0,
-      "leanPolls": 4,
-      "seats": {
-        "likud": 19,
-        "together": 14,
-        "rzp": 6,
-        "otzma": 8,
-        "blue_white": 0,
-        "shas": 8,
-        "utj": 7,
-        "beiteinu": 7,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 9,
-        "yashar": 21,
-        "reservists": 4,
-        "amcha_yisrael": 5,
-        "haredi_public": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "Midgam R&C": -1,
     "Kantar": 0,
-    "Direct Polls": 8,
     "SF+ND": 12,
+    "MP+TM+SN+A": 1,
+    "Midgam R&C": -1,
+    "Direct Polls": 8,
     "Yossi Tatika": -1,
     "LRI+P4A": -2,
-    "MP+TM+SN+A": 1,
     "Maagar Mochot": 0,
     "S.M.L.T.": 7
   },
@@ -490,10 +488,10 @@
     "blue_white": {
       "seats": 0,
       "pct": "1.3%",
-      "delta": 0,
+      "delta": null,
       "spreadMin": 0,
       "spreadMax": 0,
-      "spreadPolls": 22,
+      "spreadPolls": 21,
       "trend": [
         {
           "d": "2026-08-09",
@@ -517,10 +515,6 @@
         },
         {
           "d": "2026-09-09",
-          "s": 0
-        },
-        {
-          "d": "2026-09-27",
           "s": 0
         },
         {
@@ -632,24 +626,11 @@
     "haredi_public": {
       "seats": 0,
       "pct": "0.9%",
-      "delta": 0,
+      "delta": null,
       "spreadMin": 0,
       "spreadMax": 0,
-      "spreadPolls": 18,
-      "trend": [
-        {
-          "d": "2026-09-09",
-          "s": 0
-        },
-        {
-          "d": "2026-09-27",
-          "s": 0
-        },
-        {
-          "d": "2026-10-04",
-          "s": 0
-        }
-      ]
+      "spreadPolls": 17,
+      "trend": null
     },
     "likud": {
       "seats": 21,
