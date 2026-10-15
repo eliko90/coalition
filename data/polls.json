@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-14T09:59:50+00:00",
+  "generated": "2026-10-15T09:41:52+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -202,6 +202,34 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-14-mptmsna",
+      "date": "2026-10-14",
+      "displayDate": "14 Oct",
+      "displayDateLong": "Oct 14, 2026",
+      "firm": "MP+TM+SN+A",
+      "publisher": "Channel 13",
+      "label": "Channel 13 · 14 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": 1,
+      "leanPolls": 5,
+      "seats": {
+        "likud": 18,
+        "together": 12,
+        "rzp": 6,
+        "otzma": 8,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 9,
+        "raam": 6,
+        "hadash_taal": 9,
+        "democrats": 9,
+        "yashar": 20,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    },
+    {
       "id": "2026-10-12-sfnd",
       "date": "2026-10-12",
       "displayDate": "12 Oct",
@@ -225,6 +253,34 @@
         "hadash_taal": 8,
         "democrats": 10,
         "yashar": 20,
+        "reservists": 4,
+        "amcha_yisrael": 0
+      }
+    },
+    {
+      "id": "2026-10-12-midgamrc",
+      "date": "2026-10-12",
+      "displayDate": "12 Oct",
+      "displayDateLong": "Oct 12, 2026",
+      "firm": "Midgam R&C",
+      "publisher": "HaHadashot 12",
+      "label": "Channel 12 · 12 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -2,
+      "leanPolls": 4,
+      "seats": {
+        "likud": 20,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 8,
+        "shas": 8,
+        "utj": 7,
+        "beiteinu": 9,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 9,
+        "yashar": 23,
         "reservists": 4,
         "amcha_yisrael": 0
       }
@@ -312,73 +368,17 @@
         "reservists": 0,
         "amcha_yisrael": 4
       }
-    },
-    {
-      "id": "2026-10-08-kantar",
-      "date": "2026-10-08",
-      "displayDate": "8 Oct",
-      "displayDateLong": "Oct 8, 2026",
-      "firm": "Kantar",
-      "publisher": "Israel Hayom",
-      "label": "Israel Hayom · 8 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": 0,
-      "leanPolls": 6,
-      "seats": {
-        "likud": 21,
-        "together": 13,
-        "rzp": 6,
-        "otzma": 9,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 8,
-        "democrats": 8,
-        "yashar": 22,
-        "reservists": 5,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-07-directpolls",
-      "date": "2026-10-07",
-      "displayDate": "7 Oct",
-      "displayDateLong": "Oct 7, 2026",
-      "firm": "Direct Polls",
-      "publisher": "i24 News",
-      "label": "i24 · 7 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": 8,
-      "leanPolls": 4,
-      "seats": {
-        "likud": 26,
-        "together": 11,
-        "rzp": 6,
-        "otzma": 9,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 7,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 10,
-        "yashar": 20,
-        "reservists": 0,
-        "amcha_yisrael": 4
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "MP+TM+SN+A": 1,
     "SF+ND": 11,
+    "Midgam R&C": -2,
     "Kantar": 0,
     "LRI+P4A": -2,
     "Yossi Tatika": -1,
     "Direct Polls": 8,
-    "MP+TM+SN+A": 2,
-    "Midgam R&C": -2,
     "Maagar Mochot": 0
   },
   "spreadPollCount": 24,
