@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T09:35:31+00:00",
+  "generated": "2026-10-17T09:06:50+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -202,6 +202,62 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-11-kantar",
+      "date": "2026-10-11",
+      "displayDate": "11 Oct",
+      "displayDateLong": "Oct 11, 2026",
+      "firm": "Kantar",
+      "publisher": "Kan 11",
+      "label": "Kan 11 · 11 Oct",
+      "isHeadline": true,
+      "note": "",
+      "lean": 0,
+      "leanPolls": 6,
+      "seats": {
+        "likud": 20,
+        "together": 12,
+        "rzp": 5,
+        "otzma": 9,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 5,
+        "hadash_taal": 8,
+        "democrats": 8,
+        "yashar": 22,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    },
+    {
+      "id": "2026-10-15-lrip4a",
+      "date": "2026-10-15",
+      "displayDate": "15 Oct",
+      "displayDateLong": "Oct 15, 2026",
+      "firm": "LRI+P4A",
+      "publisher": "Maariv",
+      "label": "Maariv · 15 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -2,
+      "leanPolls": 6,
+      "seats": {
+        "likud": 18,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 8,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 6,
+        "hadash_taal": 8,
+        "democrats": 9,
+        "yashar": 21,
+        "reservists": 4,
+        "amcha_yisrael": 4
+      }
+    },
+    {
       "id": "2026-10-15-yossitatika",
       "date": "2026-10-15",
       "displayDate": "15 Oct",
@@ -340,42 +396,14 @@
         "reservists": 4,
         "amcha_yisrael": 0
       }
-    },
-    {
-      "id": "2026-10-11-kantar",
-      "date": "2026-10-11",
-      "displayDate": "11 Oct",
-      "displayDateLong": "Oct 11, 2026",
-      "firm": "Kantar",
-      "publisher": "Kan 11",
-      "label": "Kan 11 · 11 Oct",
-      "isHeadline": true,
-      "note": "",
-      "lean": 0,
-      "leanPolls": 6,
-      "seats": {
-        "likud": 20,
-        "together": 12,
-        "rzp": 5,
-        "otzma": 9,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 8,
-        "democrats": 8,
-        "yashar": 22,
-        "reservists": 4,
-        "amcha_yisrael": 4
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "LRI+P4A": -2,
     "Yossi Tatika": -1,
     "MP+TM+SN+A": 1,
     "Maagar Mochot": 0,
-    "LRI+P4A": -2,
     "SF+ND": 11,
     "Midgam R&C": -2,
     "Kantar": 0,
