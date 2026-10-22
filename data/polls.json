@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T09:55:41+00:00",
+  "generated": "2026-10-22T09:56:08+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -202,6 +202,34 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-20-sfnd",
+      "date": "2026-10-20",
+      "displayDate": "20 Oct",
+      "displayDateLong": "Oct 20, 2026",
+      "firm": "SF+ND",
+      "publisher": "Channel 14",
+      "label": "Channel 14 · 20 Oct",
+      "isHeadline": false,
+      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "lean": 10,
+      "leanPolls": 8,
+      "seats": {
+        "likud": 30,
+        "together": 9,
+        "rzp": 7,
+        "otzma": 8,
+        "shas": 9,
+        "utj": 8,
+        "beiteinu": 6,
+        "raam": 6,
+        "hadash_taal": 8,
+        "democrats": 9,
+        "yashar": 20,
+        "reservists": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
       "id": "2026-10-19-mptmsna",
       "date": "2026-10-19",
       "displayDate": "19 Oct",
@@ -240,7 +268,7 @@
       "isHeadline": false,
       "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
       "lean": 10,
-      "leanPolls": 7,
+      "leanPolls": 8,
       "seats": {
         "likud": 30,
         "together": 10,
@@ -296,7 +324,7 @@
       "isHeadline": false,
       "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
       "lean": 10,
-      "leanPolls": 7,
+      "leanPolls": 8,
       "seats": {
         "likud": 29,
         "together": 10,
@@ -340,40 +368,12 @@
         "reservists": 4,
         "amcha_yisrael": 0
       }
-    },
-    {
-      "id": "2026-10-15-lrip4a",
-      "date": "2026-10-15",
-      "displayDate": "15 Oct",
-      "displayDateLong": "Oct 15, 2026",
-      "firm": "LRI+P4A",
-      "publisher": "Maariv",
-      "label": "Maariv · 15 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": -2,
-      "leanPolls": 5,
-      "seats": {
-        "likud": 18,
-        "together": 13,
-        "rzp": 6,
-        "otzma": 8,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 8,
-        "raam": 6,
-        "hadash_taal": 8,
-        "democrats": 9,
-        "yashar": 21,
-        "reservists": 4,
-        "amcha_yisrael": 4
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "MP+TM+SN+A": 0,
     "SF+ND": 10,
+    "MP+TM+SN+A": 0,
     "Midgam R&C": -2,
     "Kantar": 0,
     "LRI+P4A": -2,
