@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-24T09:21:51+00:00",
+  "generated": "2026-10-25T09:39:48+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -193,8 +193,8 @@
       "label": "Kan 11 · 18 Oct",
       "isHeadline": true,
       "note": "",
-      "lean": 0,
-      "leanPolls": 5,
+      "lean": -1,
+      "leanPolls": 6,
       "seats": {
         "likud": 21,
         "together": 12,
@@ -382,14 +382,14 @@
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
+    "Kantar": -1,
     "SF+ND": 10,
     "Yossi Tatika": -1,
     "LRI+P4A": -2,
     "MP+TM+SN+A": 0,
     "Midgam R&C": -2,
     "Direct Polls": 7,
-    "Maagar Mochot": 0,
-    "Kantar": 0
+    "Maagar Mochot": 0
   },
   "spreadPollCount": 28,
   "totalSeats": 120,
