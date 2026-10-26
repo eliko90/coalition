@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-25T09:39:48+00:00",
+  "generated": "2026-10-26T10:53:22+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -193,7 +193,7 @@
       "label": "Kan 11 · 18 Oct",
       "isHeadline": true,
       "note": "",
-      "lean": -1,
+      "lean": 0,
       "leanPolls": 6,
       "seats": {
         "likud": 21,
@@ -212,6 +212,62 @@
       }
     },
     {
+      "id": "2026-10-23-mptmsna",
+      "date": "2026-10-23",
+      "displayDate": "23 Oct",
+      "displayDateLong": "Oct 23, 2026",
+      "firm": "MP+TM+SN+A",
+      "publisher": "Channel 13",
+      "label": "Channel 13 · 23 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": 0,
+      "leanPolls": 7,
+      "seats": {
+        "likud": 19,
+        "together": 14,
+        "rzp": 8,
+        "otzma": 8,
+        "shas": 7,
+        "utj": 8,
+        "beiteinu": 8,
+        "raam": 7,
+        "hadash_taal": 9,
+        "democrats": 10,
+        "yashar": 22,
+        "reservists": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
+      "id": "2026-10-23-midgamrc",
+      "date": "2026-10-23",
+      "displayDate": "23 Oct",
+      "displayDateLong": "Oct 23, 2026",
+      "firm": "Midgam R&C",
+      "publisher": "HaHadashot 12",
+      "label": "Channel 12 · 23 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -1,
+      "leanPolls": 6,
+      "seats": {
+        "likud": 21,
+        "together": 15,
+        "rzp": 6,
+        "otzma": 8,
+        "shas": 8,
+        "utj": 7,
+        "beiteinu": 8,
+        "raam": 5,
+        "hadash_taal": 9,
+        "democrats": 10,
+        "yashar": 23,
+        "reservists": 0,
+        "amcha_yisrael": 0
+      }
+    },
+    {
       "id": "2026-10-22-sfnd",
       "date": "2026-10-22",
       "displayDate": "22 Oct",
@@ -221,7 +277,7 @@
       "label": "Channel 14 · 22 Oct",
       "isHeadline": false,
       "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-      "lean": 10,
+      "lean": 11,
       "leanPolls": 10,
       "seats": {
         "likud": 30,
@@ -249,7 +305,7 @@
       "label": "Zman Yisrael · 22 Oct",
       "isHeadline": false,
       "note": "",
-      "lean": -1,
+      "lean": 0,
       "leanPolls": 5,
       "seats": {
         "likud": 21,
@@ -277,7 +333,7 @@
       "label": "Maariv · 22 Oct",
       "isHeadline": false,
       "note": "",
-      "lean": -2,
+      "lean": -1,
       "leanPolls": 7,
       "seats": {
         "likud": 19,
@@ -306,7 +362,7 @@
       "isHeadline": false,
       "note": "",
       "lean": 0,
-      "leanPolls": 6,
+      "leanPolls": 7,
       "seats": {
         "likud": 19,
         "together": 14,
@@ -322,74 +378,18 @@
         "reservists": 4,
         "amcha_yisrael": 0
       }
-    },
-    {
-      "id": "2026-10-21-midgamrc",
-      "date": "2026-10-21",
-      "displayDate": "21 Oct",
-      "displayDateLong": "Oct 21, 2026",
-      "firm": "Midgam R&C",
-      "publisher": "HaHadashot 12",
-      "label": "Channel 12 · 21 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": -2,
-      "leanPolls": 5,
-      "seats": {
-        "likud": 19,
-        "together": 15,
-        "rzp": 6,
-        "otzma": 7,
-        "shas": 8,
-        "utj": 7,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 9,
-        "democrats": 9,
-        "yashar": 23,
-        "reservists": 0,
-        "amcha_yisrael": 4
-      }
-    },
-    {
-      "id": "2026-10-21-sfnd",
-      "date": "2026-10-21",
-      "displayDate": "21 Oct",
-      "displayDateLong": "Oct 21, 2026",
-      "firm": "SF+ND",
-      "publisher": "Channel 14",
-      "label": "Channel 14 · 21 Oct",
-      "isHeadline": false,
-      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-      "lean": 10,
-      "leanPolls": 10,
-      "seats": {
-        "likud": 30,
-        "together": 10,
-        "rzp": 7,
-        "otzma": 8,
-        "shas": 10,
-        "utj": 7,
-        "beiteinu": 5,
-        "raam": 6,
-        "hadash_taal": 8,
-        "democrats": 9,
-        "yashar": 20,
-        "reservists": 0,
-        "amcha_yisrael": 0
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "Kantar": -1,
-    "SF+ND": 10,
-    "Yossi Tatika": -1,
-    "LRI+P4A": -2,
     "MP+TM+SN+A": 0,
-    "Midgam R&C": -2,
-    "Direct Polls": 7,
-    "Maagar Mochot": 0
+    "Midgam R&C": -1,
+    "Kantar": 0,
+    "SF+ND": 11,
+    "Yossi Tatika": 0,
+    "LRI+P4A": -1,
+    "Direct Polls": 8,
+    "Maagar Mochot": 1
   },
   "spreadPollCount": 28,
   "totalSeats": 120,
