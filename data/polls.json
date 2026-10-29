@@ -1,11 +1,11 @@
 {
-  "generated": "2026-10-26T10:53:22+00:00",
+  "generated": "2026-10-29T11:22:57+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
     "label": "Kantar/Kan 11",
-    "fieldworkDate": "2026-10-18",
-    "displayDate": "Oct 18, 2026",
+    "fieldworkDate": "2026-10-27",
+    "displayDate": "Oct 27, 2026",
     "exactHouseMatch": true,
     "url": "https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_Israeli_legislative_election"
   },
@@ -13,25 +13,6 @@
   "trendDays": 63,
   "trendPolls": 9,
   "history": [
-    {
-      "d": "2026-08-23",
-      "seats": {
-        "likud": 22,
-        "together": 14,
-        "rzp": 5,
-        "otzma": 9,
-        "blue_white": 0,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 9,
-        "raam": 5,
-        "hadash_taal": 7,
-        "democrats": 10,
-        "yashar": 24,
-        "zionist_home": 0,
-        "amcha_yisrael": 0
-      }
-    },
     {
       "d": "2026-08-30",
       "seats": {
@@ -180,35 +161,153 @@
         "reservists": 4,
         "amcha_yisrael": 0
       }
+    },
+    {
+      "d": "2026-10-27",
+      "seats": {
+        "likud": 27,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 6,
+        "shas": 6,
+        "utj": 6,
+        "beiteinu": 8,
+        "raam": 7,
+        "hadash_taal": 11,
+        "democrats": 9,
+        "yashar": 21
+      }
     }
   ],
   "alternates": [
     {
-      "id": "2026-10-18-kantar",
-      "date": "2026-10-18",
-      "displayDate": "18 Oct",
-      "displayDateLong": "Oct 18, 2026",
-      "firm": "Kantar",
-      "publisher": "Kan 11",
-      "label": "Kan 11 · 18 Oct",
-      "isHeadline": true,
+      "id": "2026-10-27-midgamrc",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "Midgam R&C",
+      "publisher": "HaHadashot 12",
+      "label": "Channel 12 · 27 Oct",
+      "isHeadline": false,
       "note": "",
       "lean": 0,
       "leanPolls": 6,
       "seats": {
-        "likud": 21,
+        "likud": 27,
         "together": 12,
-        "rzp": 7,
-        "otzma": 8,
+        "rzp": 6,
+        "otzma": 6,
+        "shas": 7,
+        "utj": 6,
+        "beiteinu": 7,
+        "raam": 7,
+        "hadash_taal": 12,
+        "democrats": 9,
+        "yashar": 21
+      }
+    },
+    {
+      "id": "2026-10-27-kantar",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "Kantar",
+      "publisher": "Kan 11",
+      "label": "Kan 11 · 27 Oct",
+      "isHeadline": true,
+      "note": "",
+      "lean": 0,
+      "leanPolls": 7,
+      "seats": {
+        "likud": 27,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 6,
+        "shas": 6,
+        "utj": 6,
+        "beiteinu": 8,
+        "raam": 7,
+        "hadash_taal": 11,
+        "democrats": 9,
+        "yashar": 21
+      }
+    },
+    {
+      "id": "2026-10-27-mptmsna",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "MP+TM+SN+A",
+      "publisher": "Channel 13",
+      "label": "Channel 13 · 27 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": -1,
+      "leanPolls": 7,
+      "seats": {
+        "likud": 27,
+        "together": 13,
+        "rzp": 6,
+        "otzma": 6,
+        "shas": 6,
+        "utj": 6,
+        "beiteinu": 7,
+        "raam": 7,
+        "hadash_taal": 11,
+        "democrats": 9,
+        "yashar": 22
+      }
+    },
+    {
+      "id": "2026-10-27-directpolls",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "Direct Polls",
+      "publisher": "i24 News",
+      "label": "i24 · 27 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": 6,
+      "leanPolls": 6,
+      "seats": {
+        "likud": 27,
+        "together": 15,
+        "rzp": 6,
+        "otzma": 7,
         "shas": 8,
         "utj": 7,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 8,
+        "beiteinu": 5,
+        "raam": 7,
+        "hadash_taal": 9,
         "democrats": 9,
-        "yashar": 23,
-        "reservists": 4,
-        "amcha_yisrael": 0
+        "yashar": 20
+      }
+    },
+    {
+      "id": "2026-10-27-sfnd",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "SF+ND",
+      "publisher": "Channel 14",
+      "label": "Channel 14 · 27 Oct",
+      "isHeadline": false,
+      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
+      "lean": 12,
+      "leanPolls": 10,
+      "seats": {
+        "likud": 29,
+        "together": 11,
+        "rzp": 7,
+        "otzma": 7,
+        "shas": 7,
+        "utj": 9,
+        "beiteinu": 8,
+        "raam": 4,
+        "hadash_taal": 11,
+        "democrats": 7,
+        "yashar": 20
       }
     },
     {
@@ -221,7 +320,7 @@
       "label": "Channel 13 · 23 Oct",
       "isHeadline": false,
       "note": "",
-      "lean": 0,
+      "lean": -1,
       "leanPolls": 7,
       "seats": {
         "likud": 19,
@@ -234,224 +333,32 @@
         "raam": 7,
         "hadash_taal": 9,
         "democrats": 10,
-        "yashar": 22,
-        "reservists": 0,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-23-midgamrc",
-      "date": "2026-10-23",
-      "displayDate": "23 Oct",
-      "displayDateLong": "Oct 23, 2026",
-      "firm": "Midgam R&C",
-      "publisher": "HaHadashot 12",
-      "label": "Channel 12 · 23 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": -1,
-      "leanPolls": 6,
-      "seats": {
-        "likud": 21,
-        "together": 15,
-        "rzp": 6,
-        "otzma": 8,
-        "shas": 8,
-        "utj": 7,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 9,
-        "democrats": 10,
-        "yashar": 23,
-        "reservists": 0,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-22-sfnd",
-      "date": "2026-10-22",
-      "displayDate": "22 Oct",
-      "displayDateLong": "Oct 22, 2026",
-      "firm": "SF+ND",
-      "publisher": "Channel 14",
-      "label": "Channel 14 · 22 Oct",
-      "isHeadline": false,
-      "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-      "lean": 11,
-      "leanPolls": 10,
-      "seats": {
-        "likud": 30,
-        "together": 11,
-        "rzp": 7,
-        "otzma": 8,
-        "shas": 9,
-        "utj": 8,
-        "beiteinu": 5,
-        "raam": 6,
-        "hadash_taal": 8,
-        "democrats": 8,
-        "yashar": 20,
-        "reservists": 0,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-22-yossitatika",
-      "date": "2026-10-22",
-      "displayDate": "22 Oct",
-      "displayDateLong": "Oct 22, 2026",
-      "firm": "Yossi Tatika",
-      "publisher": "Zman Yisrael",
-      "label": "Zman Yisrael · 22 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": 0,
-      "leanPolls": 5,
-      "seats": {
-        "likud": 21,
-        "together": 11,
-        "rzp": 6,
-        "otzma": 8,
-        "shas": 8,
-        "utj": 8,
-        "beiteinu": 9,
-        "raam": 5,
-        "hadash_taal": 9,
-        "democrats": 8,
-        "yashar": 23,
-        "reservists": 4,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-22-lrip4a",
-      "date": "2026-10-22",
-      "displayDate": "22 Oct",
-      "displayDateLong": "Oct 22, 2026",
-      "firm": "LRI+P4A",
-      "publisher": "Maariv",
-      "label": "Maariv · 22 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": -1,
-      "leanPolls": 7,
-      "seats": {
-        "likud": 19,
-        "together": 15,
-        "rzp": 7,
-        "otzma": 7,
-        "shas": 8,
-        "utj": 7,
-        "beiteinu": 8,
-        "raam": 5,
-        "hadash_taal": 9,
-        "democrats": 10,
-        "yashar": 21,
-        "reservists": 4,
-        "amcha_yisrael": 0
-      }
-    },
-    {
-      "id": "2026-10-21-mptmsna",
-      "date": "2026-10-21",
-      "displayDate": "21 Oct",
-      "displayDateLong": "Oct 21, 2026",
-      "firm": "MP+TM+SN+A",
-      "publisher": "Channel 13",
-      "label": "Channel 13 · 21 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": 0,
-      "leanPolls": 7,
-      "seats": {
-        "likud": 19,
-        "together": 14,
-        "rzp": 8,
-        "otzma": 7,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 8,
-        "raam": 6,
-        "hadash_taal": 9,
-        "democrats": 10,
-        "yashar": 20,
-        "reservists": 4,
-        "amcha_yisrael": 0
+        "yashar": 22
       }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "MP+TM+SN+A": 0,
-    "Midgam R&C": -1,
+    "Midgam R&C": 0,
     "Kantar": 0,
-    "SF+ND": 11,
-    "Yossi Tatika": 0,
-    "LRI+P4A": -1,
-    "Direct Polls": 8,
-    "Maagar Mochot": 1
+    "MP+TM+SN+A": -1,
+    "Direct Polls": 6,
+    "SF+ND": 12,
+    "Yossi Tatika": -1,
+    "LRI+P4A": -2,
+    "Maagar Mochot": -3
   },
-  "spreadPollCount": 28,
+  "spreadPollCount": 39,
   "totalSeats": 120,
   "parties": {
-    "amcha_yisrael": {
-      "seats": 0,
-      "pct": "3.1%",
-      "delta": -4,
-      "spreadMin": 0,
-      "spreadMax": 5,
-      "spreadPolls": 27,
-      "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 0
-        },
-        {
-          "d": "2026-08-30",
-          "s": 4
-        },
-        {
-          "d": "2026-09-06",
-          "s": 4
-        },
-        {
-          "d": "2026-09-09",
-          "s": 4
-        },
-        {
-          "d": "2026-09-14",
-          "s": 4
-        },
-        {
-          "d": "2026-09-27",
-          "s": 4
-        },
-        {
-          "d": "2026-10-04",
-          "s": 0
-        },
-        {
-          "d": "2026-10-11",
-          "s": 4
-        },
-        {
-          "d": "2026-10-18",
-          "s": 0
-        }
-      ]
-    },
     "beiteinu": {
       "seats": 8,
       "pct": null,
       "delta": 0,
       "spreadMin": 5,
       "spreadMax": 10,
-      "spreadPolls": 28,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 9
-        },
         {
           "d": "2026-08-30",
           "s": 8
@@ -482,6 +389,10 @@
         },
         {
           "d": "2026-10-18",
+          "s": 8
+        },
+        {
+          "d": "2026-10-27",
           "s": 8
         }
       ]
@@ -489,15 +400,11 @@
     "democrats": {
       "seats": 9,
       "pct": null,
-      "delta": 1,
-      "spreadMin": 8,
-      "spreadMax": 11,
-      "spreadPolls": 28,
+      "delta": 0,
+      "spreadMin": 7,
+      "spreadMax": 10,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 10
-        },
         {
           "d": "2026-08-30",
           "s": 9
@@ -528,22 +435,22 @@
         },
         {
           "d": "2026-10-18",
+          "s": 9
+        },
+        {
+          "d": "2026-10-27",
           "s": 9
         }
       ]
     },
     "hadash_taal": {
-      "seats": 8,
+      "seats": 11,
       "pct": null,
-      "delta": 0,
+      "delta": 3,
       "spreadMin": 7,
-      "spreadMax": 9,
-      "spreadPolls": 28,
+      "spreadMax": 12,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 7
-        },
         {
           "d": "2026-08-30",
           "s": 8
@@ -575,21 +482,21 @@
         {
           "d": "2026-10-18",
           "s": 8
+        },
+        {
+          "d": "2026-10-27",
+          "s": 11
         }
       ]
     },
     "likud": {
-      "seats": 21,
+      "seats": 27,
       "pct": null,
-      "delta": 1,
+      "delta": 6,
       "spreadMin": 18,
-      "spreadMax": 32,
-      "spreadPolls": 28,
+      "spreadMax": 31,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 22
-        },
         {
           "d": "2026-08-30",
           "s": 21
@@ -621,21 +528,21 @@
         {
           "d": "2026-10-18",
           "s": 21
+        },
+        {
+          "d": "2026-10-27",
+          "s": 27
         }
       ]
     },
     "otzma": {
-      "seats": 8,
+      "seats": 6,
       "pct": null,
-      "delta": -1,
+      "delta": -2,
       "spreadMin": 6,
       "spreadMax": 10,
-      "spreadPolls": 28,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 9
-        },
         {
           "d": "2026-08-30",
           "s": 7
@@ -667,21 +574,21 @@
         {
           "d": "2026-10-18",
           "s": 8
+        },
+        {
+          "d": "2026-10-27",
+          "s": 6
         }
       ]
     },
     "raam": {
-      "seats": 5,
+      "seats": 7,
       "pct": null,
-      "delta": 0,
-      "spreadMin": 5,
-      "spreadMax": 6,
-      "spreadPolls": 28,
+      "delta": 2,
+      "spreadMin": 4,
+      "spreadMax": 7,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 5
-        },
         {
           "d": "2026-08-30",
           "s": 5
@@ -713,59 +620,21 @@
         {
           "d": "2026-10-18",
           "s": 5
-        }
-      ]
-    },
-    "reservists": {
-      "seats": 4,
-      "pct": null,
-      "delta": 0,
-      "spreadMin": 0,
-      "spreadMax": 5,
-      "spreadPolls": 28,
-      "trend": [
-        {
-          "d": "2026-09-06",
-          "s": 4
         },
         {
-          "d": "2026-09-09",
-          "s": 4
-        },
-        {
-          "d": "2026-09-14",
-          "s": 4
-        },
-        {
-          "d": "2026-09-27",
-          "s": 4
-        },
-        {
-          "d": "2026-10-04",
-          "s": 4
-        },
-        {
-          "d": "2026-10-11",
-          "s": 4
-        },
-        {
-          "d": "2026-10-18",
-          "s": 4
+          "d": "2026-10-27",
+          "s": 7
         }
       ]
     },
     "rzp": {
-      "seats": 7,
+      "seats": 6,
       "pct": null,
-      "delta": 2,
+      "delta": -1,
       "spreadMin": 5,
-      "spreadMax": 7,
-      "spreadPolls": 28,
+      "spreadMax": 8,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 5
-        },
         {
           "d": "2026-08-30",
           "s": 5
@@ -797,21 +666,21 @@
         {
           "d": "2026-10-18",
           "s": 7
+        },
+        {
+          "d": "2026-10-27",
+          "s": 6
         }
       ]
     },
     "shas": {
-      "seats": 8,
+      "seats": 6,
       "pct": null,
-      "delta": 1,
-      "spreadMin": 7,
+      "delta": -2,
+      "spreadMin": 6,
       "spreadMax": 10,
-      "spreadPolls": 28,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 7
-        },
         {
           "d": "2026-08-30",
           "s": 7
@@ -843,21 +712,21 @@
         {
           "d": "2026-10-18",
           "s": 8
+        },
+        {
+          "d": "2026-10-27",
+          "s": 6
         }
       ]
     },
     "together": {
-      "seats": 12,
+      "seats": 13,
       "pct": null,
-      "delta": 0,
+      "delta": 1,
       "spreadMin": 7,
-      "spreadMax": 14,
-      "spreadPolls": 28,
+      "spreadMax": 15,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 14
-        },
         {
           "d": "2026-08-30",
           "s": 14
@@ -889,21 +758,21 @@
         {
           "d": "2026-10-18",
           "s": 12
+        },
+        {
+          "d": "2026-10-27",
+          "s": 13
         }
       ]
     },
     "utj": {
-      "seats": 7,
+      "seats": 6,
       "pct": null,
       "delta": -1,
-      "spreadMin": 7,
-      "spreadMax": 8,
-      "spreadPolls": 28,
+      "spreadMin": 6,
+      "spreadMax": 9,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 8
-        },
         {
           "d": "2026-08-30",
           "s": 8
@@ -935,21 +804,21 @@
         {
           "d": "2026-10-18",
           "s": 7
+        },
+        {
+          "d": "2026-10-27",
+          "s": 6
         }
       ]
     },
     "yashar": {
-      "seats": 23,
+      "seats": 21,
       "pct": null,
-      "delta": 1,
-      "spreadMin": 20,
+      "delta": -2,
+      "spreadMin": 19,
       "spreadMax": 26,
-      "spreadPolls": 28,
+      "spreadPolls": 39,
       "trend": [
-        {
-          "d": "2026-08-23",
-          "s": 24
-        },
         {
           "d": "2026-08-30",
           "s": 24
@@ -981,6 +850,10 @@
         {
           "d": "2026-10-18",
           "s": 23
+        },
+        {
+          "d": "2026-10-27",
+          "s": 21
         }
       ]
     }
