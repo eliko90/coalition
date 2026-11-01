@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T10:48:29+00:00",
+  "generated": "2026-11-01T11:44:58+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -181,6 +181,32 @@
   ],
   "alternates": [
     {
+      "id": "2026-10-27-preliminaryelectionresults",
+      "date": "2026-10-27",
+      "displayDate": "27 Oct",
+      "displayDateLong": "Oct 27, 2026",
+      "firm": "Preliminary Election results",
+      "publisher": "Preliminary Election results",
+      "label": "Preliminary Election results · 27 Oct",
+      "isHeadline": false,
+      "note": "",
+      "lean": 2,
+      "leanPolls": 1,
+      "seats": {
+        "likud": 27,
+        "together": 12,
+        "rzp": 6,
+        "otzma": 7,
+        "shas": 6,
+        "utj": 7,
+        "beiteinu": 7,
+        "raam": 8,
+        "hadash_taal": 11,
+        "democrats": 8,
+        "yashar": 21
+      }
+    },
+    {
       "id": "2026-10-27-midgamrc",
       "date": "2026-10-27",
       "displayDate": "27 Oct",
@@ -190,7 +216,7 @@
       "label": "Channel 12 · 27 Oct",
       "isHeadline": false,
       "note": "",
-      "lean": 0,
+      "lean": -1,
       "leanPolls": 6,
       "seats": {
         "likud": 27,
@@ -216,7 +242,7 @@
       "label": "Kan 11 · 27 Oct",
       "isHeadline": true,
       "note": "",
-      "lean": 0,
+      "lean": -1,
       "leanPolls": 7,
       "seats": {
         "likud": 27,
@@ -242,7 +268,7 @@
       "label": "Channel 13 · 27 Oct",
       "isHeadline": false,
       "note": "",
-      "lean": -1,
+      "lean": -2,
       "leanPolls": 7,
       "seats": {
         "likud": 27,
@@ -294,7 +320,7 @@
       "label": "Channel 14 · 27 Oct",
       "isHeadline": false,
       "note": "Channel 14 established and owns the polling firm that conducts its surveys, and aired its polls without disclosing that; Israel's Public Council for Press and Ethics said it may constitute a breach of public trust.",
-      "lean": 12,
+      "lean": 11,
       "leanPolls": 10,
       "seats": {
         "likud": 29,
@@ -309,46 +335,21 @@
         "democrats": 7,
         "yashar": 20
       }
-    },
-    {
-      "id": "2026-10-23-mptmsna",
-      "date": "2026-10-23",
-      "displayDate": "23 Oct",
-      "displayDateLong": "Oct 23, 2026",
-      "firm": "MP+TM+SN+A",
-      "publisher": "Channel 13",
-      "label": "Channel 13 · 23 Oct",
-      "isHeadline": false,
-      "note": "",
-      "lean": -1,
-      "leanPolls": 7,
-      "seats": {
-        "likud": 19,
-        "together": 14,
-        "rzp": 8,
-        "otzma": 8,
-        "shas": 7,
-        "utj": 8,
-        "beiteinu": 8,
-        "raam": 7,
-        "hadash_taal": 9,
-        "democrats": 10,
-        "yashar": 22
-      }
     }
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "Midgam R&C": 0,
-    "Kantar": 0,
-    "MP+TM+SN+A": -1,
+    "Preliminary Election results": 2,
+    "Midgam R&C": -1,
+    "Kantar": -1,
+    "MP+TM+SN+A": -2,
     "Direct Polls": 6,
-    "SF+ND": 12,
-    "Yossi Tatika": -1,
-    "LRI+P4A": -2,
-    "Maagar Mochot": -3
+    "SF+ND": 11,
+    "Yossi Tatika": -2,
+    "LRI+P4A": -3,
+    "Maagar Mochot": -4
   },
-  "spreadPollCount": 39,
+  "spreadPollCount": 40,
   "totalSeats": 120,
   "parties": {
     "beiteinu": {
@@ -357,7 +358,7 @@
       "delta": 0,
       "spreadMin": 5,
       "spreadMax": 10,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -403,7 +404,7 @@
       "delta": 0,
       "spreadMin": 7,
       "spreadMax": 10,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -449,7 +450,7 @@
       "delta": 3,
       "spreadMin": 7,
       "spreadMax": 12,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -495,7 +496,7 @@
       "delta": 6,
       "spreadMin": 18,
       "spreadMax": 31,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -541,7 +542,7 @@
       "delta": -2,
       "spreadMin": 6,
       "spreadMax": 10,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -586,8 +587,8 @@
       "pct": null,
       "delta": 2,
       "spreadMin": 4,
-      "spreadMax": 7,
-      "spreadPolls": 39,
+      "spreadMax": 8,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -633,7 +634,7 @@
       "delta": -1,
       "spreadMin": 5,
       "spreadMax": 8,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -679,7 +680,7 @@
       "delta": -2,
       "spreadMin": 6,
       "spreadMax": 10,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -725,7 +726,7 @@
       "delta": 1,
       "spreadMin": 7,
       "spreadMax": 15,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -771,7 +772,7 @@
       "delta": -1,
       "spreadMin": 6,
       "spreadMax": 9,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
@@ -817,7 +818,7 @@
       "delta": -2,
       "spreadMin": 19,
       "spreadMax": 26,
-      "spreadPolls": 39,
+      "spreadPolls": 40,
       "trend": [
         {
           "d": "2026-08-30",
