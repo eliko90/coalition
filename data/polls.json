@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-07T11:36:11+00:00",
+  "generated": "2026-11-08T11:48:15+00:00",
   "source": {
     "pollster": "Kantar",
     "publisher": "Kan 11",
@@ -181,13 +181,13 @@
   ],
   "alternates": [
     {
-      "id": "2026-10-27-preliminaryelectionresults",
+      "id": "2026-10-27-electionresults",
       "date": "2026-10-27",
       "displayDate": "27 Oct",
       "displayDateLong": "Oct 27, 2026",
-      "firm": "Preliminary election results",
-      "publisher": "Preliminary election results",
-      "label": "Preliminary election results · 27 Oct",
+      "firm": "Election results",
+      "publisher": "Election results",
+      "label": "Election results · 27 Oct",
       "isHeadline": false,
       "note": "",
       "lean": 2,
@@ -339,7 +339,7 @@
   ],
   "leanBlocLabel": "the Netanyahu bloc",
   "leans": {
-    "Preliminary election results": 2,
+    "Election results": 2,
     "Midgam R&C": -1,
     "Kantar": -1,
     "MP+TM+SN+A": -2,
